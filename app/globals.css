@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Ground State Foundry - minimal · futuristic · precise
+   pure black · off-white · one lime accent · Sora + mono
+   (class + token names kept stable across the app)
+   ============================================================ */
+
+@theme inline {
+  --color-bg: #000000;
+  --color-panel: #0a0b0a;
+  --color-panel-2: #101210;
+  --color-fg: #f3f5f1;
+  --color-muted: #8b8f88;
+  --color-dim: #565a54;
+
+  /* single accent - the lime from the logo */
+  --color-neon: #b9f23a;
+  --color-accent-fg: #0a1400;
+
+  /* legacy aliases kept calm */
+  --color-cyan: #8b8f88;
+  --color-magenta: #f87171;
+  --color-amber: #b9f23a;
+
+  --color-border: #181a16;
+  --color-border-bright: #23261f;
+
+  --font-sans: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-gs), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius: 16px;
+}
+
+:root {
+  --background: var(--color-bg);
+  --foreground: var(--color-fg);
+}
+
+html { background: var(--color-bg); color-scheme: dark; }
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+::selection { background: rgba(185, 242, 58, 0.85); color: #0a1400; }
+
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #20231d; border-radius: 999px; border: 2px solid #000; }
+::-webkit-scrollbar-thumb:hover { background: #2f3329; }
+
+@layer components {
+  /* mono micro-label (lab / data feel) */
+  .mono-label {
+    font-family: var(--font-mono);
+    @apply text-[11px] uppercase tracking-[0.22em] text-[var(--color-muted)];
+  }
+
+  .prompt { } /* no-op */
+
+  /* cards - subtle lift, hairline border, soft radius */
+  .card {
+    background: var(--color-panel);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+  }
+  .card-neon {
+    background: linear-gradient(180deg, rgba(185, 242, 58, 0.04), transparent 60%), var(--color-panel);
+    border: 1px solid rgba(185, 242, 58, 0.28);
+    border-radius: var(--radius);
+  }
+
+  /* buttons - sleek pills */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium;
+    transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, opacity 0.18s ease, transform 0.06s ease;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--color-neon); color: var(--color-accent-fg); }
+  .btn-primary:hover { background: #c9fb55; box-shadow: 0 0 30px rgba(185, 242, 58, 0.25); }
+  .btn-ghost { background: transparent; border: 1px solid var(--color-border-bright); color: var(--color-fg); }
+  .btn-ghost:hover { border-color: var(--color-neon); color: var(--color-neon); }
+  .btn-cyan { background: transparent; border: 1px solid var(--color-border-bright); color: var(--color-fg); }
+  .btn-cyan:hover { border-color: var(--color-neon); color: var(--color-neon); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* fields */
+  .field {
+    @apply w-full rounded-xl px-3.5 py-2.5 text-sm text-[var(--color-fg)] outline-none;
+    background: #070807;
+    border: 1px solid var(--color-border-bright);
+    transition: border-color 0.16s ease, box-shadow 0.16s ease;
+  }
+  .field::placeholder { color: var(--color-dim); }
+  .field:focus { border-color: rgba(185, 242, 58, 0.65); box-shadow: 0 0 0 3px rgba(185, 242, 58, 0.12); }
+
+  /* tags - pills */
+  .tag {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs;
+    border: 1px solid var(--color-border-bright);
+    color: var(--color-muted);
+  }
+  .tag-neon { border-color: rgba(185, 242, 58, 0.3); color: var(--color-neon); background: rgba(185, 242, 58, 0.07); }
+  .tag-cyan { border-color: var(--color-border-bright); color: var(--color-muted); }
+  .tag-magenta { border-color: rgba(248, 113, 113, 0.3); color: var(--color-magenta); background: rgba(248, 113, 113, 0.07); }
+
+  .link-u { @apply text-[var(--color-neon)] underline-offset-4 hover:underline; }
+}
+
+/* the brand motif: energy level (line) + ground-state particle (dot) */
+.level-mark { display: inline-flex; flex-direction: column; align-items: center; gap: 7px; }
+.level-mark .bar { height: 2px; width: 56px; background: var(--color-fg); border-radius: 2px; }
+.level-mark .dot { height: 7px; width: 7px; border-radius: 999px; background: var(--color-neon); box-shadow: 0 0 12px 1px rgba(185, 242, 58, 0.7); }
+
+.caret::after { content: ""; }
+
+/* photon emission - the ground-state particle radiates expanding rings */
+@keyframes gs-emit {
+  0% { transform: scale(0.5); opacity: 0.65; }
+  100% { transform: scale(3.6); opacity: 0; }
+}
+.level-mark .dot { position: relative; }
+.level-mark .dot::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 999px;
+  border: 1px solid var(--color-neon);
+  animation: gs-emit 2.8s ease-out infinite;
+}
+
+/* staggered page-load reveal */
+@keyframes gs-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal { opacity: 0; animation: gs-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+@keyframes gs-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 12px 1px rgba(185, 242, 58, 0.7); }
+  50% { opacity: 0.6; box-shadow: 0 0 6px 0 rgba(185, 242, 58, 0.4); }
+}
+.pulse-dot { animation: gs-pulse 2.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { animation: none; opacity: 1; }
+  .pulse-dot { animation: none; }
+  .level-mark .dot::after { animation: none; opacity: 0; }
+}
