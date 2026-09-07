@@ -34,6 +34,24 @@ npm run dev      # http://localhost:3000
 Build / lint:
 
 ```bash
-npm run build
+npm run build   # static export to ./out
 npm run lint
 ```
+
+## Deploy (GitHub Pages)
+
+The site is a static export (`output: "export"` in `next.config.ts`) served on the
+custom domain **groundstatefoundry.com**. `npm run build` writes the whole site to `out/`.
+
+Deployment is automated by `.github/workflows/deploy.yml`: every push to `main` builds
+and publishes to GitHub Pages. One-time setup in the repo:
+
+1. **Settings -> Pages -> Build and deployment -> Source: GitHub Actions.**
+2. **Settings -> Pages -> Custom domain: `groundstatefoundry.com`** (the `public/CNAME`
+   file already ships this).
+3. Point DNS at GitHub Pages: four `A` records for the apex (`185.199.108.153`,
+   `185.199.109.153`, `185.199.110.153`, `185.199.111.153`), or an `ALIAS`/`ANAME`
+   to `ranger-glimpass.github.io`. Enable **Enforce HTTPS** once the cert is issued.
+
+To serve on a project subpath instead of a custom domain, set `basePath` /
+`assetPrefix` in `next.config.ts` and update `SITE.url` in `lib/site.ts`.
