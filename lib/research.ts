@@ -28,6 +28,11 @@ export const RESEARCH_CATEGORIES: ResearchCategory[] = [
     blurb: "Using simulated people and traffic to test systems before the real thing.",
   },
   {
+    slug: "applied-ai",
+    title: "Applied AI in Production",
+    blurb: "War stories from putting AI to work inside real businesses, and what held up.",
+  },
+  {
     slug: "perspectives",
     title: "AI, Philosophy & the Frontier",
     blurb: "Slower thoughts on intelligence, language, and being human while the machines learn.",
