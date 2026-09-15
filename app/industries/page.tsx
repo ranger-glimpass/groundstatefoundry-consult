@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 const INDUSTRIES = [
-  { t: "Legal & Compliance", d: "Contract analysis, research copilots, and compliance workflows, with the citations and audit trails the domain demands. Home turf: NeuroLaw AI." },
+  { t: "Legal & Compliance", d: "Contract analysis, research copilots, and compliance workflows, with the citations and audit trails the domain demands." },
   { t: "Financial Services", d: "Document processing, risk and KYC automation, and analyst copilots built for accuracy and traceability." },
   { t: "Healthcare", d: "Clinical documentation, intake, and knowledge assistants designed around privacy and human oversight." },
   { t: "Real Estate", d: "Listing intelligence, lead qualification, and tenant/owner assistants tuned for the UAE and global markets." },

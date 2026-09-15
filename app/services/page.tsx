@@ -2,77 +2,38 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Container, PageHeader } from "@/components/ui";
 import { SITE } from "@/lib/site";
+import { SERVICES } from "@/lib/services";
 
 export const metadata: Metadata = {
   title: "Services",
   alternates: { canonical: "/services" },
   description:
-    "Enterprise AI solutions, strategy, agents & automation, data infrastructure, and product engineering from a Dubai-based AI consultancy.",
+    "Voice AI, agents and automation, enterprise AI, simulation, strategy, and data infrastructure from a Dubai-based applied AI firm.",
 };
-
-const SERVICES = [
-  {
-    tag: "01",
-    title: "Enterprise AI Solutions",
-    body: "We build LLM applications, RAG systems, and copilots directly into your stack, with retrieval, guardrails, and evaluation designed for accuracy and security.",
-    points: ["Custom LLM & RAG applications", "Knowledge copilots & assistants", "Document & workflow intelligence", "Security & access-aware design"],
-  },
-  {
-    tag: "02",
-    title: "AI Strategy & Advisory",
-    body: "Before a line of code, we map where AI earns real return. You get a prioritized roadmap, a readiness assessment, and clear success metrics.",
-    points: ["Opportunity mapping & prioritization", "AI readiness & data audit", "Build-vs-buy & vendor selection", "Executive & team enablement"],
-  },
-  {
-    tag: "03",
-    title: "AI Agents & Automation",
-    body: "Agentic systems that take real work off your team across support, operations, research, and back-office, measured on outcomes, not demos.",
-    points: ["Multi-step agent workflows", "Tool & API integration", "Human-in-the-loop controls", "Cost & latency optimization"],
-  },
-  {
-    tag: "04",
-    title: "Data & ML Infrastructure",
-    body: "The unglamorous foundations that make AI reliable: pipelines, vector stores, evaluation harnesses, monitoring, and MLOps.",
-    points: ["Data pipelines & vector stores", "Evaluation & observability", "MLOps & deployment", "Fine-tuning & model routing"],
-  },
-  {
-    tag: "05",
-    title: "Product Engineering",
-    body: "Senior, AI-native teams that ship from MVP to scale with the craft of a top product studio: full-stack, design-aware, fast.",
-    points: ["MVP to production", "Full-stack web & mobile", "Design & UX", "Cloud & DevOps"],
-  },
-  {
-    tag: "06",
-    title: "Startup Studio",
-    body: "For founders at zero: UAE company formation, an AI-native MVP, go-to-market, and a path to first paying customers.",
-    points: ["UAE company formation", "MVP build & launch", "Go-to-market support", "Fundraising readiness"],
-  },
-];
 
 export default function ServicesPage() {
   return (
     <>
       <PageHeader
         eyebrow="services"
-        title="A full-stack AI partner"
-        subtitle="We advise, we build, and we stay accountable to the outcome. Engage us for a single project or as your ongoing AI team."
+        title="What you can hire us for"
+        subtitle="Six things we do, from a phone line that answers itself to the plumbing that keeps AI reliable in production."
       />
       <Container className="py-16">
         <div className="grid gap-5 md:grid-cols-2">
           {SERVICES.map((s) => (
-            <div key={s.title} className="card p-8">
-              <p className="mono-label">service · {s.tag}</p>
+            <Link
+              key={s.slug}
+              href={`/services/${s.slug}`}
+              className="card p-8 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-neon)]"
+            >
+              <p className="mono-label">service · {s.num}</p>
               <h3 className="mt-3 text-2xl font-semibold text-[var(--color-fg)]">{s.title}</h3>
-              <p className="mt-3 leading-relaxed text-[var(--color-muted)]">{s.body}</p>
-              <ul className="mt-5 space-y-2">
-                {s.points.map((p) => (
-                  <li key={p} className="flex items-center gap-2.5 text-sm text-[var(--color-muted)]">
-                    <span className="h-[6px] w-[6px] shrink-0 rounded-full bg-[var(--color-neon)] shadow-[0_0_8px_1px_rgba(185,242,58,0.6)]" />
-                    {p}
-                  </li>
-                ))}
-              </ul>
-            </div>
+              <p className="mt-3 leading-relaxed text-[var(--color-muted)]">{s.summary}</p>
+              <p className="mt-5 mono-label text-[var(--color-dim)]">
+                {s.subs.length} capabilities
+              </p>
+            </Link>
           ))}
         </div>
 

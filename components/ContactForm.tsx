@@ -4,10 +4,11 @@ import { useState } from "react";
 import { SITE } from "@/lib/site";
 
 const INTERESTS = [
-  "Enterprise AI solution",
-  "AI strategy & advisory",
+  "Voice AI",
   "Agents & automation",
-  "Startup support",
+  "Enterprise AI solution",
+  "Simulation",
+  "AI strategy & advisory",
   "Something else",
 ];
 

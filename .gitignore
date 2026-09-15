@@ -51,3 +51,8 @@ halogen-segment-424319-n1-c94ea1bae883.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Internal / not for public repo
+projects/
+docs/
+linkdinDump.txt

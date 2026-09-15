@@ -19,29 +19,29 @@ const mono = JetBrains_Mono({
 });
 
 const DESCRIPTION =
-  "An AI consultancy based in Meydan Free Zone, Dubai. We build enterprise-grade AI systems across strategy, agents, automation, and data, and back startups from zero to launch.";
+  "An applied AI research and engineering firm in Meydan Free Zone, Dubai. We do original research in voice AI, agents, and evolutionary systems, and build it into production systems for enterprises worldwide.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: "Ground State Foundry · AI consultancy for enterprises & startups",
+    default: "Ground State Foundry · Applied AI research & engineering",
     template: "%s · Ground State Foundry",
   },
   description: DESCRIPTION,
   applicationName: SITE.name,
   keywords: [
-    "AI consultancy",
-    "AI consultancy Dubai",
-    "enterprise AI",
-    "AI solutions",
+    "applied AI research",
+    "AI engineering firm",
+    "AI company Dubai",
+    "voice AI",
     "AI agents",
+    "AI automation",
+    "enterprise AI",
     "LLM development",
     "RAG systems",
+    "agent simulation",
     "AI strategy",
-    "AI automation",
     "Meydan Free Zone",
-    "startup studio Dubai",
-    "AI product engineering",
     "UAE AI company",
     "Ground State Foundry",
   ],
@@ -55,14 +55,14 @@ export const metadata: Metadata = {
     siteName: SITE.name,
     url: SITE.url,
     locale: "en_US",
-    title: "Ground State Foundry · build with AI, from ground state up",
+    title: "Ground State Foundry · applied AI research & engineering",
     description:
-      "Enterprise AI systems and startup support from a Dubai-based AI consultancy. Strategy, build, deploy, scale.",
+      "Original AI research, built into production systems for enterprises worldwide. Voice AI, agents, simulation, and the infrastructure underneath.",
     images: [{ url: "/groundstate-logo.png", width: 1254, height: 1254, alt: "Ground State Foundry" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ground State Foundry · AI consultancy for enterprises & startups",
+    title: "Ground State Foundry · applied AI research & engineering",
     description: DESCRIPTION,
     images: ["/groundstate-logo.png"],
   },
@@ -112,12 +112,13 @@ const JSON_LD = {
   })),
   knowsAbout: [
     "Artificial Intelligence",
+    "Applied AI Research",
+    "Voice AI",
     "Large Language Models",
     "AI Agents",
+    "Agent Simulation",
     "Machine Learning Operations",
     "AI Strategy",
-    "Product Engineering",
-    "Startup Incubation",
   ],
 };
 

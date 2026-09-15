@@ -8,14 +8,14 @@ export const metadata: Metadata = {
   title: "About",
   alternates: { canonical: "/about" },
   description:
-    "An AI consultancy based in Meydan Free Zone, Dubai, building enterprise AI systems and backing startups from zero.",
+    "An applied AI research and engineering firm in Meydan Free Zone, Dubai. We do original research and build it into production systems for enterprises worldwide.",
 };
 
 const VALUES = [
-  { t: "Execution over slideware", d: "We measure ourselves on systems in production, not decks. If it doesn't ship, it didn't happen." },
+  { t: "Execution over slideware", d: "We measure ourselves on systems in production, not decks. If it does not ship, it did not happen." },
+  { t: "Research is not a side project", d: "We build our own tools and study hard problems on purpose. That is what keeps the work we do for you ahead of the shelf." },
   { t: "Senior by default", d: "The people who scope your work are the people who build it. No hand-offs to a junior bench." },
-  { t: "Honest about AI", d: "We'll tell you when AI isn't the answer. Trust is worth more than a bigger contract." },
-  { t: "Own the outcome", d: "We tie our work to a metric that matters to your business and stay accountable to it." },
+  { t: "Honest about AI", d: "We will tell you when AI is not the answer. Trust is worth more to us than a bigger contract." },
 ];
 
 const FOUNDERS = [
@@ -24,14 +24,14 @@ const FOUNDERS = [
     role: "Director",
     img: "/rishi.png",
     linkedin: "https://www.linkedin.com/in/rishi-raj-jaiswal-4b353913a/",
-    body: "Leads the firm's direction, client partnerships, and growth. Sets how engagements run and how the Foundry delivers, keeping every project tied to a business outcome that matters.",
+    body: "Applied AI and research. Built voice agents that run in production over real telephony, an open-source system for running fleets of AI agents, and a framework where code evolves its own algorithms. Sets the firm's direction and keeps every project tied to a real outcome.",
   },
   {
     name: "Devashish",
     role: "AI Advisor & Strategist",
     img: "/dev.jpg",
     linkedin: "https://www.linkedin.com/in/devajais/",
-    body: "Builder behind NeuroLaw AI. Advises on AI strategy and solution architecture end to end, from model and data pipeline to the product a customer actually uses.",
+    body: "Advises on AI strategy and solution architecture end to end, from the model and the data pipeline to the product a customer actually uses. Keeps the hard technical choices honest.",
   },
 ];
 
@@ -44,21 +44,22 @@ export default function AboutPage() {
         subtitle="The ground state is the lowest, most stable energy state, where everything begins. We start there, and build up."
       />
       <Container className="py-16">
-        {/* story */}
         <div className="mx-auto max-w-2xl">
           <p className="leading-relaxed text-[var(--color-muted)]">
-            Ground State Foundry is an AI consultancy based in {SITE.address.zone}, Dubai. We help enterprises
-            put AI to work across strategy, custom systems, agents, and the data foundations underneath, and we back
-            founders building AI-native companies from zero.
+            Ground State Foundry is an applied AI research and engineering firm based in{" "}
+            {SITE.address.zone}, Dubai. We do two things that feed each other. We study hard problems
+            in AI, voice, agents, and evolutionary systems, and we build production systems that put
+            that work to use for enterprises around the world.
           </p>
           <p className="mt-4 leading-relaxed text-[var(--color-muted)]">
-            We started because too much of &ldquo;AI transformation&rdquo; ends at a slide. We&apos;re the opposite:
-            a small, senior team that embeds, builds in weeks, and stays accountable to a number that matters.
-            The same craft we bring to enterprise, we bring to startups, because we build companies too.
+            We started because too much of what gets called AI transformation ends at a slide. We
+            are the opposite. A small, senior team that embeds, builds in weeks, and stays
+            accountable to a number that matters. The research we do on our own time is not a
+            hobby. It is the reason the systems we ship for clients are sharper than the ones they
+            could buy off a shelf.
           </p>
         </div>
 
-        {/* values */}
         <div className="mt-16">
           <div className="mb-8 text-center">
             <p className="mono-label">how we operate</p>
@@ -74,7 +75,6 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* founders */}
         <div className="mt-16">
           <div className="mb-8 text-center">
             <p className="mono-label">the team</p>
@@ -87,7 +87,6 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* location */}
         <div className="card mt-16 flex flex-col items-start justify-between gap-6 p-8 sm:flex-row sm:items-center sm:p-10">
           <div>
             <p className="mono-label">where we are</p>

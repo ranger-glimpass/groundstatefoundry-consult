@@ -5,7 +5,7 @@ export const SITE = {
   url: "https://groundstatefoundry.com",
   tagline: "The only way forward is upward.",
   positioning:
-    "An AI consultancy that builds enterprise-grade AI systems and backs startups from zero.",
+    "An applied AI research and engineering firm. We do original research and build it into production systems for enterprises worldwide.",
   email: "hello@groundstatefoundry.com",
   linkedin: "https://www.linkedin.com/company/ground-state-foundry",
   founders: [
@@ -22,8 +22,8 @@ export const SITE = {
 
 export const NAV: { href: string; label: string }[] = [
   { href: "/services", label: "Services" },
-  { href: "/industries", label: "Industries" },
-  { href: "/startups", label: "Startups" },
+  { href: "/research", label: "Research" },
+  { href: "/work", label: "Work" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];

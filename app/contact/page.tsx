@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Contact",
   alternates: { canonical: "/contact" },
   description:
-    "Talk to Ground State Foundry, an AI consultancy in Meydan Free Zone, Dubai. Book a consult or send an enquiry.",
+    "Talk to Ground State Foundry, an applied AI research and engineering firm in Meydan Free Zone, Dubai. Book a consult or send an enquiry.",
 };
 
 export default function ContactPage() {
