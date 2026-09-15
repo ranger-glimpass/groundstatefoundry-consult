@@ -20,7 +20,7 @@ const VALUES = [
 
 const FOUNDERS = [
   {
-    name: "Rishi",
+    name: "Rishi Raj",
     role: "Director",
     img: "/rishi.png",
     linkedin: "https://www.linkedin.com/in/rishi-raj-jaiswal-4b353913a/",

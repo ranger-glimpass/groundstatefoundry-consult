@@ -3,7 +3,7 @@ title: "Code That Beats Me"
 category: "evolutionary-systems"
 date: "2026-09-10"
 excerpt: "We built a system to search for a better way to multiply matrices, and it found one that no person on our team designed."
-author: "Rishi Raj Jaiswal"
+author: "Rishi Raj"
 ---
 
 The first time our system produced an algorithm none of us wrote, I sat and stared at the screen for a while.

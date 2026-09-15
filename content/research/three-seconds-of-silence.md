@@ -3,7 +3,7 @@ title: "Three Seconds of Silence"
 category: "voice-ai"
 date: "2026-08-22"
 excerpt: "A caller says hello and hears nothing back, and that small dead pause is where most voice AI quietly loses people."
-author: "Rishi Raj Jaiswal"
+author: "Rishi Raj"
 ---
 
 You call a number. It rings. Someone, or something, picks up. And then there is nothing.

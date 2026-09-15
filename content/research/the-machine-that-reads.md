@@ -3,7 +3,7 @@ title: "The Machine That Reads"
 category: "perspectives"
 date: "2026-07-15"
 excerpt: "A word is a tiny container we pack meaning into, and a model learns to read by watching how we pack it, one sequence at a time."
-author: "Rishi Raj Jaiswal"
+author: "Rishi Raj"
 ---
 
 Say the word "home" to yourself.
