@@ -16,8 +16,8 @@ const TOP = 6;
 const DEPTH = 40;
 const R = 3.5;
 
-const G = 900; // gravity, viewBox units / s^2
-const DRAG = 0.22; // air drag, 1 / s (low: a light marble in a smooth bowl)
+const G = 3600; // gravity, viewBox units / s^2 (a small, quick bowl: ~1 s swing period)
+const DRAG = 7; // viscous drag, 1 / s (damping ratio ~0.6: one small overshoot, then rest)
 const ROLL = 9; // rolling resistance, viewBox units / s^2 (lets it come to rest)
 const HAND_E = 0.7; // restitution of a hit: a light ball bouncing off a much heavier hand
 const MAX_V = 1600; // speed cap for a push
