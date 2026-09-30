@@ -56,7 +56,8 @@ export default function Home() {
     <>
       {/* ───────────── HERO ───────────── */}
       <section>
-        <Container className="flex min-h-[72vh] flex-col justify-center py-16">
+        <Container className="grid min-h-[72vh] items-center gap-12 py-16 lg:grid-cols-[1.35fr_1fr]">
+          <div>
           <p className="reveal mono-label" style={{ animationDelay: "0ms" }}>
             Applied AI research & engineering
           </p>
@@ -98,9 +99,11 @@ export default function Home() {
             </span>
           </div>
 
-          <div className="reveal mt-14 w-full max-w-xs" style={{ animationDelay: "420ms" }}>
+          </div>
+
+          <div className="reveal w-full max-w-sm justify-self-center lg:max-w-none" style={{ animationDelay: "420ms" }}>
             <GroundStateMark className="w-full" />
-            <p className="mt-3 text-xs text-[var(--color-dim)]">{SITE.tagline}</p>
+            <p className="mt-5 text-center text-sm text-[var(--color-muted)]">{SITE.tagline}</p>
           </div>
         </Container>
       </section>
