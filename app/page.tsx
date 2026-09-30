@@ -57,7 +57,7 @@ export default function Home() {
       <section>
         <Container className="flex min-h-[80vh] flex-col items-center justify-center py-20 text-center">
           <p className="reveal mono-label" style={{ animationDelay: "0ms" }}>
-            Applied AI research & engineering · Meydan Free Zone, Dubai
+            Applied AI research & engineering
           </p>
 
           <h1
