@@ -14,7 +14,16 @@ import { useEffect, useRef } from "react";
  *    and kappa the local curvature. It rises in the bowl, falls on the shoulders.
  *  - Rolling friction is Crr * N, so it depends on where the ball is and how fast it goes.
  *  - If N would go negative (too fast over a convex shoulder), the ball leaves the track
- *    and flies ballistically until it lands, keeping its velocity along the track. */
+ *    and flies ballistically until it lands, keeping its velocity along the track.
+ *
+ *  Scrolling moves the bowl on screen, so the ball sits in an accelerating frame and feels
+ *  a pseudo-force -m A, where A is the bowl's on-screen acceleration (from the second
+ *  derivative of the scroll position, converted to bowl units). Mostly A is vertical: it
+ *  makes gravity feel stronger or weaker, and its component along the tangent is
+ *  -(g + A_y) sin(theta), so it only drives a ball that is already off-centre. A real shake
+ *  is never perfectly vertical, so A also carries a small sideways error in a random
+ *  direction; its tangential part A_x cos(theta) is what can nudge a ball resting near the
+ *  bottom. Light scrolling barely moves it, hard flicks throw it around. */
 
 const W = 300;
 const H = 56;
@@ -28,20 +37,18 @@ const R = 3.5;
 
 const G = 9810; // gravity: 9.81 m/s^2 with 1 unit = 1 mm (a 30 cm bowl)
 const INERTIA = 7 / 5; // solid sphere rolling without slipping
-const CRR = 0.05; // rolling-resistance coefficient (a ball rolling on felt)
+const CRR = 0.035; // rolling-resistance coefficient (a ball rolling on felt)
 const AIR = 0.05; // air drag, 1 / s (small)
 const HAND_E = 0.7; // restitution of a hit: a light ball bouncing off a much heavier hand
 const WALL_E = 0.5; // restitution at the frame edges
 const MAX_V = 1600; // speed cap for a push
 const PUSH_R = 14; // how close the pointer's path must pass to count as a push
 
-// Scrolling shakes the bowl: the ball gets a kick along the track that scales with scroll
-// speed (down pushes right, up pushes left). Light scrolling wobbles it, a fast flick sends
-// it toward the rim.
-const SCROLL_WINDOW = 120; // ms of scroll history used to measure speed
-const SCROLL_GAIN = 0.3; // track speed per unit of scroll speed (px/s)
-const SCROLL_MAX_V = 750; // about enough to reach the rim
-const SCROLL_MIN_V = 20; // ignore tiny drifts
+const SHAKE_SMOOTH = 0.035; // s, time constant for smoothing the measured scroll acceleration
+const SHAKE_MAX = 1.5 * G; // cap on the frame acceleration (a browser scroll can jump)
+const SHAKE_TILT = 0.35; // sideways error of a shake, as a fraction of its vertical size (~20 deg)
+const SHAKE_JITTER = 0.25; // frame-to-frame wobble of that error
+const SHAKE_IDLE_MS = 180; // a pause this long ends one scroll gesture
 
 // Height above the bottom of the bowl (up is positive), and its derivatives.
 // Cosine bowl with flat rims; the shoulders are convex, so a fast ball can take off there.
@@ -93,6 +100,15 @@ export default function GroundStateMark({ className = "" }: { className?: string
     let running = false;
     let last: { x: number; y: number; t: number } | null = null;
 
+    // Pseudo-acceleration felt by the ball (up and right positive), in bowl units / s^2.
+    let ay = 0;
+    let ax = 0;
+    let tilt = 0; // this gesture's sideways error, -1..1
+    let sy = window.scrollY;
+    let sv = 0; // scroll velocity, px / s
+    let sa = 0; // smoothed scroll acceleration, px / s^2
+    let lastScroll = -Infinity;
+
     const ballHeight = () => (b.air ? b.y : hgt(b.x));
     const draw = () => {
       dot.setAttribute("cx", b.x.toFixed(2));
@@ -108,8 +124,8 @@ export default function GroundStateMark({ className = "" }: { className?: string
 
     const tick = (h: number) => {
       if (b.air) {
-        b.vy -= G * h;
-        b.vx -= AIR * b.vx * h;
+        b.vy += (ay - G) * h;
+        b.vx += (ax - AIR * b.vx) * h;
         b.x += b.vx * h;
         b.y += b.vy * h;
         if (b.x < X0 + R || b.x > X1 - R) {
@@ -125,7 +141,10 @@ export default function GroundStateMark({ className = "" }: { className?: string
       const c = 1 / Math.sqrt(q); // cos(theta)
       const s = p * c; // sin(theta)
       const kappa = hgt2(b.x) / (q * Math.sqrt(q));
-      const n = G * c + kappa * b.v * b.v; // normal force per unit mass
+      const g = G - ay; // effective gravity in the scrolling frame
+      // Normal force per unit mass: gravity and pseudo-force pressed into the track, plus the
+      // centripetal part from the curve's bend.
+      const n = g * c - ax * s + kappa * b.v * b.v;
 
       if (n < 0) {
         b.air = true;
@@ -135,7 +154,7 @@ export default function GroundStateMark({ className = "" }: { className?: string
         return;
       }
 
-      const drive = -G * s;
+      const drive = -g * s + ax * c; // components along the tangent
       const fric = CRR * n;
       let a: number;
       if (b.v !== 0) a = drive - Math.sign(b.v) * fric;
@@ -157,20 +176,43 @@ export default function GroundStateMark({ className = "" }: { className?: string
       }
     };
 
-    const atRest = () => {
-      if (b.air || b.v !== 0) return false;
+    const atRest = (now: number) => {
+      if (b.air || b.v !== 0 || now - lastScroll < SHAKE_IDLE_MS || ay || ax) return false;
       const p = hgt1(b.x);
       const c = 1 / Math.sqrt(1 + p * p);
       return Math.abs(G * p * c) <= CRR * G * c;
     };
 
+    /** Measure the bowl's on-screen acceleration from the scroll position this frame. */
+    const sampleShake = (dt: number, now: number) => {
+      const y = window.scrollY;
+      const v = (y - sy) / dt;
+      const rawA = (v - sv) / dt;
+      sy = y;
+      sv = v;
+      const k = 1 - Math.exp(-dt / SHAKE_SMOOTH);
+      sa += (rawA - sa) * k;
+      if (now - lastScroll > SHAKE_IDLE_MS && Math.abs(sv) < 1) {
+        sa = 0;
+        sv = 0;
+      }
+      const unitsPerPx = W / svg.getBoundingClientRect().width;
+      // Scrolling down moves the bowl up the screen; its upward acceleration is +scrollY''.
+      // The ball feels the opposite: a downward pseudo-force of the same size.
+      const up = Math.max(-SHAKE_MAX, Math.min(SHAKE_MAX, sa * unitsPerPx));
+      ay = Math.abs(up) < 1 ? 0 : -up;
+      const err = tilt + SHAKE_JITTER * (Math.random() * 2 - 1);
+      ax = ay ? SHAKE_TILT * Math.abs(ay) * err : 0;
+    };
+
     const step = (now: number) => {
       const dt = Math.min((now - prev) / 1000, 1 / 30);
       prev = now;
+      if (dt > 0) sampleShake(dt, now);
       const n = Math.max(1, Math.ceil(dt * 1000));
       for (let i = 0; i < n; i++) tick(dt / n);
       draw();
-      if (atRest()) {
+      if (atRest(now)) {
         running = false;
         return;
       }
@@ -181,6 +223,9 @@ export default function GroundStateMark({ className = "" }: { className?: string
       if (running) return;
       running = true;
       prev = performance.now();
+      // Keep sy from before this scroll so the first movement is measured, not dropped.
+      sv = 0;
+      sa = 0;
       raf = requestAnimationFrame(step);
     };
 
@@ -223,24 +268,12 @@ export default function GroundStateMark({ className = "" }: { className?: string
       last = { x: px, y: py, t };
     };
 
-    const scrolls: { t: number; d: number }[] = [];
-    let lastScrollY = window.scrollY;
     const onScroll = () => {
-      const y = window.scrollY;
-      const d = y - lastScrollY;
-      lastScrollY = y;
-      if (!d || b.air) return;
       const now = performance.now();
-      scrolls.push({ t: now, d });
-      while (scrolls.length && now - scrolls[0].t > SCROLL_WINDOW) scrolls.shift();
-      const speed = Math.abs(scrolls.reduce((sum, s) => sum + s.d, 0)) / (SCROLL_WINDOW / 1000);
-      const kick = Math.min(SCROLL_MAX_V, SCROLL_GAIN * speed);
-      if (kick < SCROLL_MIN_V) return;
-      const dir = Math.sign(d);
-      if (dir * b.v < kick) {
-        b.v = dir * kick;
-        wake();
-      }
+      if (!running) sy = Math.min(Math.max(sy, window.scrollY - 400), window.scrollY + 400);
+      if (now - lastScroll > SHAKE_IDLE_MS) tilt = Math.random() * 2 - 1; // new gesture
+      lastScroll = now;
+      wake();
     };
 
     draw();
