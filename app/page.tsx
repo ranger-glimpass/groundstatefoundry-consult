@@ -79,6 +79,23 @@ export default function Home() {
           <div className="reveal mt-9 flex flex-wrap items-center gap-3" style={{ animationDelay: "320ms" }}>
             <Link href="/contact" className="btn btn-primary">Book a consult →</Link>
             <Link href="/research" className="btn btn-ghost">Read our research</Link>
+            <span className="group relative inline-flex">
+              <button
+                type="button"
+                aria-disabled="true"
+                aria-describedby="demo-soon"
+                className="btn btn-ghost cursor-not-allowed opacity-40"
+              >
+                Talk to our agent
+              </button>
+              <span
+                id="demo-soon"
+                role="tooltip"
+                className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md border border-[var(--color-border-bright)] bg-[var(--color-panel-2)] px-2.5 py-1 text-xs text-[var(--color-muted)] opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+              >
+                Live demo coming soon
+              </span>
+            </span>
           </div>
 
           <div className="reveal mt-14 w-full max-w-xs" style={{ animationDelay: "420ms" }}>

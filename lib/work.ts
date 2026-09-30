@@ -53,6 +53,7 @@ export const WORK: WorkItem[] = [
       "Speaks and listens in real time",
       "Drops into any site as a widget",
     ],
+    link: { href: "https://demogod.me", label: "demogod.me" },
     featured: true,
   },
   {
