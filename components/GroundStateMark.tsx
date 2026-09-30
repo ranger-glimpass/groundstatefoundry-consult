@@ -3,8 +3,8 @@
 import { useEffect, useRef } from "react";
 
 /** A ball in a potential well. It rolls in, oscillates, and settles at the lowest
- *  point: the ground state. Sweep the cursor (or a finger) through it and it takes the
- *  hit, rolls, and settles again.
+ *  point: the ground state. Sweep the cursor (or a finger) through it, or scroll the page,
+ *  and it takes the hit, rolls, and settles again.
  *
  *  Physics, in the frame of the curve (units: viewBox units, the bowl read as 30 cm wide):
  *  - The ball is a solid sphere rolling without slipping, so its effective inertia is
@@ -34,6 +34,14 @@ const HAND_E = 0.7; // restitution of a hit: a light ball bouncing off a much he
 const WALL_E = 0.5; // restitution at the frame edges
 const MAX_V = 1600; // speed cap for a push
 const PUSH_R = 14; // how close the pointer's path must pass to count as a push
+
+// Scrolling shakes the bowl: the ball gets a kick along the track that scales with scroll
+// speed (down pushes right, up pushes left). Light scrolling wobbles it, a fast flick sends
+// it toward the rim.
+const SCROLL_WINDOW = 120; // ms of scroll history used to measure speed
+const SCROLL_GAIN = 0.3; // track speed per unit of scroll speed (px/s)
+const SCROLL_MAX_V = 750; // about enough to reach the rim
+const SCROLL_MIN_V = 20; // ignore tiny drifts
 
 // Height above the bottom of the bowl (up is positive), and its derivatives.
 // Cosine bowl with flat rims; the shoulders are convex, so a fast ball can take off there.
@@ -215,12 +223,34 @@ export default function GroundStateMark({ className = "" }: { className?: string
       last = { x: px, y: py, t };
     };
 
+    const scrolls: { t: number; d: number }[] = [];
+    let lastScrollY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      const d = y - lastScrollY;
+      lastScrollY = y;
+      if (!d || b.air) return;
+      const now = performance.now();
+      scrolls.push({ t: now, d });
+      while (scrolls.length && now - scrolls[0].t > SCROLL_WINDOW) scrolls.shift();
+      const speed = Math.abs(scrolls.reduce((sum, s) => sum + s.d, 0)) / (SCROLL_WINDOW / 1000);
+      const kick = Math.min(SCROLL_MAX_V, SCROLL_GAIN * speed);
+      if (kick < SCROLL_MIN_V) return;
+      const dir = Math.sign(d);
+      if (dir * b.v < kick) {
+        b.v = dir * kick;
+        wake();
+      }
+    };
+
     draw();
     if (!reduce) wake();
     window.addEventListener("pointermove", onMove, { passive: true });
+    if (!reduce) window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("scroll", onScroll);
     };
   }, []);
 
