@@ -1,0 +1,7 @@
+{
+  "tldr": "Serverless containers can vanish mid-campaign, so we keep all state in the database and let any new container resume orphaned work.",
+  "what": "This piece is about running long phone campaigns, like ten thousand contacts dialed one after another, on Google Cloud Run. Serverless containers are temporary by design and can disappear at any moment, while a campaign needs to remember where it is.",
+  "why": "If the container dies halfway through, the campaign could stall with thousands of contacts still waiting. Worse, a dead worker sends no message. A campaign being worked on and one whose worker quietly died both look the same: running.",
+  "how": "The container holds no truth. Each campaign is a database record with its position and status, updated after every call. While working, a container updates a heartbeat timestamp every thirty seconds. A running campaign whose heartbeat is older than a couple of minutes is orphaned. Every new container scans for orphans on startup and resumes them from the saved position. Pause and resume use the same path.",
+  "takeaway": "Stop trusting the machine. Write long-running work so a stranger can pick it up cold, and a dead container becomes a gap of at most a couple of minutes."
+}

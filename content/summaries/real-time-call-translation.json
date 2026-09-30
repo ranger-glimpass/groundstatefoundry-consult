@@ -1,0 +1,7 @@
+{
+  "tldr": "We built live call translation where each person hears the other in their own language, and the key decision was never mixing the two voices.",
+  "what": "A working prototype that lets two people who share no language talk on an ordinary phone call. Neither installs anything. One speaks, and the other hears it translated into their own language, in both directions, on one call.",
+  "why": "A conversation only feels natural if the reply comes within a beat. That short window has to hold catching speech, turning it into text, translating it, and speaking it back. Every millisecond spent working out who is talking is stolen from translation.",
+  "how": "The usual approach records everyone into one mixed stream, then guesses who said what, a step called diarization. We skip it. Each side of the call is captured on its own channel and streamed separately, so the voices never merge. A deliberately simple transport sets up the two clean pipes, and all speech, translation, and voice work happens above it.",
+  "takeaway": "The fastest step is the one you design out. Separate the voices at the source and spend the time on translation. We have not published a latency number because we have not measured one."
+}

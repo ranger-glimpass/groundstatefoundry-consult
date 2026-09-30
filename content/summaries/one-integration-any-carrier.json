@@ -1,0 +1,7 @@
+{
+  "tldr": "We put one translation layer between our voice platform and the phone carriers, so switching carriers became a config change instead of a rewrite.",
+  "what": "This piece is about supporting three telephony carriers, Plivo, Exotel, and Twilio, in one production voice platform. Each carrier does the same job but names call ids, phone numbers, hangup reasons, and webhook security differently.",
+  "why": "When carrier-specific fields leak into the database, routes, and frontend, a simple request like switching a client's carrier means touching a hundred places. And any change had to avoid breaking the live Plivo calls already carrying real clients and real money.",
+  "how": "Adapters translate each carrier's data into one normalized call record, keeping the raw original tucked away. A selector picks the right adapter per client, so nothing above the seam knows the carrier, not even the frontend. The first adapter just wrapped the existing Plivo code with zero breaking changes, and clients moved one at a time, with the old path alive for rollback.",
+  "takeaway": "Build the seam early even if you never switch. Signature checks, costs, retries, and field renames all get one home, and the carrier stops being everywhere."
+}

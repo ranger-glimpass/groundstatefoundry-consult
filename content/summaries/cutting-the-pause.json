@@ -1,0 +1,7 @@
+{
+  "tldr": "Phone agents repeat the same lines all day, so we save the generated audio once and replay it, cutting both the pause and the bill.",
+  "what": "This piece is about a cache for spoken audio. Lines like \"Thanks for calling\" or \"One moment while I check that\" come up on nearly every call, yet a text-to-speech engine was generating identical audio from scratch every single time.",
+  "why": "Each regenerated line means sending a request to the provider, waiting, and paying for a sound we already have. The caller hears that wait as a pause. A large share of what an agent says is boilerplate, so the waste adds up across every call.",
+  "how": "The first time a line is spoken, we save the audio in Redis, a very fast in-memory store. Repeats come back in roughly one to five milliseconds, and the layer removes better than ninety percent of provider calls for repeated lines. The lookup key is the exact text plus the full voice configuration, hashed together, so a different voice, model, or speed never gets the wrong recording.",
+  "takeaway": "Cache the repeated spine of the conversation. New replies still take the slow path once, but the agent answers the small stuff instantly."
+}

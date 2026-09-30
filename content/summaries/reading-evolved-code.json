@@ -1,0 +1,7 @@
+{
+  "tldr": "Code that emerged from search looks arbitrary but every step carries weight, so trusting it means testing behavior and tracing steps by hand.",
+  "what": "Darweel, our evolutionary framework, found a way to multiply two 4x4 matrices with 48 multiplications, below the 49 of a famous approach. The winning code splits matrices into blocks and combines sums and differences with no comments explaining why, because no human made those choices.",
+  "why": "Human code carries its reasoning in its shape. Evolved code does not. Change one combination and the answer breaks, yet nothing on the page says why that one matters. As systems produce more code, proofs, and designs, we will spend more time reading things no person wrote.",
+  "how": "You trust it like a bridge you did not design: run it on matrices with known answers and count every multiplication by wrapping each number in a counter. That gives trust in behavior, not reasoning. To recover the reasoning, you trace one odd step at a time. A strange subtraction turns out to set up a cancellation four steps later that saves a multiplication.",
+  "takeaway": "With evolved code, opacity is normal and the code can still be verifiably right. Do not reject it for being hard to read. Test it, then trace it until the reasons show."
+}

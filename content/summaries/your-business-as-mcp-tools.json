@@ -1,0 +1,7 @@
+{
+  "tldr": "Turning an outreach business into around forty typed tools an agent can call was easy. Building the walls that make it safe was the real work.",
+  "what": "Exposing a whole outreach and lead-generation motion as typed tools an agent operates in production: campaigns, ads, email, SMS, WhatsApp, calls, social posts, opt-out checks, prospects, and conversations. Each tool has a defined shape for input and output.",
+  "why": "Types only catch malformed calls. A perfectly typed send email is still a real message to a real person, possibly one who begged you to stop. The hard part is stopping well-formed calls from doing harm.",
+  "how": "A compliance check in every send path that fails closed. Each API key bound to one tenant, with the tenant ID inside every query, so cross-tenant access cannot even be expressed. Ad accounts run server-side on a hidden token, with object IDs verified first. Ads are always created paused, so spending is a separate, deliberate act.",
+  "takeaway": "The tools let the agent act. The walls, which never show up in the tool list, are what let you go to sleep while it works."
+}

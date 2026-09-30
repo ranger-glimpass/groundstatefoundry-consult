@@ -1,0 +1,7 @@
+{
+  "tldr": "Build a persona of each candidate from their interview, drop it into a simulation of your real team, and you can measure social fit, not just technical fit, before you hire.",
+  "what": "Hiring asks two questions. Technical fit, can this person do the work, is something we measure well. Social fit, how this one person changes the chemistry of the exact people already on the team, has stayed a gut feeling dressed up as a process.",
+  "why": "The hire who hurts a team is often smart and capable on paper, yet the meetings get tense and the quiet engineer gets quieter. You find out about ninety days too late, because you can never run the experiment on real people.",
+  "how": "Models read people well from how they speak and write, so an hour of interview is enough to build a persona: a working model that leans the way the person would. We model the real team the same way, drop each candidate in one at a time, and measure how the group behaves with them versus without them.",
+  "takeaway": "A persona predicts likely behavior, it does not know the person. That is a forecast, not an oracle, and it finally gives the team you already have a measured voice in who joins it."
+}

@@ -1,0 +1,7 @@
+{
+  "tldr": "Agents should message each other like letters in a mailbox, not phone calls, with read receipts to stop nagging and a hard rate floor for bad days.",
+  "what": "How agents in Bubbles, our system for running a fleet of Claude Code sessions, pass messages without breaking each other's focus. Most agent messaging shoves the note straight into what the recipient is reading, which changes what it is thinking about without asking.",
+  "why": "An agent mid task holds a lot in its head. Interrupting it wrecks the work, and a sender that cannot tell whether its message landed will send again. We once saw one event re-emitted more than a hundred times across the fleet.",
+  "how": "Messages are filed in the recipient's inbox on disk first, so none is ever dropped. The recipient sees a quiet notice at its next natural pause and reads when ready. Senders check one of three states: delivered, read with no reply, or replied. Underneath, each agent can be notified at most six times a minute, and every suppressed notice is counted.",
+  "takeaway": "An interruption is the easiest message to send and the most expensive to receive, so the considerate path has to be the default."
+}

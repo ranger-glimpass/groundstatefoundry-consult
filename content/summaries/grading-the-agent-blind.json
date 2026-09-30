@@ -1,0 +1,7 @@
+{
+  "tldr": "An agent that grades its own work will always pass, so we score it against a hidden answer key written before it starts and never shown to it.",
+  "what": "A process discovery prototype. We generate a synthetic company of around a hundred employee personas plus a sealed ground-truth map of how its work flows. A separate agent, never shown that map, interviews the staff to reconstruct it and stops when it feels confident.",
+  "why": "Autonomous agents decide for themselves when they are done, and they can fool you and themselves. Their confidence measures how convinced they are, not how correct, and the two come apart exactly when it matters.",
+  "how": "After the agent finishes, the server opens the sealed map and compares process by process, checking word overlap and the right department. The scorecard lists matched, missed, and extra. Missed shows what the agent never found. Extra shows processes it invented with full confidence.",
+  "takeaway": "Separate the doer from the judge. Write the truth down first, seal it, and check the agent's report against it. The value is the discipline, not a headline score."
+}

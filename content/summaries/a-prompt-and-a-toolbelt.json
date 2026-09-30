@@ -1,0 +1,7 @@
+{
+  "tldr": "We ran real outbound sales with a general coding agent, more than fifty simple tools, and one plain-language instructions file, and there was no app at all.",
+  "what": "An experiment in selling without building a sales tool. The agent found businesses, read their sites, found the right person, checked the email was real, wrote short specific messages, followed up, read replies, and booked meetings, day and night.",
+  "why": "A typical outreach product is a thick layer of hand-coded logic imitating a person's judgment: which lead, what to say, when to chase. That layer was always expensive to build and brittle to maintain, and it existed only because we could not hire thinking at scale.",
+  "how": "The product was two things. A toolbelt of small capabilities that each do one job and do not think, like searching a map or sending an email. And one briefing file saying what good looks like and what never to do. The agent supplies the judgment live, per prospect. We claim no numbers, only the shape.",
+  "takeaway": "Software is getting lighter in the middle. The tools and the taste matter more than ever. If your product is mostly the logic in between, you built a placeholder, not a moat."
+}

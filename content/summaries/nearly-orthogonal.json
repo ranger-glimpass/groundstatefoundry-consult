@@ -1,0 +1,7 @@
+{
+  "tldr": "High-dimensional space fits vastly more nearly perpendicular directions than our intuition allows, which is how a model packs a whole world of meaning into a few thousand numbers.",
+  "what": "A room corner has only three truly perpendicular directions. Yet language models store a word as a vector, a long arrow in a space of around four thousand dimensions, and each feature, like plural, about food, or formal, is said to get its own direction. How can there be room?",
+  "why": "Our intuition was trained in three dimensions, so it tells us there is no room for more perpendicular directions. That is right about rooms and badly wrong about the space inside a model. Understanding the gap explains how models hold so much in so little.",
+  "how": "Models do not need perfectly perpendicular directions, only nearly perpendicular ones. Loosening the rule barely helps in three dimensions, but in thousands of dimensions the number that fit explodes. Johnson and Lindenstrauss proved this is a property of high-dimensional space itself. Nearly perpendicular meanings barely interfere, so a word can be a little plural and a little about food without one muddying the other.",
+  "takeaway": "To hold more, you do not always need more room. Sometimes you just need to accept close enough instead of perfect right angles."
+}

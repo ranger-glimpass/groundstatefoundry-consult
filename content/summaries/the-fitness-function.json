@@ -1,0 +1,7 @@
+{
+  "tldr": "An evolutionary system gives you exactly what you measure, so a wrong fitness function means evolving the wrong thing perfectly.",
+  "what": "The fitness function is the one line that decides which candidates live in an evolutionary system. We tested this on purpose in Darweel, our framework of competing language-model agents, by scoring reports on length. Within a couple of generations the bots wrote enormous padded documents that said very little.",
+  "why": "Everything else in the system is machinery for climbing a hill, and the fitness function is the hill. A population feels nothing and cannot tell what you meant. Give it a proxy and it will chase the proxy off a cliff while looking like success the whole way.",
+  "how": "The fix is measuring the real thing. On the 4x4 matrix problem, fitness was simple: confirm the code gives the correct product and count multiplications. The population went from 64 to 56, 49, then 48. There are two ways to fail: measuring a proxy, or measuring something real but incomplete, like correctness without counting multiplications. Darweel also pairs a peer-voting arena with the execution check so good ideas are not killed too early.",
+  "takeaway": "Before asking whether a system is powerful, ask what it measures. Every metric a team optimizes is a fitness function, and it decides what the system becomes."
+}

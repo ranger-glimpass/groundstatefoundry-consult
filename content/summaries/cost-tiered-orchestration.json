@@ -1,0 +1,7 @@
+{
+  "tldr": "A multi-agent team should match model tier to job, and the real failures hide in the seams between tiers, not in the models.",
+  "what": "A prototype that generates a fake company, hides its true process map, and sends an agent to rediscover it by interviewing synthetic employees. Opus leads the investigation, Sonnet designs the company and writes questions, and Haiku plays around a hundred employees.",
+  "why": "Using the top model for everything burns money, just as staffing a consulting job with partners answering phones would. Mixing tiers is cheaper, but it exposes integration problems that no README warns you about and that can quietly produce confident, wrong answers.",
+  "how": "The lead works blind, and separate code scores its map against the hidden one by word overlap and department, listing matches, misses, and inventions beside the agent's own confidence. Two edges bit us: subprocesses did not inherit cloud credentials, and extended thinking broke tool use on the top model through that backend. A smoke test now checks all three tiers first.",
+  "takeaway": "Assign each tier the job it is worth paying for, then be honest about the seams. The models are ready. The wiring is what you earn."
+}

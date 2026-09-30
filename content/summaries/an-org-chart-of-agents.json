@@ -1,0 +1,7 @@
+{
+  "tldr": "Once agents can hire, fire, and escalate, the hard problem is no longer capability but governance: who is allowed to do what.",
+  "what": "SkyNet, a system that builds an org chart out of agents. A human founder talks to a CEO agent, a persistent Claude session that can hire executives, who hire workers. Hiring and firing are real actions, and firing a manager archives everyone under them.",
+  "why": "The models are capable enough to do the work. What they lack is judgment about limits, and a fast agent will do in ten seconds what you wanted ten minutes to think about. So the lines on spending, merging code, partnerships, and pivots must be drawn in code before anything runs.",
+  "how": "Permissions flow down: each hire gets set powers and a cap on further hiring, so a limit of zero stops a branch from growing. Sensitive actions flow up to the human over Discord, in real time and before the irreversible step. We are candid that too many escalations turn the founder into a bottleneck, and that line is still unsettled.",
+  "takeaway": "An org chart is a picture of who is trusted with what. The question that stays hard is who decides and who has to ask first."
+}

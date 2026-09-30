@@ -1,0 +1,7 @@
+{
+  "tldr": "Once your coworkers are agents, the editor built for one person typing stops fitting, and what you need instead is a control surface for a whole fleet.",
+  "what": "We describe losing track of eleven Claude Code sessions spread across terminal tabs, and why the IDE, designed around one worker at one cursor, cannot show many agents working at once. We then describe Bubbles, the open-source terminal app we built to run them.",
+  "why": "Agents do not need you to type. They need you to decide, occasionally. Tabs hide which agent is waiting, which has stalled, and how messages between agents should travel, while every session keeps billing tokens whether you watch it or not.",
+  "how": "Bubbles shows every agent as a node in a zoomable tree you can dive into and back out of. Agents keep running after you close the window and resume from disk. They message each other through inboxes that do not interrupt, and the fleet scores which sessions are cheapest to pause and caps how fast messages pile up.",
+  "takeaway": "Running a fleet moves the skill from typing to noticing: which agent is stuck, which decision is yours, and when to leave the work alone."
+}

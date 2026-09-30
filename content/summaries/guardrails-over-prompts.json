@@ -1,0 +1,7 @@
+{
+  "tldr": "An AI phone receptionist is worth paying for because of what it can never do, and those limits must be built in, not just requested.",
+  "what": "Why our AI voice receptionist for trades businesses uses guardrails, hard limits that sit outside the conversation, instead of relying on a prompt, the plain-language instructions handed to the model at the start of a call.",
+  "why": "A prompt is a strong suggestion, not a wall. Pushed by a panicked or insistent caller, a model built to be helpful may quote a price anyway. That price is now a promise in the owner's name, and the owner becomes the liar.",
+  "how": "A prompt is a sign saying do not enter. A guardrail is a locked door. The receptionist never quotes a price, promises an unverified arrival time, claims to be human, diagnoses over the phone, makes unauthorized commitments, or shares the owner's personal number, however the caller phrases it. Instead it says a person will confirm pricing and offers to book a visit.",
+  "takeaway": "Owners are not buying cleverness. They are buying a floor of things that never happen on their worst call, which gives them the freedom to stop watching."
+}

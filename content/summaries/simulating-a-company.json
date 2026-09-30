@@ -1,0 +1,7 @@
+{
+  "tldr": "We built a synthetic company out of agents with a sealed answer key, then let one agent interview its staff to map how the whole place works.",
+  "what": "One agent generates a company: departments, roles, a hierarchy, around a hundred employee personas, and a hidden true map of how work flows. Each employee knows only their own slice. A separate agent, never shown the map, reconstructs it by interviewing them.",
+  "why": "Nobody in a company can tell you how the whole company works. Everyone holds a sharp fragment, so understanding an organization means weeks of interviews stitched together by hand, with no answer key to check the result.",
+  "how": "The discovery agent picks who to interview, spots gaps and conflicting accounts, and chases them until it judges it has the picture. A capable model runs discovery, a middle one designs the company and questions, a cheaper one plays employees. The sealed map then shows what it recovered, missed, or invented.",
+  "takeaway": "This is a prototype that proves the method against a truth we control. Understanding an organization becomes something you can run, rerun, and measure."
+}

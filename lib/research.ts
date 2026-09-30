@@ -55,9 +55,27 @@ export type ResearchMeta = {
   weight: number;
 };
 
-export type ResearchPiece = ResearchMeta & { content: string };
+/** Pre-written AI summary, stored in content/summaries/<slug>.json (no runtime API call). */
+export type ResearchSummary = {
+  tldr: string;
+  what: string;
+  why: string;
+  how: string;
+  takeaway: string;
+};
+
+export type ResearchPiece = ResearchMeta & { content: string; summary: ResearchSummary | null };
 
 const DIR = path.join(process.cwd(), "content", "research");
+const SUMMARY_DIR = path.join(process.cwd(), "content", "summaries");
+
+function readSummary(slug: string): ResearchSummary | null {
+  const file = path.join(SUMMARY_DIR, `${slug}.json`);
+  if (!fs.existsSync(file)) return null;
+  const d = JSON.parse(fs.readFileSync(file, "utf8"));
+  const keys = ["tldr", "what", "why", "how", "takeaway"] as const;
+  return keys.every((k) => typeof d[k] === "string" && d[k].trim()) ? (d as ResearchSummary) : null;
+}
 
 function readingTime(text: string) {
   const words = text.trim().split(/\s+/).length;
@@ -105,5 +123,6 @@ export function getResearch(slug: string): ResearchPiece | null {
     readingTime: readingTime(content),
     weight: Number(data.weight ?? 0),
     content,
+    summary: readSummary(slug),
   };
 }

@@ -1,0 +1,7 @@
+{
+  "tldr": "In Darweel, agents grade each other's work in blind pairwise votes, so selection can run round after round without a human scoring every answer.",
+  "what": "Darweel is our evolutionary framework where language-model agents compete on a problem and winners reproduce. To compete they need a score, and we did not want a human doing the scoring. So the bots judge each other in what we call the arena.",
+  "why": "Most machine learning relies on human judgment frozen in ahead of time: labels, rewards, rankings. That breaks down when questions get hard and there are thousands to grade every round. Human evaluation is slow and expensive, and it runs out.",
+  "how": "After every bot writes a solution, pairs of reports go to a bot that answers one letter: A or B. Wins across many random pairings become the ranking. Pairwise works because comparing is steadier than scoring out of ten. Blind pairings mean reports win on the page, not on reputation. Because a jury of models can be wrong together, the arena runs alongside a hard execution check, leaning on votes early and on measured results later.",
+  "takeaway": "Peer judgment turns evaluation into a renewable resource, but it is only as good as the peers. Keep it tied to a fact it cannot vote away."
+}

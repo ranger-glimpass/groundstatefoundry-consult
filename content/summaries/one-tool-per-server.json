@@ -1,0 +1,7 @@
+{
+  "tldr": "We build an agent's toolbelt from many small single-purpose servers instead of one big one, because small pieces are the ones you can trust.",
+  "what": "Our outreach toolbelt: separate small servers that each do one job, like sending email, reading replies, searching businesses on Google Maps, scraping emails, and dedup, all speaking the Model Context Protocol, a shared way for agents to find and call tools.",
+  "why": "One big outreach server feels tidy, but its paths get tangled, a change in one quietly reaches another, and when it breaks you cannot tell which part failed. You cannot read all of it, so you cannot fully trust it.",
+  "how": "Each server is its own process, so a failure stays in its box. You can read a small server whole and reason about every input. The agent wires the pieces together at runtime, and each task only gets the tools it needs: a task that reads replies has no send tool.",
+  "takeaway": "Keep one clear job per tool and hand out tools per task. What an agent can do is the set of tools in front of it, a decision you make, not a behavior you hope for."
+}

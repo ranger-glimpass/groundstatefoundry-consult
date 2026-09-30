@@ -1,0 +1,7 @@
+{
+  "tldr": "Chaining three models gives you a transcript and control, one speech-to-speech model gives you speed and warmth, and the right pick depends on the call.",
+  "what": "This piece compares two ways to build a voice agent on the same runtime. The cascade turns speech into text, sends it to a language model, then turns the reply back into speech. Speech to speech, like Google's Gemini Live, takes audio in and returns audio with no text in the middle.",
+  "why": "Neither design is simply better. Each trades something real: visibility and choice of parts on one side, fewer handoffs and a more natural feel on the other. Picking the wrong one means either an agent you cannot audit or a pause the caller can feel.",
+  "how": "The cascade gives a free word-for-word transcript, lets you swap any single vendor, and has a clean text middle for lookups, but each handoff adds waiting, plus three keys, bills, and failure points. Speech to speech has less stacked waiting, one service, and easier interruptions, but no text step, less control over the voice, and ties you to one company's models.",
+  "takeaway": "Start from the call, not the technology. For open, friendly talk use speech to speech. For money, health, or anything you may need to prove later, use the cascade and accept the pause. Then measure."
+}

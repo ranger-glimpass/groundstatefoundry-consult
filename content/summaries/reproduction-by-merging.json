@@ -1,0 +1,7 @@
+{
+  "tldr": "In Darweel, two strong agents have a child by merging what they learned into plain language, and that merge is a real source of new capability.",
+  "what": "Darweel is our evolutionary framework where language-model agents, called bots, solve the same problem and get scored. Each bot carries a system prompt, a two-tier memory, and its last report. When a generation ends, the top performers pair up and have children built by merging both parents.",
+  "why": "If breeding were just a label, children would score about like a random parent and the best score would wander. Instead it climbed. On the 4x4 matrix problem, the population went from 64 multiplications to 56, then 49, then 48, each step built on merged inheritance.",
+  "how": "A model reads both parents' last reports and memories and synthesizes the most valuable pieces into one inheritance of a few hundred words, the child's starting beliefs. If that fails, key sentences are pulled and stitched together. You cannot average two programs, but you can recombine described insight. Merging different parents also keeps the population from converging on one way of thinking.",
+  "takeaway": "Language works as the genome. The limit is compression: children can inherit a confident claim without the reasoning underneath. Still, two programs sharing what they knew produced a child that could do what neither could."
+}

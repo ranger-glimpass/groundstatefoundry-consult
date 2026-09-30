@@ -1,0 +1,7 @@
+{
+  "tldr": "A voice agent that only talks can promise a booking that never happens, so we give it tools to act during the call, with tight limits.",
+  "what": "This piece is about tools: specific actions a voice agent can take mid-call, like booking a calendar slot, sending an email or WhatsApp message, or scheduling a follow-up call. The model decides which tool to use, and something outside it does the work and reports back.",
+  "why": "A language model can say \"I have booked you for Tuesday at 3\" whether or not any booking exists. The caller leaves thinking it is done. Acting during the call lets the agent confirm what really happened and react if an action fails.",
+  "how": "Tools are exposed through MCP servers, a standard way to hand an agent tools, like a wall of labeled sockets. Tools are assigned per agent and configured per client, so each agent gets only the hands it needs. Each tool is a template whose blanks are filled from the conversation at call time, using the client's own encrypted credentials.",
+  "takeaway": "Once an agent can act, mistakes become actions. The model proposes, the system decides what is allowed, and the agent speaks only after the doing, so its words are true."
+}

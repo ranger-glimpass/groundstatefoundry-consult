@@ -1,0 +1,7 @@
+{
+  "tldr": "A model that retunes itself for each question with one small dial per skill hints that learning is more about choosing what to bring forward than adding more.",
+  "what": "The idea behind work called Transformer-squared: a frozen model that looks at your question, decides what kind of task it is, and turns a small learned dial for that task before answering. A single vector, one modest list of numbers, does the steering.",
+  "why": "Most models are trained once and frozen, answering math and poetry with the identical setup. Fine-tuning, adjusting the model's settings with new examples, is heavy because there are so many settings. A good doctor instead re-weights the same training for each patient.",
+  "how": "Picture the model as a mixing board with sliders already set. Rather than moving every slider, you learn a master knob that shifts many together, meaning be more like a mathematician or a poet. The board stays unchanged. The essay treats it as one approach among many, not a final answer.",
+  "takeaway": "Getting adaptable may not require getting heavier. The interesting question is whether we can teach models to know which self to be, right when it counts."
+}

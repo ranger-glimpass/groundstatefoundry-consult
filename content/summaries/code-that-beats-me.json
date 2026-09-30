@@ -1,0 +1,7 @@
+{
+  "tldr": "Our evolutionary search found a way to multiply two 4x4 grids of numbers with 48 multiplications, then a descendant learned to skip zeros and averaged 47.94.",
+  "what": "We asked a machine to find shortcuts for multiplying two 4x4 matrices without being told the answer. The schoolbook method costs 64 multiplications. Two-level Strassen gets to 49. Our framework, Darweel, rediscovered the structure of Winograd's method on its own and reached 48.",
+  "why": "Shortcuts like Strassen's and Winograd's are famous results we assume take human genius on a napkin. We wanted to know if a search process could find tricks like that by itself, because the real goal is building searches that find what we do not already know.",
+  "how": "Darweel keeps a population of candidate methods that compete on correctness and multiplication count, mutate through small changes, and reproduce when they score well. One descendant added a check that skips any multiplication by zero. Across 500 test cases it got all 500 right using 23,972 multiplications, an average of 47.94. Its worst case is still 48.",
+  "takeaway": "47.94 is a real, verified average, not a new worst-case bound. The bigger point: we designed the pressure, not the answer, and the search beat the version we would have written by hand."
+}

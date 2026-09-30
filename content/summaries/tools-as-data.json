@@ -1,0 +1,7 @@
+{
+  "tldr": "On an EdTech platform, a new study tool is a row in a database, not new code, so shipping one takes minutes instead of weeks.",
+  "what": "A platform where each study tool, like a biology mock test for a coaching institute, is defined by configuration in a tools table: branding, which reusable screens it uses, and the prompts for the AI that generates questions.",
+  "why": "Normally every new product is a development cycle of weeks, and ten near-identical products slowly drift apart, each one another thing to maintain. We wanted a machine that produces products rather than building each one.",
+  "how": "The interface is built from pieces that know nothing about any subject: Quiz, Dashboard, Reports, Profile. The config tells them what to become. One bug fix fixes every tool, prompts are tuned per institute without a deploy, and non-engineers can make products. The cost: generic pieces are harder to build, and truly new interactions still need code.",
+  "takeaway": "A product used to be a thing you built. Now it is a thing you describe, when your pieces are general enough to cover most requests."
+}

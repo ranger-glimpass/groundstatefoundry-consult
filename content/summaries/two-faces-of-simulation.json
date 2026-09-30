@@ -1,0 +1,7 @@
+{
+  "tldr": "Agents that stand in for something real can stress a live system or model a room full of people, and both are the same move with different kinds of truth.",
+  "what": "Two projects: a suite where one AI agent calls another through a full production voice stack to create real load, and a synthetic company of around a hundred employee personas that a separate agent interviews to discover how work flows.",
+  "why": "Both replace something scarce with something you can make on demand. Real customer traffic and honest access to how a hundred people spend their days are expensive, biased, and impossible to run twice under identical conditions.",
+  "how": "The same model skill, occupying a position and acting from it, powers both. Pointed at a system, it stresses the system: the stack carried twenty concurrent calls end to end, a logged fact. Pointed at people, it becomes the people, giving a strong guess that we measure against a hidden ground truth.",
+  "takeaway": "Know which face you are looking at. One tells you whether your machine breaks, the other tells you what is likely. Both let you try it first, where it is safe."
+}

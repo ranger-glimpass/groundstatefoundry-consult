@@ -1,0 +1,7 @@
+{
+  "tldr": "Our Go control plane for coding agents never talks to a model directly, so the fleet runs on any backend and costs stay swappable.",
+  "what": "How we built Bubbles, a control plane in Go that runs a fleet of coding agents without knowing which model sits behind any of them. It launches the claude command line tool once per agent, and each agent uses whatever backend that tool is configured for.",
+  "why": "Most agent systems are wired to one provider. That coupling hurts the day you want a cheaper model or a client's own cloud account. Cost differs across a subscription, a metered API key, and a cloud contract, and a welded system cannot follow the cheaper one.",
+  "how": "The launch environment passes down to every session, so a subscription, an API key, AWS Bedrock, or Google Vertex all just work. The core owns addresses, messaging, and pausing, written as pure decision code with time handed in, so a fake runner tests everything with zero tokens. Go ships as one native binary. The plane watches context size, since cached rereads cost roughly a tenth of full price.",
+  "takeaway": "Keep the model at arm's length behind a tool you merely launch. The part that costs money stays swappable while the part governing spend stays fixed."
+}

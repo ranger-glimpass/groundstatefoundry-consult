@@ -1,0 +1,7 @@
+{
+  "tldr": "Our outreach business runs on a fleet of agents, and the hard part was never building them. It was governing them.",
+  "what": "A service that finds businesses losing missed calls, reaches out, screens them, and books meetings, with separate agents for research, economics, outreach, closing, delivery, and phone calls. One human owner supervises from above.",
+  "why": "An agent smart enough to do the job is smart enough to do the wrong job with total confidence. It lacks the quiet brakes a human hire has: awkwardness, hesitation, asking first. Outreach is also regulated, and agents do not care unless made to.",
+  "how": "Three brakes. Narrow roles, so no agent owns a whole loop and one agent's output must survive another's look. Written policies with hard lines and clear escalation, inspectable like law. Decision logs, so when a number drops we can walk back to the exact choice and fix the rule behind it.",
+  "takeaway": "The governance is the product and the agents are the labor. The human becomes the exception handler, reserved for rare, risky calls above the agents' authority."
+}

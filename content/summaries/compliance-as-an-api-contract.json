@@ -1,0 +1,7 @@
+{
+  "tldr": "Do not ask an outreach agent to follow the rules. Put the rules in a gate on every send that fails closed and cannot be bypassed.",
+  "what": "The compliance gate in our multi-channel outreach platform. Every email, SMS, WhatsApp, and voice send runs a check first: opt-out registry, quiet hours, dedup, per-channel rules, and redaction for sensitive industries.",
+  "why": "An agent that behaves ninety-nine times out of a hundred still misbehaves on the hundredth send, and that send gets a business in trouble. Rules written into instructions are only as reliable as the agent's worst moment, and models get confused or talked into things.",
+  "how": "The gate fails closed: anything short of a clear pass, including timeouts or errored lookups, means no send. The agent is treated as an untrusted caller, like any script, hitting the one door where the check runs inside the send path. Opt-outs are tagged, never deleted, so they cannot be forgotten.",
+  "takeaway": "Put the rule in the contract, not the agent's conscience. The agent can be wrong all it likes and the send still will not go."
+}

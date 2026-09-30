@@ -1,0 +1,7 @@
+{
+  "tldr": "Instead of waiting for real customers to find the breaking point, we built AI agents that call each other through the real voice stack and load test it on demand.",
+  "what": "A load testing suite for a voice platform. Pairs of AI agents, one dialing and one receiving, place real calls through the full production pipeline: telephony, speech to text, the model, and text to speech, in both directions.",
+  "why": "The only honest load is many real calls at once, and you cannot get that safely. Mocks, fake stand-ins for parts of the system, hide the failures that hurt, which live in the seams where the real pieces compete for resources.",
+  "how": "Spin up many agent pairs with a set call count and rate limit, like crash test dummies driving a real car into a wall. The suite verified twenty concurrent calls end to end, the tested ceiling, not a theoretical maximum. It also caught that external and internal calls take different paths under load.",
+  "takeaway": "Make the test real and the traffic fake. Break your system a hundred times with agents before a customer breaks it once."
+}

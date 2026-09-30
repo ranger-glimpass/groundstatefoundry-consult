@@ -1,0 +1,7 @@
+{
+  "tldr": "A pharmacist photographs a messy supplier bill and a vision model turns it into live inventory, with guardrails around the parts it gets wrong.",
+  "what": "Replacing nightly hand-typing of pharmacy delivery bills with a phone camera. Google's Gemini reads the photo and returns each medicine's name, batch, expiry, and quantity as structured rows, feeding expiry warnings sent three times a day.",
+  "why": "Bills are faint, crumpled tables where meaning depends on the column. Classic OCR, which traces letter shapes, returns a soup of characters and needs brittle per-supplier rules. Typing by hand is slow and error-prone, and until the bill is data the shop cannot see expiring stock.",
+  "how": "The model reads for meaning, not shape. Around it: date guardrails, since a misread expiry can harm someone, matching names against about fifteen thousand medicines at about 99.6% accuracy on our own data, duplicate bill detection, and editable fields for fixes.",
+  "takeaway": "The model does the reading and the system does the trusting. We did not make the bills cleaner. We stopped needing them to be."
+}

@@ -1,0 +1,7 @@
+{
+  "tldr": "In Hivemind, a large model is too slow and costly to drive a robot moment to moment, so it coaches tiny evolved policies that do the moving.",
+  "what": "Project Hivemind, a 2D robot you command in plain language. It began with Claude driving the motors directly. Now Claude only decides which skills the robot needs and judges when they are ready, while small learned policies control the body.",
+  "why": "Motor control is a fast loop, running around sixty updates a second. A large model answers slowly and every answer costs money. Putting it in that loop wastes a strategist on twitching muscles, the wrong job for what it is good at.",
+  "how": "Claude calls a practice_skill tool, which trains a tiny policy by evolution: make randomized copies, score each, keep the best, repeat. Each worker needs only a seed in and a score out, so training spreads across machines easily. A 146 number navigation policy went from three to a hundred percent competence in about three seconds on eight cores. A 314 number maze policy reached 92.5 percent in roughly eight minutes.",
+  "takeaway": "Keep the big model where judgment lives and grow small, fast things to do the doing, the way practiced skills sink below words in people."
+}

@@ -1,0 +1,7 @@
+{
+  "tldr": "When AI reads every call instead of a supervisor sampling a few, coaching, problem spotting, and quality scoring all change.",
+  "what": "How a call center shifts when every call is transcribed into searchable text and then read by a language model for what happened: greetings, required disclosures, customer mood, and the moments a deal was won or lost. Each call leaves a recording, a transcript, a score, and flagged signals.",
+  "why": "Calls used to vanish when they ended. A supervisor could review only a handful a week, pulled at random, and hope that sample said something true about thousands of others. It rarely did.",
+  "how": "Scoring every call lets managers coach patterns, like an agent who loses people at the price conversation across two hundred calls. Problems surface unprompted, like a new competitor showing up in fifty calls this week. One written standard applied evenly makes quality fairer. Limits remain: transcripts can be wrong, scores can be gamed, and a score should point a human at a call, never decide a job.",
+  "takeaway": "The real gift is not that the machine talks but that it remembers every call. Point that at helping agents, not policing them, and it builds trust."
+}

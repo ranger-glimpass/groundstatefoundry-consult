@@ -1,0 +1,7 @@
+{
+  "tldr": "Before shortening the pause in a voice call, we timed every part of it, so we could see exactly where the delay lived.",
+  "what": "This piece is about tracing a voice agent: putting a stopwatch on each step of a call and nesting them into a tree, from the whole conversation down to each turn and its parts. We record the timings with OpenTelemetry and view them as nested bars in Jaeger.",
+  "why": "Everyone agrees the pause before the agent replies is too long, but nobody knows where it comes from. Teams argue over the model, the voice engine, or the phone network, and can spend a week tuning the wrong thing, never knowing if a change helped.",
+  "how": "We mark two spans, user_speaking and bot_speaking. The empty stretch between the caller stopping and the agent starting is the pause, now with a length on screen. Inside it sit bars for speech to text, the model, and text to speech, plus any mid-turn tool call, so the fattest bar points at the real culprit.",
+  "takeaway": "Measure before you optimize. A trace turns arguments about latency into a picture that shows the one place worth fixing."
+}

@@ -1,0 +1,7 @@
+{
+  "tldr": "The silence after a caller says hello loses calls, so we keep a worker warm before the call arrives and route the call straight to it.",
+  "what": "This piece is about dead air: the gap between a caller saying hello and the agent answering. The systems that turn speech into text, decide a reply, and speak it back often start up only when the call arrives, and that wake-up leaves the caller in silence.",
+  "why": "In the systems we measured, waking up took three to six seconds. To a caller, that silence says nobody is home. They repeat themselves, get annoyed, and lean toward hanging up before a single useful word is spoken, no matter how good the technology behind the greeting is.",
+  "how": "Instead of making the wake-up faster, we stopped waking up during the call. A worker sits ready before any call arrives, models loaded and channels open, like a receptionist already at the desk. Then we route each call deterministically, meaning on purpose, to that exact warm worker, never to a random cold one. Both halves are needed, or neither works.",
+  "takeaway": "Trust in a voice is decided in the first seconds. Remove the silence and everything else you built finally gets heard."
+}

@@ -1,0 +1,7 @@
+{
+  "tldr": "Words are small containers we pack meaning into, and a language model learns to read by studying how we pack them.",
+  "what": "Language as compression. A word like \"home\" or \"finally\" carries far more than it says, because the listener unpacks it using a shared world. The essay asks what a machine can learn from the words alone, with no world behind them.",
+  "why": "A language model never had a childhood, never waited for a call. If meaning lives partly in the world behind words, it is not obvious that text alone could teach anything real. Yet these models talk about our experiences fluently.",
+  "how": "The model does one task over and over: guess the next word. To guess well after \"she finally,\" it must absorb the shape of waiting and relief from millions of examples. It does not learn the world. It learns the shadow the world casts on our writing. Whether that counts as understanding, we honestly do not know.",
+  "takeaway": "We left so much of our inner lives written down that a patient enough reader can gather meaning from the outside."
+}

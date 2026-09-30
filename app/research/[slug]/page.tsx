@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Container } from "@/components/ui";
+import SummaryButton from "@/components/SummaryButton";
 import { categoryTitle, getAllResearch, getResearch } from "@/lib/research";
 
 export function generateStaticParams() {
@@ -56,6 +57,11 @@ export default async function ResearchPiecePage({
             <span className="text-[var(--color-dim)]">·</span>
             <span>{piece.readingTime}</span>
           </div>
+          {piece.summary && (
+            <div className="mt-6">
+              <SummaryButton title={piece.title} summary={piece.summary} />
+            </div>
+          )}
         </header>
 
         <div className="article mt-10">

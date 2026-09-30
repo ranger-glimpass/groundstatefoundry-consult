@@ -1,0 +1,7 @@
+{
+  "tldr": "Buyers are sending agents to shop for them, so ship a plain facts file and a callable server alongside your website.",
+  "what": "How to make a product findable and usable by AI agents doing errands for people, like finding an after-hours phone answering service and booking a demo, without a human ever looking at the website.",
+  "why": "A website persuades human eyes with layout and copy. To an agent it is tangled markup where the price might be an image and key facts are buried. When easier options exist, the agent moves on and your product stays invisible.",
+  "how": "First, publish a machine-readable file of plain facts: what it does, what it refuses to do, cost, audience, requirements. Like a nutrition label. Second, publish a small server using an emerging shared standard, so any agent can discover your capabilities and call them directly, instead of getting stuck at a form.",
+  "takeaway": "There are two audiences now: the human who wants persuading and the agent who wants facts and a door. Serve both, or fewer of the right visitors find you."
+}

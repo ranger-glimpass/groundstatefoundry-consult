@@ -1,0 +1,7 @@
+{
+  "tldr": "When an assistant tells people how to register a business or file taxes, being right matters more than sounding smart, and that changes how you build it.",
+  "what": "Designing a multilingual assistant for regulated questions, like a small manufacturer asking in Marathi whether she qualifies for a government scheme and how to register. A wrong answer can cost her money or a benefit.",
+  "why": "A language model alone is a fluent guesser. When it does not know, it invents something plausible in the same confident tone, and readers cannot tell the invented sentence from the true one.",
+  "how": "Retrieval grounding: find relevant passages from a trusted knowledge base, searched by meaning, and make the model answer only from them and cite them, like an open-book exam. Add intent classification to aim the search, careful cross-language handling, a designed way to say it is unsure and hand off, plus encryption and access control.",
+  "takeaway": "Trust is a property of the whole system, not the model. The model is a gifted, slightly reckless intern; the product is everything that makes it trustworthy."
+}
