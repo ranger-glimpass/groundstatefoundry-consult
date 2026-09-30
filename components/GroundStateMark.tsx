@@ -17,15 +17,18 @@ const DEPTH = 40;
 const R = 3.5;
 
 const G = 900; // gravity, viewBox units / s^2
-const DAMP = 1.6; // friction, 1 / s
-const MAX_V = 600; // speed cap for a push
+const DRAG = 0.22; // air drag, 1 / s (low: a light marble in a smooth bowl)
+const ROLL = 9; // rolling resistance, viewBox units / s^2 (lets it come to rest)
+const HAND_E = 0.7; // restitution of a hit: a light ball bouncing off a much heavier hand
+const MAX_V = 1600; // speed cap for a push
 const PUSH_R = 14; // how close the pointer's path must pass to count as a push
-const RESTITUTION = 0.45; // bounce off the rim walls
+const RESTITUTION = 0.6; // bounce off the rim walls
 
 // Flat rims, smooth cosine bowl. SVG y grows downward, so the bottom is the max y.
 const wellY = (x: number) => TOP + DEPTH * (0.5 + 0.5 * Math.cos((Math.PI * (x - MID)) / HALF));
-const wellSlope = (x: number) =>
-  ((-DEPTH * 0.5 * Math.PI) / HALF) * Math.sin((Math.PI * (x - MID)) / HALF);
+const K = Math.PI / HALF;
+const wellSlope = (x: number) => -DEPTH * 0.5 * K * Math.sin(K * (x - MID));
+const wellCurve = (x: number) => -DEPTH * 0.5 * K * K * Math.cos(K * (x - MID));
 
 const PATH = Array.from({ length: 61 }, (_, i) => {
   const x = X0 + ((X1 - X0) * i) / 60;
@@ -68,8 +71,15 @@ export default function GroundStateMark({ className = "" }: { className?: string
       const n = Math.max(1, Math.ceil(dt * 240));
       const h = dt / n;
       for (let i = 0; i < n; i++) {
+        // Bead on a curve, from the Lagrangian: x'' = y'(g - y'' x'^2) / (1 + y'^2).
+        // The y'' term is the curve's bend; without it energy is not conserved.
         const yp = wellSlope(s.x);
-        s.v += ((G * yp) / (1 + yp * yp) - DAMP * s.v) * h;
+        const q = 1 + yp * yp;
+        let a = (yp * (G - wellCurve(s.x) * s.v * s.v)) / q - DRAG * s.v;
+        const roll = ROLL / Math.sqrt(q);
+        if (Math.abs(s.v) > 1e-3) a -= Math.sign(s.v) * roll;
+        else if (Math.abs(a) <= roll) a = 0; // static: gravity can't beat rolling resistance
+        s.v += a * h;
         s.x += s.v * h;
         if (s.x < X0 + R) {
           s.x = X0 + R;
@@ -79,8 +89,8 @@ export default function GroundStateMark({ className = "" }: { className?: string
           s.v = -Math.abs(s.v) * RESTITUTION;
         }
       }
-      if (Math.abs(s.v) < 0.5 && Math.abs(s.x - MID) < 0.3) {
-        s.x = MID;
+      const yp = wellSlope(s.x);
+      if (Math.abs(s.v) < 0.8 && Math.abs((G * yp) / (1 + yp * yp)) <= ROLL) {
         s.v = 0;
         draw();
         running = false;
@@ -124,7 +134,8 @@ export default function GroundStateMark({ className = "" }: { className?: string
           Math.sign(came) === Math.sign(rel) &&
           Math.abs(rel) > 5
         ) {
-          s.v = Math.max(-MAX_V, Math.min(MAX_V, s.v + rel * 0.9));
+          // Collision with a much heavier hand: v' = u + e(u - v).
+          s.v = Math.max(-MAX_V, Math.min(MAX_V, pvx + HAND_E * rel));
           wake();
         }
       }
