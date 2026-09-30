@@ -1,7 +1,7 @@
 ---
 title: "Opus, Sonnet, and Haiku as One Team"
 category: "multi-agent-systems"
-date: "2026-06-24"
+date: "2026-09-15"
 excerpt: "Not every job in a multi-agent system needs the smartest model, and building one that mixes tiers taught me where the sharp edges hide."
 author: "Rishi Raj"
 ---

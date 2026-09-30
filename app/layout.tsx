@@ -3,7 +3,6 @@ import { Sora, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
-import ParticleField from "@/components/ParticleField";
 import { SITE } from "@/lib/site";
 
 const sora = Sora({
@@ -19,7 +18,7 @@ const mono = JetBrains_Mono({
 });
 
 const DESCRIPTION =
-  "An applied AI research and engineering firm in Meydan Free Zone, Dubai. We do original research in voice AI, agents, and evolutionary systems, and build it into production systems for enterprises worldwide.";
+  "An applied AI research and engineering firm in Meydan Free Zone, Dubai. We do original research in voice AI, agents, and evolutionary systems, and build it into production systems for clients in the UAE and abroad.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -57,7 +56,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     title: "Ground State Foundry · applied AI research & engineering",
     description:
-      "Original AI research, built into production systems for enterprises worldwide. Voice AI, agents, simulation, and the infrastructure underneath.",
+      "Original AI research, built into production systems for clients in the UAE and abroad. Voice AI, agents, simulation, and the infrastructure underneath.",
     images: [{ url: "/groundstate-logo.png", width: 1254, height: 1254, alt: "Ground State Foundry" }],
   },
   twitter: {
@@ -132,7 +131,6 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
         />
-        <ParticleField />
         <div className="relative z-10 flex min-h-full flex-col">
           <SiteNav />
           <main className="flex-1">{children}</main>

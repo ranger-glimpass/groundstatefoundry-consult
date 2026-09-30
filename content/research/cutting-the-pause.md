@@ -1,7 +1,7 @@
 ---
 title: "Cutting the Pause Before Your Agent Speaks"
 category: "voice-ai"
-date: "2026-07-16"
+date: "2026-09-15"
 excerpt: "A phone agent says the same lines over and over, so we stopped paying to generate them twice and the pause got shorter."
 author: "Rishi Raj"
 ---

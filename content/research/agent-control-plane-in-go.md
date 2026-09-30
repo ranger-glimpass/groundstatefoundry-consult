@@ -1,7 +1,7 @@
 ---
 title: "A Backend-Agnostic Control Plane for Agents"
 category: "multi-agent-systems"
-date: "2026-08-04"
+date: "2026-09-15"
 excerpt: "The control plane that runs a fleet of agents should not know or care which model is behind any of them, and building it that way changes what it can survive."
 author: "Rishi Raj"
 ---

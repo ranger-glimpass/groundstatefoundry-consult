@@ -3,9 +3,9 @@
 export const SITE = {
   name: "Ground State Foundry",
   url: "https://groundstatefoundry.com",
-  tagline: "The only way forward is upward.",
+  tagline: "The most stable state your business can run in.",
   positioning:
-    "An applied AI research and engineering firm. We do original research and build it into production systems for enterprises worldwide.",
+    "An applied AI research and engineering firm. We do original research and build it into production systems for clients in the UAE and abroad.",
   email: "hello@groundstatefoundry.com",
   linkedin: "https://www.linkedin.com/company/ground-state-foundry",
   founders: [

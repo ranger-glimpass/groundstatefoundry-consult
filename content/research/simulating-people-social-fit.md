@@ -1,9 +1,10 @@
 ---
 title: "Hiring for the Team You Already Have"
 category: "agent-simulation"
-date: "2026-09-12"
+date: "2026-09-15"
 excerpt: "If a model can read a person from an interview, you can drop a simulated candidate into a simulation of your real team and finally measure social fit."
 author: "Rishi Raj"
+weight: 10
 ---
 
 Think about the last person your team hired who did not work out.

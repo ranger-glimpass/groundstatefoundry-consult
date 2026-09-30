@@ -70,8 +70,8 @@ body {
     border-radius: var(--radius);
   }
   .card-neon {
-    background: linear-gradient(180deg, rgba(185, 242, 58, 0.04), transparent 60%), var(--color-panel);
-    border: 1px solid rgba(185, 242, 58, 0.28);
+    background: linear-gradient(180deg, rgba(243, 245, 241, 0.03), transparent 60%), var(--color-panel);
+    border: 1px solid var(--color-border-bright);
     border-radius: var(--radius);
   }
 
@@ -84,9 +84,9 @@ body {
   .btn-primary { background: var(--color-neon); color: var(--color-accent-fg); }
   .btn-primary:hover { background: #c9fb55; box-shadow: 0 0 30px rgba(185, 242, 58, 0.25); }
   .btn-ghost { background: transparent; border: 1px solid var(--color-border-bright); color: var(--color-fg); }
-  .btn-ghost:hover { border-color: var(--color-neon); color: var(--color-neon); }
+  .btn-ghost:hover { border-color: var(--color-muted); color: var(--color-fg); }
   .btn-cyan { background: transparent; border: 1px solid var(--color-border-bright); color: var(--color-fg); }
-  .btn-cyan:hover { border-color: var(--color-neon); color: var(--color-neon); }
+  .btn-cyan:hover { border-color: var(--color-muted); color: var(--color-fg); }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
   /* fields */
@@ -97,7 +97,7 @@ body {
     transition: border-color 0.16s ease, box-shadow 0.16s ease;
   }
   .field::placeholder { color: var(--color-dim); }
-  .field:focus { border-color: rgba(185, 242, 58, 0.65); box-shadow: 0 0 0 3px rgba(185, 242, 58, 0.12); }
+  .field:focus { border-color: var(--color-muted); box-shadow: 0 0 0 3px rgba(243, 245, 241, 0.06); }
 
   /* tags - pills */
   .tag {
@@ -105,11 +105,11 @@ body {
     border: 1px solid var(--color-border-bright);
     color: var(--color-muted);
   }
-  .tag-neon { border-color: rgba(185, 242, 58, 0.3); color: var(--color-neon); background: rgba(185, 242, 58, 0.07); }
+  .tag-neon { border-color: var(--color-border-bright); color: var(--color-fg); background: rgba(243, 245, 241, 0.04); }
   .tag-cyan { border-color: var(--color-border-bright); color: var(--color-muted); }
   .tag-magenta { border-color: rgba(248, 113, 113, 0.3); color: var(--color-magenta); background: rgba(248, 113, 113, 0.07); }
 
-  .link-u { @apply text-[var(--color-neon)] underline-offset-4 hover:underline; }
+  .link-u { @apply text-[var(--color-fg)] underline underline-offset-4 decoration-[var(--color-dim)] hover:decoration-[var(--color-fg)]; }
 }
 
 /* the brand motif: energy level (line) + ground-state particle (dot) */
@@ -155,7 +155,7 @@ body {
 
 /* ============================================================
    .article - long-form reading rhythm for research pieces
-   dark ground, off-white body, lime accents used sparingly
+   dark ground, off-white body, grayscale accents
    ============================================================ */
 .article {
   max-width: 68ch;
@@ -204,25 +204,25 @@ body {
   height: 6px;
   width: 6px;
   border-radius: 999px;
-  background: var(--color-neon);
-  box-shadow: 0 0 8px 1px rgba(185, 242, 58, 0.55);
+  background: var(--color-muted);
 }
 
 .article blockquote {
   margin-top: 1.5em;
   padding: 0.3em 0 0.3em 1.2em;
-  border-left: 2px solid var(--color-neon);
+  border-left: 2px solid var(--color-border-bright);
   color: var(--color-muted);
   font-style: italic;
 }
 
 .article a {
-  color: var(--color-neon);
+  color: var(--color-fg);
+  text-decoration-color: var(--color-dim);
   text-decoration: underline;
   text-underline-offset: 4px;
   text-decoration-thickness: 1px;
 }
-.article a:hover { color: #c9fb55; }
+.article a:hover { text-decoration-color: var(--color-fg); }
 
 .article code {
   font-family: var(--font-mono);
@@ -231,7 +231,7 @@ body {
   border-radius: 6px;
   background: var(--color-panel-2);
   border: 1px solid var(--color-border-bright);
-  color: var(--color-neon);
+  color: var(--color-fg);
 }
 
 .article strong {

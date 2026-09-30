@@ -1,7 +1,7 @@
 ---
 title: "Grading the Agent Blind"
 category: "agent-simulation"
-date: "2026-05-28"
+date: "2026-09-15"
 excerpt: "An autonomous agent that grades its own homework will always pass, so I built a company with a hidden answer key and scored the agent against a truth it never sees."
 author: "Rishi Raj"
 ---

@@ -1,7 +1,7 @@
 ---
 title: "Compliance as an API Contract"
 category: "applied-ai"
-date: "2026-07-24"
+date: "2026-09-15"
 excerpt: "If you want an agent to run outreach at scale, the safe move is not to trust it, but to build a gate it physically cannot get past."
 author: "Rishi Raj"
 ---

@@ -13,7 +13,7 @@ export default function SiteNav() {
             <Link
               key={n.href}
               href={n.href}
-              className="text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-neon)]"
+              className="text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-fg)]"
             >
               {n.label}
             </Link>
@@ -31,12 +31,12 @@ export default function SiteNav() {
           <summary className="btn btn-ghost cursor-pointer list-none px-3 py-1.5 text-xs">Menu</summary>
           <div className="absolute right-0 mt-2 w-56 card p-2">
             {NAV.map((n) => (
-              <Link key={n.href} href={n.href} className="block px-3 py-2 text-sm text-[var(--color-muted)] hover:text-[var(--color-neon)]">
+              <Link key={n.href} href={n.href} className="block px-3 py-2 text-sm text-[var(--color-muted)] hover:text-[var(--color-fg)]">
                 {n.label}
               </Link>
             ))}
             <div className="my-2 border-t border-[var(--color-border)]" />
-            <Link href="/contact" className="block px-3 py-2 text-sm text-[var(--color-neon)]">Book a consult →</Link>
+            <Link href="/contact" className="block px-3 py-2 text-sm text-[var(--color-fg)]">Book a consult →</Link>
           </div>
         </details>
       </div>

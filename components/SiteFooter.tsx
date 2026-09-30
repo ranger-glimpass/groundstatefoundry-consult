@@ -16,7 +16,7 @@ export default function SiteFooter() {
               href={SITE.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-block text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-neon)]"
+              className="mt-4 inline-block text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-fg)]"
             >
               LinkedIn ↗
             </a>
@@ -26,7 +26,7 @@ export default function SiteFooter() {
             <p className="mono-label mb-4">Navigate</p>
             <nav className="flex flex-col gap-2.5">
               {NAV.map((n) => (
-                <Link key={n.href} href={n.href} className="text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-neon)]">
+                <Link key={n.href} href={n.href} className="text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-fg)]">
                   {n.label}
                 </Link>
               ))}
@@ -44,7 +44,7 @@ export default function SiteFooter() {
             </address>
             <a
               href={`mailto:${SITE.email}`}
-              className="mt-3 inline-block text-sm text-[var(--color-neon)] underline-offset-4 hover:underline"
+              className="mt-3 inline-block text-sm text-[var(--color-fg)] underline-offset-4 hover:underline"
             >
               {SITE.email}
             </a>

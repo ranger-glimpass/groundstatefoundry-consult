@@ -1,7 +1,7 @@
 ---
 title: "What If Consciousness Is Evolved Chaos"
 category: "perspectives"
-date: "2026-03-14"
+date: "2026-09-15"
 excerpt: "Order keeps showing up out of noise, in brains and in evolving code, and it makes me wonder whether creativity and even consciousness are just chaos wearing a very clever mask."
 author: "Rishi Raj"
 ---

@@ -8,13 +8,13 @@ export const metadata: Metadata = {
   title: "About",
   alternates: { canonical: "/about" },
   description:
-    "An applied AI research and engineering firm in Meydan Free Zone, Dubai. We do original research and build it into production systems for enterprises worldwide.",
+    "An applied AI research and engineering firm in Meydan Free Zone, Dubai. We do original research and build it into production systems for clients in the UAE and abroad.",
 };
 
 const VALUES = [
   { t: "Execution over slideware", d: "We measure ourselves on systems in production, not decks. If it does not ship, it did not happen." },
   { t: "Research is not a side project", d: "We build our own tools and study hard problems on purpose. That is what keeps the work we do for you ahead of the shelf." },
-  { t: "Senior by default", d: "The people who scope your work are the people who build it. No hand-offs to a junior bench." },
+  { t: "The people you meet build it", d: "The people who scope your work are the people who write the code. Nothing gets handed off." },
   { t: "Honest about AI", d: "We will tell you when AI is not the answer. Trust is worth more to us than a bigger contract." },
 ];
 
@@ -41,7 +41,7 @@ export default function AboutPage() {
       <PageHeader
         eyebrow="about"
         title="Built from ground state up"
-        subtitle="The ground state is the lowest, most stable energy state, where everything begins. We start there, and build up."
+        subtitle="We bring your business to its ground state: nothing wasted, nothing fragile."
       />
       <Container className="py-16">
         <div className="mx-auto max-w-2xl">
@@ -49,12 +49,18 @@ export default function AboutPage() {
             Ground State Foundry is an applied AI research and engineering firm based in{" "}
             {SITE.address.zone}, Dubai. We do two things that feed each other. We study hard problems
             in AI, voice, agents, and evolutionary systems, and we build production systems that put
-            that work to use for enterprises around the world.
+            that work to use for clients in the UAE and abroad.
+          </p>
+          <p className="mt-4 leading-relaxed text-[var(--color-muted)]">
+            The name comes from physics. A system&apos;s ground state is the lowest-energy, most stable
+            state it can settle into. Nothing is wasted holding it up, so nothing is waiting to
+            fall over. That is what we want for the systems we build, and for the businesses that
+            run on them.
           </p>
           <p className="mt-4 leading-relaxed text-[var(--color-muted)]">
             We started because too much of what gets called AI transformation ends at a slide. We
-            are the opposite. A small, senior team that embeds, builds in weeks, and stays
-            accountable to a number that matters. The research we do on our own time is not a
+            are the opposite. A small team that works inside your problem, ships something real
+            early, and stays accountable to a number that matters. The research we do on our own time is not a
             hobby. It is the reason the systems we ship for clients are sharper than the ones they
             could buy off a shelf.
           </p>
@@ -135,7 +141,7 @@ function Founder({
         href={linkedin}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-4 inline-block text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-neon)]"
+        className="mt-4 inline-block text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-fg)]"
       >
         LinkedIn ↗
       </a>

@@ -10,9 +10,6 @@ export const metadata: Metadata = {
     "Original research and slower thoughts from Ground State Foundry on evolutionary systems, voice AI, agents, and the frontier.",
 };
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-}
 
 export default function ResearchPage() {
   const all = getAllResearch();
@@ -40,15 +37,13 @@ export default function ResearchPage() {
                   {pieces.map((p) => (
                     <Link key={p.slug} href={`/research/${p.slug}`} className="card group p-8 transition-colors hover:border-[var(--color-border-bright)]">
                       <div className="flex items-center gap-3 text-xs text-[var(--color-muted)]">
-                        <span>{formatDate(p.date)}</span>
-                        <span className="text-[var(--color-dim)]">·</span>
                         <span>{p.readingTime}</span>
                       </div>
-                      <h3 className="mt-3 text-xl font-semibold text-[var(--color-fg)] transition-colors group-hover:text-[var(--color-neon)]">
+                      <h3 className="mt-3 text-xl font-semibold text-[var(--color-fg)] transition-colors group-hover:text-[var(--color-fg)]">
                         {p.title}
                       </h3>
                       <p className="mt-3 leading-relaxed text-[var(--color-muted)]">{p.excerpt}</p>
-                      <span className="mt-5 inline-block text-sm text-[var(--color-neon)]">Read →</span>
+                      <span className="mt-5 inline-block text-sm text-[var(--color-fg)]">Read →</span>
                     </Link>
                   ))}
                 </div>

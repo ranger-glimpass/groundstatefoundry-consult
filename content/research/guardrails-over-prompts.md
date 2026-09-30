@@ -1,7 +1,7 @@
 ---
 title: "Guardrails Over Prompts"
 category: "voice-ai"
-date: "2026-06-30"
+date: "2026-09-15"
 excerpt: "A business owner's first question about an AI that answers the phone is not what it can do, it is what it will never do, and that question deserves a better answer than a paragraph of instructions."
 author: "Rishi Raj"
 ---

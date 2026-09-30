@@ -51,6 +51,8 @@ export type ResearchMeta = {
   excerpt: string;
   author: string;
   readingTime: string;
+  /** Optional ordering hint; higher shows first among pieces with the same date. */
+  weight: number;
 };
 
 export type ResearchPiece = ResearchMeta & { content: string };
@@ -80,9 +82,12 @@ export function getAllResearch(): ResearchMeta[] {
         excerpt: String(data.excerpt ?? ""),
         author: String(data.author ?? "Ground State Foundry"),
         readingTime: readingTime(content),
+        weight: Number(data.weight ?? 0),
       };
     })
-    .sort((a, b) => (a.date < b.date ? 1 : -1));
+    .sort((a, b) =>
+      a.date !== b.date ? (a.date < b.date ? 1 : -1) : b.weight - a.weight || a.title.localeCompare(b.title),
+    );
 }
 
 export function getResearch(slug: string): ResearchPiece | null {
@@ -98,6 +103,7 @@ export function getResearch(slug: string): ResearchPiece | null {
     excerpt: String(data.excerpt ?? ""),
     author: String(data.author ?? "Ground State Foundry"),
     readingTime: readingTime(content),
+    weight: Number(data.weight ?? 0),
     content,
   };
 }

@@ -1,7 +1,7 @@
 ---
 title: "Running a Business With an Agent Fleet"
 category: "applied-ai"
-date: "2026-08-16"
+date: "2026-09-15"
 excerpt: "The agents do the daily work of the business, and the hard part turned out to be governing them, not building them."
 author: "Rishi Raj"
 ---

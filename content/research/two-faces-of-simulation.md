@@ -1,7 +1,7 @@
 ---
 title: "The Two Faces of Simulation"
 category: "agent-simulation"
-date: "2026-06-20"
+date: "2026-09-15"
 excerpt: "The same idea, agents standing in for something real, can stress a live system or model a room full of people, and I want to show why both are the same move."
 author: "Rishi Raj"
 ---

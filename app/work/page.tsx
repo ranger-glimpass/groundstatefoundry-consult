@@ -32,7 +32,7 @@ export default function WorkPage() {
               <ul className="mt-5 space-y-2">
                 {w.points.map((p) => (
                   <li key={p} className="flex items-start gap-2.5 text-sm text-[var(--color-muted)]">
-                    <span className="mt-[7px] h-[6px] w-[6px] shrink-0 rounded-full bg-[var(--color-neon)] shadow-[0_0_8px_1px_rgba(185,242,58,0.6)]" />
+                    <span className="mt-[7px] h-[6px] w-[6px] shrink-0 rounded-full bg-[var(--color-muted)]" />
                     {p}
                   </li>
                 ))}
@@ -42,7 +42,7 @@ export default function WorkPage() {
                   href={w.link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-6 inline-block text-sm text-[var(--color-neon)] underline-offset-4 hover:underline"
+                  className="mt-6 inline-block text-sm text-[var(--color-fg)] underline-offset-4 hover:underline"
                 >
                   {w.link.label} ↗
                 </a>

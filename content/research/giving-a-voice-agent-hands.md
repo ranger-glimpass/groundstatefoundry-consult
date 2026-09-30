@@ -1,7 +1,7 @@
 ---
 title: "Giving a Voice Agent Hands"
 category: "voice-ai"
-date: "2026-08-10"
+date: "2026-09-15"
 excerpt: "A voice agent that can only talk is a very polite dead end, so the real work is letting it book the slot and send the message while the caller is still on the line."
 author: "Rishi Raj"
 ---

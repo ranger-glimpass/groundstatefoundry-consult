@@ -1,7 +1,7 @@
 ---
 title: "Demote the Model to Coach"
 category: "multi-agent-systems"
-date: "2026-07-08"
+date: "2026-09-15"
 excerpt: "A large language model is too slow and too expensive to drive a body in real time, so in Hivemind it stopped driving and started training the thing that does."
 author: "Rishi Raj"
 ---

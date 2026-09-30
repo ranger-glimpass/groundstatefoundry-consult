@@ -1,7 +1,7 @@
 ---
 title: "Simulating a Whole Company"
 category: "agent-simulation"
-date: "2026-05-14"
+date: "2026-09-15"
 excerpt: "Nobody in a company can tell you how the whole company works, so instead of interviewing everyone myself I built the company out of agents and let one agent go find out."
 author: "Rishi Raj"
 ---

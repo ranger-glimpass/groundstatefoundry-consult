@@ -1,7 +1,7 @@
 ---
 title: "Make Your Product Agent-Discoverable"
 category: "applied-ai"
-date: "2026-08-06"
+date: "2026-09-15"
 excerpt: "Agents are starting to do the searching and the buying, and a website built for human eyes is invisible to them."
 author: "Rishi Raj"
 ---

@@ -1,9 +1,10 @@
 ---
 title: "What a Call Center Learns When Every Call Is Read"
 category: "voice-ai"
-date: "2026-05-12"
+date: "2026-09-15"
 excerpt: "For most of history a phone call vanished the moment it ended. When every call becomes text you can search and score, the whole floor changes shape."
 author: "Rishi Raj"
+weight: 5
 ---
 
 A call center runs on thousands of conversations a day, and until very recently almost none of them left a trace. Someone picked up, someone spoke, the line dropped, and whatever happened in those four minutes was gone. A supervisor could listen to maybe a handful of calls a week. So that is what they did: pulled a few recordings at random, filled in a scorecard, and hoped the sample said something true about the other several thousand.

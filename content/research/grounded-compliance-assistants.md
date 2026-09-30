@@ -1,7 +1,7 @@
 ---
 title: "Assistants That Have to Be Right"
 category: "applied-ai"
-date: "2026-05-02"
+date: "2026-09-15"
 excerpt: "In a chatbot about movies, a wrong answer is a shrug. In one that tells a business owner how to register or file taxes, a wrong answer costs them money. That changes how you build."
 author: "Rishi Raj"
 ---

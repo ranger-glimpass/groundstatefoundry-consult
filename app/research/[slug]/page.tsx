@@ -42,7 +42,7 @@ export default async function ResearchPiecePage({
     <Container className="py-16">
       <article className="mx-auto max-w-2xl">
         <header className="border-b border-[var(--color-border)] pb-8">
-          <Link href="/research" className="mono-label transition-colors hover:text-[var(--color-neon)]">
+          <Link href="/research" className="mono-label transition-colors hover:text-[var(--color-fg)]">
             ← research
           </Link>
           <p className="mono-label mt-6">{categoryTitle(piece.category)}</p>

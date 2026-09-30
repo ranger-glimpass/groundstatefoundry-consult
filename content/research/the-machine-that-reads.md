@@ -1,7 +1,7 @@
 ---
 title: "The Machine That Reads"
 category: "perspectives"
-date: "2026-07-15"
+date: "2026-09-15"
 excerpt: "A word is a tiny container we pack meaning into, and a model learns to read by watching how we pack it, one sequence at a time."
 author: "Rishi Raj"
 ---

@@ -1,7 +1,7 @@
 ---
 title: "Turning a Business Into Tools an Agent Can Operate"
 category: "applied-ai"
-date: "2026-07-04"
+date: "2026-09-15"
 excerpt: "What it actually takes to expose a whole business function as typed tools an agent can call, and the things you have to harden before you dare hand over the keys."
 author: "Rishi Raj"
 ---

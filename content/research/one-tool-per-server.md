@@ -1,7 +1,7 @@
 ---
 title: "One Tool Per Server"
 category: "applied-ai"
-date: "2026-07-14"
+date: "2026-09-15"
 excerpt: "Building an agent's toolbelt from small single-purpose servers instead of one big one, and why the small pieces are the ones you can actually trust."
 author: "Rishi Raj"
 ---

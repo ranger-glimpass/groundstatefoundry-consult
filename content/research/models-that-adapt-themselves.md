@@ -1,7 +1,7 @@
 ---
 title: "Models That Adapt Themselves"
 category: "perspectives"
-date: "2026-01-29"
+date: "2026-09-15"
 excerpt: "A model that quietly retunes itself for each question it is asked, using a single small dial per skill, hints at something about how learning might actually want to work."
 author: "Rishi Raj"
 ---

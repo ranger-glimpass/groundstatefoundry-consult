@@ -1,7 +1,7 @@
 ---
 title: "An Org Chart of Agents"
 category: "multi-agent-systems"
-date: "2026-07-22"
+date: "2026-09-15"
 excerpt: "Once agents can hire, fire, and escalate on their own, the hard problem stops being how smart they are and becomes who is allowed to do what."
 author: "Rishi Raj"
 ---

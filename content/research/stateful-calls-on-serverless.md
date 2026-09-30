@@ -1,7 +1,7 @@
 ---
 title: "Running Stateful Calls on Serverless"
 category: "voice-ai"
-date: "2026-07-26"
+date: "2026-09-15"
 excerpt: "A phone campaign is a long, stateful thing and serverless containers can vanish mid-sentence, so the whole trick is making the work survive the machine doing it."
 author: "Rishi Raj"
 ---

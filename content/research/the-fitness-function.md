@@ -1,7 +1,7 @@
 ---
 title: "The Fitness Function Is the Whole Game"
 category: "evolutionary-systems"
-date: "2026-04-18"
+date: "2026-09-15"
 excerpt: "Whatever you choose to measure is exactly what an evolutionary system will give you, so getting the fitness function wrong means evolving the wrong thing perfectly."
 author: "Rishi Raj"
 ---

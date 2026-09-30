@@ -1,7 +1,7 @@
 ---
 title: "Reading Code No Human Wrote"
 category: "evolutionary-systems"
-date: "2026-04-02"
+date: "2026-09-15"
 excerpt: "An algorithm that emerged from search is full of steps that look arbitrary until you trace them, and trusting it means a different kind of reading."
 author: "Rishi Raj"
 ---

@@ -27,7 +27,7 @@ export default function ContactPage() {
               <p className="mono-label">email</p>
               <a
                 href={`mailto:${SITE.email}`}
-                className="mt-2 block text-lg text-[var(--color-neon)] underline-offset-4 hover:underline"
+                className="mt-2 block text-lg text-[var(--color-fg)] underline-offset-4 hover:underline"
               >
                 {SITE.email}
               </a>
@@ -35,7 +35,7 @@ export default function ContactPage() {
                 href={SITE.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 inline-block text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-neon)]"
+                className="mt-4 inline-block text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-fg)]"
               >
                 LinkedIn ↗
               </a>
@@ -54,7 +54,7 @@ export default function ContactPage() {
                 href="https://maps.google.com/?q=Meydan+Grandstand+Dubai"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 inline-block text-sm text-[var(--color-neon)] underline-offset-4 hover:underline"
+                className="mt-4 inline-block text-sm text-[var(--color-fg)] underline-offset-4 hover:underline"
               >
                 Open in Maps ↗
               </a>

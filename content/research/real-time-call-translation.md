@@ -1,7 +1,7 @@
 ---
 title: "Two People, Two Languages, One Call"
 category: "voice-ai"
-date: "2026-07-12"
+date: "2026-09-15"
 excerpt: "Two people who share no language get on an ordinary phone call, and each hears the other in their own tongue, which turns out to be less about clever translation and more about how you split the call."
 author: "Rishi Raj"
 ---

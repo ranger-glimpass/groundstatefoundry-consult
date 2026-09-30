@@ -1,7 +1,7 @@
 ---
 title: "A Living Extension of the Mind"
 category: "perspectives"
-date: "2026-02-26"
+date: "2026-09-15"
 excerpt: "A model trained on our language is not a rival species arriving to replace us, it is a living extension of the human mind, built from the residue of everything we have ever written down."
 author: "Rishi Raj"
 ---

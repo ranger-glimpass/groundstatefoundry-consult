@@ -1,7 +1,7 @@
 ---
 title: "Turning a Phone Camera Into a Data Pipeline"
 category: "applied-ai"
-date: "2026-05-22"
+date: "2026-09-15"
 excerpt: "A pharmacist photographs a crumpled supplier bill, and a vision model turns it into a live inventory. Here is what works and where it still fights back."
 author: "Rishi Raj"
 ---

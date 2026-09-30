@@ -1,7 +1,7 @@
 ---
 title: "Test Your AI With More AI"
 category: "agent-simulation"
-date: "2026-06-10"
+date: "2026-09-15"
 excerpt: "Waiting for real users to find the failure is a terrible test plan, so we built agents that call each other and break the system on purpose first."
 author: "Rishi Raj"
 ---

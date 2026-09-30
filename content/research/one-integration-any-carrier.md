@@ -1,7 +1,7 @@
 ---
 title: "One Integration, Any Carrier"
 category: "voice-ai"
-date: "2026-08-20"
+date: "2026-09-15"
 excerpt: "A telephony provider changes one field name in a webhook and your whole voice product breaks, unless you built a seam between your code and the carrier."
 author: "Rishi Raj"
 ---

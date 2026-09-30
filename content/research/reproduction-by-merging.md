@@ -1,7 +1,7 @@
 ---
 title: "Reproduction by Merging"
 category: "evolutionary-systems"
-date: "2026-05-20"
+date: "2026-09-15"
 excerpt: "In Darweel, two candidate programs have children by fusing their prompts and memories, and that turns out to be a real mechanism for new capability."
 author: "Rishi Raj"
 ---

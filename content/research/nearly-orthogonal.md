@@ -1,7 +1,7 @@
 ---
 title: "Nearly Orthogonal"
 category: "perspectives"
-date: "2026-03-28"
+date: "2026-09-15"
 excerpt: "In everyday space you can only fit three lines at right angles, but in a very high-dimensional space you can fit an astonishing number that are almost perpendicular, and that is why a model can hold a whole world inside it."
 author: "Rishi Raj"
 ---

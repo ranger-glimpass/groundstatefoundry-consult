@@ -1,7 +1,7 @@
 ---
 title: "Tools as Data"
 category: "applied-ai"
-date: "2026-04-22"
+date: "2026-09-15"
 excerpt: "Most software teams ship a new product by writing new code. What if a new product were just a row in a database, and shipping it took minutes?"
 author: "Rishi Raj"
 ---

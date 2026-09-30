@@ -1,9 +1,10 @@
 ---
 title: "From Writing Code to Running a Fleet"
 category: "multi-agent-systems"
-date: "2026-08-28"
+date: "2026-09-15"
 excerpt: "The IDE was built for one person typing into files, and that shape quietly falls apart the moment your coworkers are agents."
 author: "Rishi Raj"
+weight: 7
 ---
 
 I had eleven terminal tabs open and I had lost the thread.

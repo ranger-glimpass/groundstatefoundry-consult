@@ -1,7 +1,7 @@
 ---
 title: "Agents Judging Agents"
 category: "evolutionary-systems"
-date: "2026-05-06"
+date: "2026-09-15"
 excerpt: "In Darweel, the agents grade each other's work in a voting arena, which lets selection run round after round without a human scoring every answer."
 author: "Rishi Raj"
 ---

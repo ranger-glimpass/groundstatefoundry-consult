@@ -1,26 +1,31 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/ui";
+import GroundStateMark from "@/components/GroundStateMark";
 import { SITE } from "@/lib/site";
 import { SERVICES } from "@/lib/services";
-import { featuredWork } from "@/lib/work";
+import { WORK } from "@/lib/work";
 import { getAllResearch, categoryTitle } from "@/lib/research";
+
+const BUBBLES_URL = "https://github.com/Sentinal-Glimpass/bubbles";
+const DARWEEL_REPORT_URL = "https://www.onevoid.org/post/conditional-winograd-by-edbbc5b2";
+
+/** The three service lines we lead with; the rest live on /services. */
+const LEAD_SERVICES = ["voice-ai", "ai-agents-automation", "simulation"];
+
+const MATMUL = [
+  { v: "64", l: "schoolbook method" },
+  { v: "49", l: "Strassen, applied twice" },
+  { v: "48", l: "rediscovered by our system, matching Winograd" },
+  { v: "47.94", l: "average across 500 test cases, all correct" },
+];
 
 const PROCESS = [
   { n: "01", t: "Discover", d: "We sit with your team, map the workflow, and find where AI moves a number that matters." },
-  { n: "02", t: "Design", d: "A scoped solution with a clear success metric. Not a science project." },
-  { n: "03", t: "Build", d: "Senior engineers ship in weeks, with evaluation built in from day one." },
+  { n: "02", t: "Design", d: "A scoped solution with one clear success metric, agreed before we build." },
+  { n: "03", t: "Build", d: "We ship a working version early and measure it against that metric from the first day." },
   { n: "04", t: "Deploy", d: "A careful rollout inside your environment, with your people in the loop." },
-  { n: "05", t: "Scale", d: "We harden it, watch it, and hand it over, or stay on as your AI partner." },
-];
-
-const INDUSTRIES = [
-  "Legal & Compliance",
-  "Financial Services",
-  "Healthcare",
-  "Real Estate",
-  "Retail & E-commerce",
-  "Logistics",
+  { n: "05", t: "Hand over", d: "We document it, watch it in production, and hand it over, or stay on if you want us to." },
 ];
 
 const FOUNDERS = [
@@ -41,266 +46,244 @@ const FOUNDERS = [
 ];
 
 export default function Home() {
-  const research = getAllResearch().slice(0, 3);
+  const lead = LEAD_SERVICES.map((slug) => SERVICES.find((s) => s.slug === slug)!);
+  const others = SERVICES.filter((s) => !LEAD_SERVICES.includes(s.slug));
+  const [caseStudy, ...moreWork] = WORK.filter((w) => w.featured);
+  const research = getAllResearch().slice(0, 4);
 
   return (
     <>
       {/* ───────────── HERO ───────────── */}
-      <section className="relative overflow-hidden">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute left-1/2 top-[8%] h-[520px] w-[520px] -translate-x-1/2 rounded-full opacity-70 blur-[130px]"
-          style={{ background: "radial-gradient(circle, rgba(185,242,58,0.2), transparent 70%)" }}
-        />
-        <Container className="relative flex min-h-[86vh] flex-col items-center justify-center py-20 text-center">
+      <section>
+        <Container className="flex min-h-[80vh] flex-col items-center justify-center py-20 text-center">
           <p className="reveal mono-label" style={{ animationDelay: "0ms" }}>
-            Applied AI Research & Engineering · Meydan Free Zone, Dubai
+            Applied AI research & engineering · Meydan Free Zone, Dubai
           </p>
 
           <h1
-            className="reveal mt-5 max-w-4xl text-4xl font-semibold leading-[1.05] tracking-tight text-[var(--color-fg)] sm:text-6xl"
+            className="reveal mt-6 max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-[var(--color-fg)] sm:text-6xl"
             style={{ animationDelay: "90ms" }}
           >
-            We turn frontier AI research into<br className="hidden sm:block" />{" "}
-            <span className="text-[var(--color-neon)]">systems that ship.</span>
+            We turn frontier AI research into systems that ship.
           </h1>
 
           <p
-            className="reveal mt-6 max-w-2xl text-base leading-relaxed text-[var(--color-muted)]"
+            className="reveal mt-6 max-w-2xl text-pretty text-base leading-relaxed text-[var(--color-muted)]"
             style={{ animationDelay: "200ms" }}
           >
-            Ground State Foundry is an applied AI research and engineering firm. We do original
-            research in voice AI, agents, and evolutionary systems, and we build it into production
-            systems for enterprises worldwide.{" "}
-            <span className="text-[var(--color-fg)]">No slideware. Only execution.</span>
+            We do original research in voice AI, agents, and evolutionary systems, and we build it
+            into production systems for clients in the UAE and abroad.
           </p>
 
           <div className="reveal mt-9 flex flex-wrap items-center justify-center gap-3" style={{ animationDelay: "320ms" }}>
             <Link href="/contact" className="btn btn-primary">Book a consult →</Link>
-            <Link href="/research" className="btn btn-ghost">See our research</Link>
+            <Link href="/research" className="btn btn-ghost">Read our research</Link>
           </div>
 
-          <p className="reveal mt-6 text-xs text-[var(--color-dim)]" style={{ animationDelay: "420ms" }}>
-            {SITE.tagline}
-          </p>
+          <div className="reveal mt-16 w-full max-w-xs" style={{ animationDelay: "420ms" }}>
+            <GroundStateMark className="w-full" />
+            <p className="mt-3 text-xs text-[var(--color-dim)]">{SITE.tagline}</p>
+          </div>
         </Container>
       </section>
 
-      {/* ───────────── PROOF STRIP ───────────── */}
-      <Container className="py-6">
-        <div className="card grid grid-cols-2 divide-y divide-[var(--color-border)] sm:grid-cols-4 sm:divide-x sm:divide-y-0">
-          {[
-            ["Open source", "our tools are public, under MIT"],
-            ["In production", "voice agents on real phone lines"],
-            ["Original research", "code that evolves its own algorithms"],
-            ["Dubai · global", "based in Meydan, we deliver worldwide"],
-          ].map(([v, l]) => (
-            <div key={l} className="px-6 py-7 text-center">
-              <div className="text-lg font-semibold text-[var(--color-fg)] sm:text-xl">{v}</div>
-              <div className="mono-label mt-2 normal-case tracking-normal">{l}</div>
-            </div>
-          ))}
-        </div>
-      </Container>
-
-      {/* ───────────── SERVICES ───────────── */}
-      <Container className="py-24 sm:py-28">
-        <div className="mb-14 text-center">
-          <p className="mono-label">what we do</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-5xl">
-            From research to shipped
-          </h2>
-          <p className="mx-auto mt-4 max-w-lg leading-relaxed text-[var(--color-muted)]">
-            We advise, we build, and we stay accountable to the outcome. Six ways to work with us.
-          </p>
-        </div>
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {SERVICES.map((s) => (
+      {/* ───────────── SERVICES (lead three) ───────────── */}
+      <Container className="py-20">
+        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What we do</h2>
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
+          {lead.map((s) => (
             <Link
               key={s.slug}
               href={`/services/${s.slug}`}
-              className="card group p-7 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-neon)]"
+              className="card group flex flex-col p-8 transition-colors duration-300 hover:border-[var(--color-muted)]"
             >
-              <p className="mono-label">service · {s.num}</p>
-              <h3 className="mt-3 text-xl font-semibold text-[var(--color-fg)]">{s.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-[var(--color-muted)]">{s.summary}</p>
+              <h3 className="text-xl font-semibold text-[var(--color-fg)]">{s.title}</h3>
+              <p className="mt-3 flex-1 leading-relaxed text-[var(--color-muted)]">{s.summary}</p>
+              <ul className="mt-6 space-y-1.5 text-sm text-[var(--color-dim)]">
+                {s.subs.slice(0, 3).map((sub) => (
+                  <li key={sub.title}>{sub.title}</li>
+                ))}
+              </ul>
+              <span className="mt-6 text-sm text-[var(--color-fg)]">Learn more →</span>
             </Link>
           ))}
         </div>
-        <div className="mt-10 text-center">
-          <Link href="/services" className="link-u text-sm">See all services →</Link>
-        </div>
+        <p className="mt-8 text-sm text-[var(--color-muted)]">
+          We also do{" "}
+          {others.map((s, i) => (
+            <span key={s.slug}>
+              <Link href={`/services/${s.slug}`} className="link-u">{s.title.replace(" Solutions", "")}</Link>
+              {i < others.length - 2 ? ", " : i === others.length - 2 ? ", and " : "."}
+            </span>
+          ))}{" "}
+          We work across legal, finance, healthcare, real estate, retail, and logistics.{" "}
+          <Link href="/industries" className="link-u">Industries →</Link>
+        </p>
       </Container>
 
-      {/* ───────────── RESEARCH-LED DIFFERENTIATOR ───────────── */}
-      <Container className="py-12">
-        <div className="card-neon relative overflow-hidden p-8 sm:p-12">
-          <div className="max-w-2xl">
-            <p className="mono-label">why we are different</p>
-            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">
-              We do not just advise on AI. We do the research.
-            </h2>
-            <p className="mt-4 leading-relaxed text-[var(--color-muted)]">
-              Our framework evolved a matrix-multiplication algorithm that came in below the
-              textbook result, and nobody designed it, it emerged from the search. Our open-source
-              system runs whole fleets of AI agents that talk to each other and spawn more on their
-              own. That research is not a side project. It is what makes the systems we build for
-              you sharper than the ones you can buy off a shelf.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link href="/research" className="btn btn-primary">Read our research →</Link>
-              <Link href="/work" className="btn btn-ghost">See what we have built</Link>
-            </div>
+      {/* ───────────── A CHECKABLE RESULT ───────────── */}
+      <Container className="py-20">
+        <div className="card p-8 sm:p-12">
+          <p className="mono-label">research result</p>
+          <h2 className="mt-4 max-w-2xl text-balance text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">
+            Our system found a faster way to multiply matrices. Nobody on the team designed it.
+          </h2>
+          <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
+            We pointed Darweel, our evolutionary framework, at 4x4 matrix multiplication and
+            counted the multiplications each candidate used. Programs competed, mutated, and
+            reproduced. Without being shown the answer, it rediscovered Winograd&apos;s 48. A
+            descendant then learned to skip multiplications by zero and went lower on real inputs.
+          </p>
+
+          <div className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-border)] sm:grid-cols-4">
+            {MATMUL.map((m, i) => (
+              <div key={m.v} className="bg-[var(--color-panel)] p-5">
+                <div
+                  className={`text-3xl font-semibold tabular-nums ${
+                    i === MATMUL.length - 1 ? "text-[var(--color-fg)]" : "text-[var(--color-muted)]"
+                  }`}
+                >
+                  {m.v}
+                </div>
+                <div className="mt-2 text-xs leading-snug text-[var(--color-dim)]">{m.l}</div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-3 text-xs text-[var(--color-dim)]">
+            Scalar multiplications per 4x4 product. 47.94 is a measured average over the test set; the worst case is 48.
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+            <Link href="/research/code-that-beats-me" className="link-u">How it happened →</Link>
+            <a href={DARWEEL_REPORT_URL} target="_blank" rel="noopener noreferrer" className="link-u">
+              The original report ↗
+            </a>
+            <a href={BUBBLES_URL} target="_blank" rel="noopener noreferrer" className="link-u">
+              Also ours: Bubbles, open source on GitHub ↗
+            </a>
           </div>
         </div>
       </Container>
 
-      {/* ───────────── FEATURED WORK ───────────── */}
-      <Container className="py-16">
-        <div className="mb-12 text-center">
-          <p className="mono-label">selected work</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">
-            Things we have shipped
-          </h2>
+      {/* ───────────── WORK: one case study + list ───────────── */}
+      <Container className="py-20">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Things we have shipped</h2>
+          <Link href="/work" className="link-u text-sm">All work →</Link>
         </div>
-        <div className="grid gap-5 md:grid-cols-2">
-          {featuredWork().map((w) => (
-            <div key={w.slug} className="card p-7">
-              <div className="flex items-center justify-between gap-3">
-                <span className="tag tag-neon">{w.tag}</span>
-                <span className="mono-label">{w.status}</span>
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-[var(--color-fg)]">{w.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-[var(--color-muted)]">{w.summary}</p>
-            </div>
-          ))}
-        </div>
-        <div className="mt-10 text-center">
-          <Link href="/work" className="link-u text-sm">See all work →</Link>
-        </div>
-      </Container>
 
-      {/* ───────────── PROCESS ───────────── */}
-      <Container className="py-16">
-        <div className="mb-12 text-center">
-          <p className="mono-label">how we work</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">
-            Five phases. One outcome.
-          </h2>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          {PROCESS.map((p) => (
-            <div key={p.n} className="card p-6">
-              <div className="text-2xl font-semibold text-[var(--color-neon)]">{p.n}</div>
-              <h3 className="mt-3 font-semibold text-[var(--color-fg)]">{p.t}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-[var(--color-muted)]">{p.d}</p>
-            </div>
-          ))}
-        </div>
-      </Container>
-
-      {/* ───────────── FROM THE LAB (research) ───────────── */}
-      {research.length > 0 && (
-        <Container className="py-16">
-          <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+        {caseStudy && (
+          <div className="mt-10 grid gap-10 border-t border-[var(--color-border-bright)] pt-10 lg:grid-cols-[1.1fr_1fr]">
             <div>
-              <p className="mono-label">from the lab</p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">
-                Latest research
-              </h2>
+              <div className="flex items-center gap-3">
+                <span className="tag">{caseStudy.tag}</span>
+                <span className="text-xs text-[var(--color-dim)]">{caseStudy.status}</span>
+              </div>
+              <h3 className="mt-5 text-2xl font-semibold text-[var(--color-fg)] sm:text-3xl">{caseStudy.title}</h3>
+              <p className="mt-4 text-lg leading-relaxed text-[var(--color-muted)]">{caseStudy.summary}</p>
             </div>
+            <ul className="space-y-4 self-end">
+              {caseStudy.points.map((p) => (
+                <li key={p} className="border-l border-[var(--color-border-bright)] pl-4 leading-relaxed text-[var(--color-muted)]">
+                  {p}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="mt-12 divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
+          {moreWork.map((w) => (
+            <div key={w.slug} className="grid gap-2 py-6 sm:grid-cols-[1fr_2fr_auto] sm:items-baseline sm:gap-8">
+              <h3 className="font-semibold text-[var(--color-fg)]">{w.title}</h3>
+              <p className="text-sm leading-relaxed text-[var(--color-muted)]">{w.summary}</p>
+              {w.link ? (
+                <a href={w.link.href} target="_blank" rel="noopener noreferrer" className="link-u whitespace-nowrap text-sm">
+                  {w.link.label} ↗
+                </a>
+              ) : (
+                <span className="whitespace-nowrap text-xs text-[var(--color-dim)]">{w.status}</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </Container>
+
+      {/* ───────────── PROCESS: numbered list ───────────── */}
+      <Container className="py-20">
+        <div className="grid gap-10 lg:grid-cols-[1fr_2fr]">
+          <div>
+            <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">How we work</h2>
+            <p className="mt-4 max-w-sm leading-relaxed text-[var(--color-muted)]">
+              Five steps, one metric, agreed up front. If AI is not the answer, we say so in step one.
+            </p>
+          </div>
+          <ol className="divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
+            {PROCESS.map((p) => (
+              <li key={p.n} className="grid grid-cols-[3rem_1fr] gap-4 py-5 sm:grid-cols-[3rem_9rem_1fr]">
+                <span className="font-mono text-sm tabular-nums text-[var(--color-dim)]">{p.n}</span>
+                <span className="font-semibold text-[var(--color-fg)]">{p.t}</span>
+                <span className="col-start-2 text-sm leading-relaxed text-[var(--color-muted)] sm:col-start-3">{p.d}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </Container>
+
+      {/* ───────────── RESEARCH: editorial list ───────────── */}
+      {research.length > 0 && (
+        <Container className="py-20">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">From the lab</h2>
             <Link href="/research" className="link-u text-sm">All research →</Link>
           </div>
-          <div className="grid gap-5 md:grid-cols-3">
+          <div className="mt-10 divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
             {research.map((r) => (
               <Link
                 key={r.slug}
                 href={`/research/${r.slug}`}
-                className="card group flex flex-col p-7 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-neon)]"
+                className="group grid gap-2 py-7 sm:grid-cols-[12rem_1fr] sm:gap-8"
               >
-                <p className="mono-label">{categoryTitle(r.category)}</p>
-                <h3 className="mt-3 text-lg font-semibold leading-snug text-[var(--color-fg)]">{r.title}</h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-[var(--color-muted)]">{r.excerpt}</p>
-                <p className="mt-4 text-xs text-[var(--color-dim)]">{r.readingTime}</p>
+                <span className="text-xs text-[var(--color-dim)]">{categoryTitle(r.category)}</span>
+                <span>
+                  <span className="block text-xl font-semibold text-[var(--color-fg)] underline-offset-4 group-hover:underline">
+                    {r.title}
+                  </span>
+                  <span className="mt-2 block max-w-2xl text-sm leading-relaxed text-[var(--color-muted)]">{r.excerpt}</span>
+                </span>
               </Link>
             ))}
           </div>
         </Container>
       )}
 
-      {/* ───────────── INDUSTRIES ───────────── */}
-      <Container className="py-16">
-        <div className="card flex flex-col items-start justify-between gap-8 p-8 sm:p-10 lg:flex-row lg:items-center">
-          <div className="max-w-md">
-            <p className="mono-label">industries</p>
-            <h2 className="mt-3 text-2xl font-semibold text-[var(--color-fg)] sm:text-3xl">
-              Domain-aware, not one-size-fits-all
-            </h2>
-            <p className="mt-3 leading-relaxed text-[var(--color-muted)]">
-              We have shipped AI where the stakes and the regulations are real. We learn your domain
-              before we write a line of code.
-            </p>
-            <Link href="/industries" className="mt-5 inline-block link-u text-sm">Explore industries →</Link>
-          </div>
-          <div className="flex flex-wrap gap-2.5">
-            {INDUSTRIES.map((i) => (
-              <span key={i} className="tag tag-neon">{i}</span>
-            ))}
-          </div>
-        </div>
-      </Container>
-
       {/* ───────────── FOUNDERS ───────────── */}
-      <Container className="py-16">
-        <div className="mb-10 text-center">
-          <p className="mono-label">the team</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">
-            Founders who build
-          </h2>
-        </div>
-        <div className="grid gap-5 md:grid-cols-2">
+      <Container className="py-20">
+        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Who you will work with</h2>
+        <div className="mt-10 grid gap-5 md:grid-cols-2">
           {FOUNDERS.map((f) => (
             <FounderCard key={f.name} {...f} />
           ))}
         </div>
       </Container>
 
-      {/* ───────────── LOCATION ───────────── */}
-      <Container className="py-12">
-        <div className="card flex flex-col items-start justify-between gap-6 p-8 sm:flex-row sm:items-center sm:p-10">
-          <div>
-            <p className="mono-label">where we are</p>
-            <h2 className="mt-3 text-2xl font-semibold text-[var(--color-fg)]">{SITE.address.zone}, Dubai</h2>
-            <p className="mt-3 leading-relaxed text-[var(--color-muted)]">
-              Based in Dubai, we work with clients around the world.
-            </p>
-          </div>
-          <Link href="/contact" className="btn btn-ghost shrink-0">Get in touch →</Link>
-        </div>
-      </Container>
-
       {/* ───────────── FINAL CTA ───────────── */}
       <Container className="py-20">
-        <div className="card-neon relative overflow-hidden p-10 text-center sm:p-16">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 blur-[100px]"
-            style={{ background: "radial-gradient(circle, rgba(185,242,58,0.25), transparent 70%)" }}
-          />
-          <div className="relative">
-            <p className="mono-label">let us build</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">
-              Tell us what you are trying to move.
-            </h2>
-            <p className="mx-auto mt-3 max-w-md text-[var(--color-muted)]">
-              A 30-minute call. We will tell you honestly whether AI is the answer, and how we would
-              approach it.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link href="/contact" className="btn btn-primary">Book a consult →</Link>
-              <a href={`mailto:${SITE.email}`} className="btn btn-ghost">{SITE.email}</a>
-            </div>
+        <div className="card-neon p-10 text-center sm:p-16">
+          <h2 className="text-balance text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">
+            Tell us what you are trying to move.
+          </h2>
+          <p className="mx-auto mt-4 max-w-md text-[var(--color-muted)]">
+            A 30-minute call. We will tell you honestly whether AI is the answer, and how we would
+            approach it.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link href="/contact" className="btn btn-primary">Book a consult →</Link>
+            <a href={`mailto:${SITE.email}`} className="btn btn-ghost">{SITE.email}</a>
           </div>
+          <p className="mt-8 text-xs text-[var(--color-dim)]">
+            {SITE.address.zone}, Dubai · working with clients in the UAE and abroad
+          </p>
         </div>
       </Container>
     </>
@@ -321,29 +304,27 @@ function FounderCard({
   linkedin: string;
 }) {
   return (
-    <div className="card p-8">
-      <div className="flex items-center gap-4">
-        <Image
-          src={img}
-          alt={name}
-          width={64}
-          height={64}
-          className="h-16 w-16 shrink-0 rounded-full border border-[var(--color-border-bright)] object-cover"
-        />
-        <div>
-          <h3 className="text-xl font-semibold text-[var(--color-fg)]">{name}</h3>
-          <p className="mono-label mt-1">{role}</p>
-        </div>
+    <div className="card flex flex-col gap-6 p-8 sm:flex-row">
+      <Image
+        src={img}
+        alt={name}
+        width={128}
+        height={128}
+        className="h-28 w-28 shrink-0 rounded-2xl border border-[var(--color-border-bright)] object-cover"
+      />
+      <div>
+        <h3 className="text-xl font-semibold text-[var(--color-fg)]">{name}</h3>
+        <p className="mt-1 text-sm text-[var(--color-dim)]">{role}</p>
+        <p className="mt-4 leading-relaxed text-[var(--color-muted)]">{body}</p>
+        <a
+          href={linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-block text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-fg)]"
+        >
+          LinkedIn ↗
+        </a>
       </div>
-      <p className="mt-5 leading-relaxed text-[var(--color-muted)]">{body}</p>
-      <a
-        href={linkedin}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-4 inline-block text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-neon)]"
-      >
-        LinkedIn ↗
-      </a>
     </div>
   );
 }

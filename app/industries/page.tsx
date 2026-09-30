@@ -29,7 +29,7 @@ export default function IndustriesPage() {
       <Container className="py-16">
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {INDUSTRIES.map((i) => (
-            <div key={i.t} className="card p-7 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-neon)]">
+            <div key={i.t} className="card p-7 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-muted)]">
               <h3 className="text-lg font-semibold text-[var(--color-fg)]">{i.t}</h3>
               <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted)]">{i.d}</p>
             </div>

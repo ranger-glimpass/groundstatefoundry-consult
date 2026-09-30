@@ -1,7 +1,7 @@
 ---
 title: "Messaging That Never Interrupts"
 category: "multi-agent-systems"
-date: "2026-08-14"
+date: "2026-09-15"
 excerpt: "When one agent needs to tell another something, the naive move is to interrupt, and the interruption is exactly what wrecks the work."
 author: "Rishi Raj"
 ---

@@ -80,7 +80,7 @@ export const WORK: WorkItem[] = [
     points: [
       "Evolved a 4x4 matrix-multiplication algorithm down to 48 multiplications",
       "That matches Winograd, below the textbook Strassen result of 49",
-      "The algorithm emerged from the search, we did not design it",
+      "A descendant then averaged 47.94 across 500 test cases, all correct, by learning to skip multiplications by zero",
     ],
     link: { href: "https://www.onevoid.org/post/conditional-winograd-by-edbbc5b2", label: "Read the report" },
   },

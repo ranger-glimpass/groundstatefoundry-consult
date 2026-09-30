@@ -1,9 +1,10 @@
 ---
 title: "A Prompt and a Toolbelt Is the Product"
 category: "applied-ai"
-date: "2026-08-26"
+date: "2026-09-15"
 excerpt: "I ran real outbound sales with a general coding agent, a big set of tools, and one instructions file, and it changed what I think a product is."
 author: "Rishi Raj"
+weight: 6
 ---
 
 I wanted to sell something, and I did not want to build a sales tool to do it.

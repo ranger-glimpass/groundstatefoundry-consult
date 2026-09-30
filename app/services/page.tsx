@@ -25,7 +25,7 @@ export default function ServicesPage() {
             <Link
               key={s.slug}
               href={`/services/${s.slug}`}
-              className="card p-8 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-neon)]"
+              className="card p-8 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-muted)]"
             >
               <p className="mono-label">service · {s.num}</p>
               <h3 className="mt-3 text-2xl font-semibold text-[var(--color-fg)]">{s.title}</h3>
