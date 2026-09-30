@@ -4,7 +4,7 @@ import { SITE, NAV } from "@/lib/site";
 
 export default function SiteFooter() {
   return (
-    <footer className="mt-28 border-t border-[var(--color-border)]">
+    <footer className="mt-16 border-t border-[var(--color-border)]">
       <Container>
         <div className="grid gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
@@ -52,8 +52,10 @@ export default function SiteFooter() {
         </div>
 
         <div className="flex flex-col items-start justify-between gap-2 border-t border-[var(--color-border)] py-5 text-xs text-[var(--color-dim)] sm:flex-row sm:items-center">
-          <span>© {new Date().getFullYear()} {SITE.name}</span>
-          <span className="mono-label">{SITE.address.zone} · Dubai</span>
+          <span>
+            © {new Date().getFullYear()} {SITE.legalName} · Licence No. {SITE.licence}
+          </span>
+          <span>{SITE.address.zone}, Dubai, United Arab Emirates</span>
         </div>
       </Container>
     </footer>

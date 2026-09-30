@@ -59,6 +59,16 @@ export default function ContactPage() {
                 Open in Maps ↗
               </a>
             </div>
+
+            <div className="card p-8">
+              <p className="mono-label">company</p>
+              <dl className="mt-3 space-y-1.5 text-sm leading-relaxed text-[var(--color-muted)]">
+                <div><dt className="inline text-[var(--color-dim)]">Legal name: </dt><dd className="inline">{SITE.legalName}</dd></div>
+                <div><dt className="inline text-[var(--color-dim)]">Licence No.: </dt><dd className="inline">{SITE.licence}</dd></div>
+                <div><dt className="inline text-[var(--color-dim)]">Formation No.: </dt><dd className="inline">{SITE.formation}</dd></div>
+                <div><dt className="inline text-[var(--color-dim)]">Type: </dt><dd className="inline">Free Zone Limited Liability Company, {SITE.address.zone}</dd></div>
+              </dl>
+            </div>
           </div>
         </div>
       </Container>

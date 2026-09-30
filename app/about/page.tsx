@@ -129,7 +129,7 @@ function Founder({
           alt={name}
           width={64}
           height={64}
-          className="h-16 w-16 shrink-0 rounded-full border border-[var(--color-border-bright)] object-cover"
+          className="h-16 w-16 shrink-0 rounded-full border border-[var(--color-border-bright)] object-cover object-top grayscale contrast-[1.05]"
         />
         <div>
           <h3 className="text-xl font-semibold text-[var(--color-fg)]">{name}</h3>

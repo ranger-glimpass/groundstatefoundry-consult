@@ -94,6 +94,8 @@ const JSON_LD = {
   description: DESCRIPTION,
   email: SITE.email,
   sameAs: [SITE.linkedin],
+  legalName: SITE.legalName,
+  identifier: { "@type": "PropertyValue", name: "Meydan Free Zone licence number", value: SITE.licence },
   areaServed: ["AE", "Worldwide"],
   address: {
     "@type": "PostalAddress",

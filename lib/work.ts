@@ -36,15 +36,16 @@ export const WORK: WorkItem[] = [
     points: [
       "Built on a toolbelt of 50+ tools the agent calls on its own",
       "Ran day and night without a person driving each step",
-      "Later turned into a live outreach service with paying clients",
+      "Later turned into MechMagnet, a live outreach service with paying clients",
     ],
+    link: { href: "https://mechmagnet.com", label: "mechmagnet.com" },
     featured: true,
   },
   {
     slug: "demogod",
     title: "A voice agent that demos your product",
     tag: "Voice AI",
-    status: "Live beta",
+    status: "Beta",
     summary:
       "An embeddable voice agent that walks a visitor through a live, interactive product demo on any website.",
     points: [
@@ -52,7 +53,6 @@ export const WORK: WorkItem[] = [
       "Speaks and listens in real time",
       "Drops into any site as a widget",
     ],
-    link: { href: "https://demogod.me", label: "demogod.me" },
     featured: true,
   },
   {

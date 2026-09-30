@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/ui";
 import GroundStateMark from "@/components/GroundStateMark";
+import MatmulChart from "@/components/MatmulChart";
 import { SITE } from "@/lib/site";
 import { SERVICES } from "@/lib/services";
 import { WORK } from "@/lib/work";
@@ -55,7 +56,7 @@ export default function Home() {
     <>
       {/* ───────────── HERO ───────────── */}
       <section>
-        <Container className="flex min-h-[80vh] flex-col items-center justify-center py-20 text-center">
+        <Container className="flex min-h-[72vh] flex-col justify-center py-16">
           <p className="reveal mono-label" style={{ animationDelay: "0ms" }}>
             Applied AI research & engineering
           </p>
@@ -75,12 +76,12 @@ export default function Home() {
             into production systems for clients in the UAE and abroad.
           </p>
 
-          <div className="reveal mt-9 flex flex-wrap items-center justify-center gap-3" style={{ animationDelay: "320ms" }}>
+          <div className="reveal mt-9 flex flex-wrap items-center gap-3" style={{ animationDelay: "320ms" }}>
             <Link href="/contact" className="btn btn-primary">Book a consult →</Link>
             <Link href="/research" className="btn btn-ghost">Read our research</Link>
           </div>
 
-          <div className="reveal mt-16 w-full max-w-xs" style={{ animationDelay: "420ms" }}>
+          <div className="reveal mt-14 w-full max-w-xs" style={{ animationDelay: "420ms" }}>
             <GroundStateMark className="w-full" />
             <p className="mt-3 text-xs text-[var(--color-dim)]">{SITE.tagline}</p>
           </div>
@@ -88,7 +89,7 @@ export default function Home() {
       </section>
 
       {/* ───────────── SERVICES (lead three) ───────────── */}
-      <Container className="py-20">
+      <Container className="py-12">
         <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What we do</h2>
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {lead.map((s) => (
@@ -122,18 +123,24 @@ export default function Home() {
       </Container>
 
       {/* ───────────── A CHECKABLE RESULT ───────────── */}
-      <Container className="py-20">
+      <Container className="py-12">
         <div className="card p-8 sm:p-12">
-          <p className="mono-label">research result</p>
-          <h2 className="mt-4 max-w-2xl text-balance text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">
-            Our system found a faster way to multiply matrices. Nobody on the team designed it.
-          </h2>
-          <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-            We pointed Darweel, our evolutionary framework, at 4x4 matrix multiplication and
-            counted the multiplications each candidate used. Programs competed, mutated, and
-            reproduced. Without being shown the answer, it rediscovered Winograd&apos;s 48. A
-            descendant then learned to skip multiplications by zero and went lower on real inputs.
-          </p>
+          <div className="grid gap-10 lg:grid-cols-[1.25fr_1fr] lg:items-center">
+            <div>
+              <p className="mono-label">research result</p>
+              <h2 className="mt-4 text-balance text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">
+                Our system rediscovered a classic 48-multiplication method on its own. Then it went lower.
+              </h2>
+              <p className="mt-4 leading-relaxed text-[var(--color-muted)]">
+                We pointed Darweel, our evolutionary framework, at 4x4 matrix multiplication and
+                counted the multiplications each candidate used. Programs competed, mutated, and
+                reproduced. Without being shown the answer, it arrived at Winograd&apos;s 48. A
+                descendant then learned to skip multiplications by zero, which brought the average
+                below 48 on the test set.
+              </p>
+            </div>
+            <MatmulChart />
+          </div>
 
           <div className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-border)] sm:grid-cols-4">
             {MATMUL.map((m, i) => (
@@ -150,7 +157,7 @@ export default function Home() {
             ))}
           </div>
           <p className="mt-3 text-xs text-[var(--color-dim)]">
-            Scalar multiplications per 4x4 product. 47.94 is a measured average over the test set; the worst case is 48.
+            Scalar multiplications per 4x4 product. 47.94 is a measured average over 500 test cases; the worst case is still 48. Winograd&apos;s 48 relies on the numbers commuting, so it applies to ordinary numbers, not to every kind of matrix algebra.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
@@ -166,7 +173,7 @@ export default function Home() {
       </Container>
 
       {/* ───────────── WORK: one case study + list ───────────── */}
-      <Container className="py-20">
+      <Container className="py-12">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Things we have shipped</h2>
           <Link href="/work" className="link-u text-sm">All work →</Link>
@@ -202,7 +209,7 @@ export default function Home() {
                   {w.link.label} ↗
                 </a>
               ) : (
-                <span className="whitespace-nowrap text-xs text-[var(--color-dim)]">{w.status}</span>
+                <span />
               )}
             </div>
           ))}
@@ -210,7 +217,7 @@ export default function Home() {
       </Container>
 
       {/* ───────────── PROCESS: numbered list ───────────── */}
-      <Container className="py-20">
+      <Container className="py-12">
         <div className="grid gap-10 lg:grid-cols-[1fr_2fr]">
           <div>
             <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">How we work</h2>
@@ -232,7 +239,7 @@ export default function Home() {
 
       {/* ───────────── RESEARCH: editorial list ───────────── */}
       {research.length > 0 && (
-        <Container className="py-20">
+        <Container className="py-12">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">From the lab</h2>
             <Link href="/research" className="link-u text-sm">All research →</Link>
@@ -258,7 +265,7 @@ export default function Home() {
       )}
 
       {/* ───────────── FOUNDERS ───────────── */}
-      <Container className="py-20">
+      <Container className="py-12">
         <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Who you will work with</h2>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
           {FOUNDERS.map((f) => (
@@ -268,7 +275,7 @@ export default function Home() {
       </Container>
 
       {/* ───────────── FINAL CTA ───────────── */}
-      <Container className="py-20">
+      <Container className="py-12">
         <div className="card-neon p-10 text-center sm:p-16">
           <h2 className="text-balance text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">
             Tell us what you are trying to move.
@@ -310,7 +317,7 @@ function FounderCard({
         alt={name}
         width={128}
         height={128}
-        className="h-28 w-28 shrink-0 rounded-2xl border border-[var(--color-border-bright)] object-cover"
+        className="h-28 w-28 shrink-0 rounded-2xl border border-[var(--color-border-bright)] object-cover object-top grayscale contrast-[1.05]"
       />
       <div>
         <h3 className="text-xl font-semibold text-[var(--color-fg)]">{name}</h3>

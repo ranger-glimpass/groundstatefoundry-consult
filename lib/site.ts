@@ -2,6 +2,9 @@
 
 export const SITE = {
   name: "Ground State Foundry",
+  legalName: "Ground State Foundry L.L.C-FZ",
+  licence: "2653600.01",
+  formation: "2653600",
   url: "https://groundstatefoundry.com",
   tagline: "The most stable state your business can run in.",
   positioning:
