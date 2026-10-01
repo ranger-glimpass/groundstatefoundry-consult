@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Sora, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import SiteNav from "@/components/SiteNav";
-import SiteFooter from "@/components/SiteFooter";
 import { SITE } from "@/lib/site";
 
 const sora = Sora({
@@ -133,11 +131,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
         />
-        <div className="relative z-10 flex min-h-full flex-col">
-          <SiteNav />
-          <main className="flex-1">{children}</main>
-          <SiteFooter />
-        </div>
+        {children}
       </body>
     </html>
   );
