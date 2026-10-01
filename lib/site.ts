@@ -12,7 +12,7 @@ export const SITE = {
   email: "hello@groundstatefoundry.com",
   linkedin: "https://www.linkedin.com/company/ground-state-foundry",
   founders: [
-    { name: "Rishi Raj", fullName: "Rishi Raj", role: "Director", linkedin: "https://www.linkedin.com/in/rishi-raj-jaiswal-4b353913a/" },
+    { name: "Rishi Raj", fullName: "Rishi Raj", role: "Founder & Chief Scientist", linkedin: "https://www.linkedin.com/in/rishi-raj-jaiswal-4b353913a/" },
     { name: "Devashish", fullName: "Devashish Jaiswal", role: "AI Advisor & Strategist", linkedin: "https://www.linkedin.com/in/devajais/" },
   ],
   address: {

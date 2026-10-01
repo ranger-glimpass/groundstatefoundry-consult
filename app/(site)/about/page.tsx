@@ -21,7 +21,7 @@ const VALUES = [
 const FOUNDERS = [
   {
     name: "Rishi Raj",
-    role: "Director",
+    role: "Founder & Chief Scientist",
     img: "/rishi.png",
     linkedin: "https://www.linkedin.com/in/rishi-raj-jaiswal-4b353913a/",
     body: "Applied AI and research. Built voice agents that run in production over real telephony, an open-source system for running fleets of AI agents, and a framework where code evolves its own algorithms. Sets the firm's direction and keeps every project tied to a real outcome.",
