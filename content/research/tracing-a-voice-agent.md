@@ -1,7 +1,7 @@
 ---
 title: "Tracing Who Is Speaking When"
 category: "voice-ai"
-date: "2026-09-15"
+date: "2026-09-18"
 excerpt: "You cannot shorten a pause you cannot see, so we put a stopwatch on every part of a voice call and watched where the time actually went."
 author: "Rishi Raj"
 ---

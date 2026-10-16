@@ -1,7 +1,7 @@
 ---
 title: "Being Human When the Work Is Mostly AI"
 category: "perspectives"
-date: "2026-09-15"
+date: "2026-10-07"
 excerpt: "When most of what gets made is machine-made, the visible marks of human effort, care, and honesty do not lose their worth, they become the rarest thing in the room."
 author: "Rishi Raj"
 ---

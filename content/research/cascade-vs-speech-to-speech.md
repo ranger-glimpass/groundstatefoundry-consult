@@ -1,7 +1,7 @@
 ---
 title: "Cascade or Speech to Speech"
 category: "voice-ai"
-date: "2026-09-15"
+date: "2026-10-07"
 excerpt: "Two ways to build a phone agent, and a plain account of when to chain three models and when to hand the whole conversation to one."
 author: "Rishi Raj"
 ---
