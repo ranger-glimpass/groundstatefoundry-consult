@@ -8,7 +8,7 @@ author: "Rishi Raj"
 
 There is a question you can ask about any system that manages agents, and the answer tells you almost everything: how much does it know about the model?
 
-Most of them know too much. They are wired to a specific provider, a specific API shape, a specific way of holding a conversation. That coupling feels harmless while everything is working. It stops feeling harmless the day you want to move a workload to a cheaper model, or run half your fleet on a cloud provider your client already pays for. I wanted the opposite. A control plane that runs a fleet of coding agents and genuinely does not care what is behind any single one of them.
+Most of them know too much. They are wired to a specific provider, a specific API shape, a specific way of holding a conversation. That coupling feels harmless while everything is working. It stops feeling harmless the day you want to move a workload to a cheaper model, or run half your fleet on a cloud provider your business already pays for. I wanted the opposite. A control plane that runs a fleet of coding agents and genuinely does not care what is behind any single one of them.
 
 I built it in Go. Here is what that neutrality actually took, and why I think it matters more than it sounds.
 
@@ -42,6 +42,6 @@ Here is where backend-neutrality stops being an abstract virtue. Cost is not one
 
 I did not set out to make a point about coupling. I set out to stop losing track of my own agents. But building it this way keeps making the same argument in different places, so I have started to trust it.
 
-A system lasts longer when it is honest about what it does not control. I do not control which model is best next quarter, or which provider a client has already standardized on, or what any of these APIs will look like in a year. Baking one of those choices into the core buys a little convenience today and a rewrite later. Keeping the model at arm's length, behind a tool I merely launch, costs a little indirection today and buys the freedom to not care tomorrow.
+A system lasts longer when it is honest about what it does not control. I do not control which model is best next quarter, or which provider a business has already standardized on, or what any of these APIs will look like in a year. Baking one of those choices into the core buys a little convenience today and a rewrite later. Keeping the model at arm's length, behind a tool I merely launch, costs a little indirection today and buys the freedom to not care tomorrow.
 
 The best compliment I can pay the design is that the fleet has no opinion about the model running inside it. That was the whole idea. The control plane's job is to run the fleet well and count what the fleet costs. Which brain each agent thinks with is, deliberately, none of its business.

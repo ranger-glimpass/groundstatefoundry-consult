@@ -71,7 +71,7 @@ export default async function ResearchPiecePage({
         <div className="mt-14 border-t border-[var(--color-border)] pt-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <Link href="/research" className="btn btn-ghost">← All research</Link>
-            <Link href="/contact" className="btn btn-primary">Work with us →</Link>
+            <Link href="/products/lisn" className="btn btn-primary">See Lisn →</Link>
           </div>
         </div>
       </article>

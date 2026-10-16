@@ -4,31 +4,19 @@ import { Container } from "@/components/ui";
 import GroundStateMark from "@/components/GroundStateMark";
 import MatmulChart from "@/components/MatmulChart";
 import { SITE } from "@/lib/site";
-import { SERVICES } from "@/lib/services";
+import { PRODUCTS, LISN_CAPABILITIES, LISN_STEPS, BUBBLES_REPO } from "@/lib/products";
 import { WORK } from "@/lib/work";
 import { getAllResearch, categoryTitle } from "@/lib/research";
 
-const BUBBLES_URL = "https://github.com/Sentinal-Glimpass/bubbles";
 /** The homepage research list is hidden for now; the /research pages stay live. */
 const SHOW_RESEARCH_LIST = false;
 const DARWEEL_REPORT_URL = "https://www.onevoid.org/post/conditional-winograd-by-edbbc5b2";
-
-/** The three service lines we lead with; the rest live on /services. */
-const LEAD_SERVICES = ["voice-ai", "ai-agents-automation", "simulation"];
 
 const MATMUL = [
   { v: "64", l: "schoolbook method" },
   { v: "49", l: "Strassen, applied twice" },
   { v: "48", l: "rediscovered by our system, matching Winograd" },
   { v: "47.94", l: "average across 500 test cases, all correct" },
-];
-
-const PROCESS = [
-  { n: "01", t: "Connect", d: "Point Lisn at your website, your phone numbers, and the tools it needs to get things done." },
-  { n: "02", t: "Teach", d: "Give it your products, policies, and the answers your best people give." },
-  { n: "03", t: "Practise", d: "Lisn talks to simulated customers first, and every conversation that goes wrong becomes a fix." },
-  { n: "04", t: "Go live", d: "It starts answering real visitors and callers, and hands over to a person when it should." },
-  { n: "05", t: "Improve", d: "It keeps practising against new situations, so it gets better every week." },
 ];
 
 const FOUNDERS = [
@@ -49,8 +37,6 @@ const FOUNDERS = [
 ];
 
 export default function Home() {
-  const lead = LEAD_SERVICES.map((slug) => SERVICES.find((s) => s.slug === slug)!);
-  const others = SERVICES.filter((s) => !LEAD_SERVICES.includes(s.slug));
   const [caseStudy, ...moreWork] = WORK.filter((w) => w.featured);
   const research = getAllResearch().slice(0, 4);
 
@@ -82,7 +68,7 @@ export default function Home() {
 
           <div className="reveal mt-9 flex flex-wrap items-center gap-3" style={{ animationDelay: "320ms" }}>
             <Link href="/contact" className="btn btn-primary">Request early access →</Link>
-            <Link href="/research" className="btn btn-ghost">Read our research</Link>
+            <Link href="/products/lisn" className="btn btn-ghost">See how Lisn works</Link>
             <span className="group relative inline-flex">
               <button
                 type="button"
@@ -111,94 +97,52 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* ───────────── SERVICES (lead three) ───────────── */}
+      {/* ───────────── WHAT LISN DOES ───────────── */}
       <Container className="py-12">
-        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What Lisn does</h2>
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {lead.map((s) => (
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What Lisn does</h2>
+          <Link href="/products/lisn" className="link-u text-sm">More about Lisn →</Link>
+        </div>
+        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          {LISN_CAPABILITIES.map((c) => (
             <Link
-              key={s.slug}
-              href={`/services/${s.slug}`}
-              className="card group flex flex-col p-8 transition-colors duration-300 hover:border-[var(--color-muted)]"
+              key={c.id}
+              href={`/products/lisn#${c.id}`}
+              className="card group flex flex-col p-7 transition-colors duration-300 hover:border-[var(--color-muted)]"
             >
-              <h3 className="text-xl font-semibold text-[var(--color-fg)]">{s.title}</h3>
-              <p className="mt-3 flex-1 leading-relaxed text-[var(--color-muted)]">{s.summary}</p>
-              <ul className="mt-6 space-y-1.5 text-sm text-[var(--color-dim)]">
-                {s.subs.slice(0, 3).map((sub) => (
-                  <li key={sub.title}>{sub.title}</li>
-                ))}
-              </ul>
-              <span className="mt-6 text-sm text-[var(--color-fg)]">Learn more →</span>
+              <h3 className="text-lg font-semibold text-[var(--color-fg)]">{c.t}</h3>
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--color-muted)]">{c.d}</p>
+              <p className="mt-5 text-xs text-[var(--color-dim)]">{c.from}</p>
             </Link>
           ))}
         </div>
-        <p className="mt-8 text-sm text-[var(--color-muted)]">
-          Built on the same stack:{" "}
-          {others.map((s, i) => (
-            <span key={s.slug}>
-              <Link href={`/services/${s.slug}`} className="link-u">{s.title.replace(" Solutions", "")}</Link>
-              {i < others.length - 2 ? ", " : i === others.length - 2 ? ", and " : "."}
-            </span>
-          ))}{" "}
-          We work across legal, finance, healthcare, real estate, retail, and logistics.{" "}
-          <Link href="/industries" className="link-u">Industries →</Link>
-        </p>
       </Container>
 
-      {/* ───────────── A CHECKABLE RESULT ───────────── */}
+      {/* ───────────── PROCESS: numbered list ───────────── */}
       <Container className="py-12">
-        <div className="card p-8 sm:p-12">
-          <div className="grid gap-10 lg:grid-cols-[1.25fr_1fr] lg:items-center">
-            <div>
-              <p className="mono-label">research result</p>
-              <h2 className="mt-4 text-balance text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">
-                Our system rediscovered a classic 48-multiplication method on its own. Then it went lower.
-              </h2>
-              <p className="mt-4 leading-relaxed text-[var(--color-muted)]">
-                We pointed Darweel, our evolutionary framework, at 4x4 matrix multiplication and
-                counted the multiplications each candidate used. Programs competed, mutated, and
-                reproduced. Without being shown the answer, it arrived at Winograd&apos;s 48. A
-                descendant then learned to skip multiplications by zero, which brought the average
-                below 48 on the test set.
-              </p>
-            </div>
-            <MatmulChart />
+        <div className="grid gap-10 lg:grid-cols-[1fr_2fr]">
+          <div>
+            <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">How Lisn goes live</h2>
+            <p className="mt-4 max-w-sm leading-relaxed text-[var(--color-muted)]">
+              Five steps from connecting your channels to an agent that keeps improving on its own.
+            </p>
           </div>
-
-          <div className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-border)] sm:grid-cols-4">
-            {MATMUL.map((m, i) => (
-              <div key={m.v} className="bg-[var(--color-panel)] p-5">
-                <div
-                  className={`text-3xl font-semibold tabular-nums ${
-                    i === MATMUL.length - 1 ? "text-[var(--color-fg)]" : "text-[var(--color-muted)]"
-                  }`}
-                >
-                  {m.v}
-                </div>
-                <div className="mt-2 text-xs leading-snug text-[var(--color-dim)]">{m.l}</div>
-              </div>
+          <ol className="divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
+            {LISN_STEPS.map((p) => (
+              <li key={p.n} className="grid grid-cols-[3rem_1fr] gap-4 py-5 sm:grid-cols-[3rem_9rem_1fr]">
+                <span className="font-mono text-sm tabular-nums text-[var(--color-dim)]">{p.n}</span>
+                <span className="font-semibold text-[var(--color-fg)]">{p.t}</span>
+                <span className="col-start-2 text-sm leading-relaxed text-[var(--color-muted)] sm:col-start-3">{p.d}</span>
+              </li>
             ))}
-          </div>
-          <p className="mt-3 text-xs text-[var(--color-dim)]">
-            Scalar multiplications per 4x4 product. 47.94 is a measured average over 500 test cases; the worst case is still 48. Winograd&apos;s 48 relies on the numbers commuting, so it applies to ordinary numbers, not to every kind of matrix algebra.
-          </p>
-
-          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-            <Link href="/research/code-that-beats-me" className="link-u">How it happened →</Link>
-            <a href={DARWEEL_REPORT_URL} target="_blank" rel="noopener noreferrer" className="link-u">
-              The original report ↗
-            </a>
-            <a href={BUBBLES_URL} target="_blank" rel="noopener noreferrer" className="link-u">
-              Also ours: Bubbles, open source on GitHub ↗
-            </a>
-          </div>
+          </ol>
         </div>
       </Container>
 
       {/* ───────────── WORK: one case study + list ───────────── */}
       <Container className="py-12">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Things we have shipped</h2>
+          <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What Lisn is built on</h2>
           <Link href="/work" className="link-u text-sm">All work →</Link>
         </div>
 
@@ -227,7 +171,9 @@ export default function Home() {
             <div key={w.slug} className="grid gap-2 py-6 sm:grid-cols-[1fr_2fr_auto] sm:items-baseline sm:gap-8">
               <h3 className="font-semibold text-[var(--color-fg)]">{w.title}</h3>
               <p className="text-sm leading-relaxed text-[var(--color-muted)]">{w.summary}</p>
-              {w.link ? (
+              {w.link && !w.link.href.startsWith("http") ? (
+                <Link href={w.link.href} className="link-u whitespace-nowrap text-sm">{w.link.label}</Link>
+              ) : w.link ? (
                 <a href={w.link.href} target="_blank" rel="noopener noreferrer" className="link-u whitespace-nowrap text-sm">
                   {w.link.label} ↗
                 </a>
@@ -239,24 +185,73 @@ export default function Home() {
         </div>
       </Container>
 
-      {/* ───────────── PROCESS: numbered list ───────────── */}
+      {/* ───────────── PRODUCTS ───────────── */}
       <Container className="py-12">
-        <div className="grid gap-10 lg:grid-cols-[1fr_2fr]">
-          <div>
-            <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">How Lisn goes live</h2>
-            <p className="mt-4 max-w-sm leading-relaxed text-[var(--color-muted)]">
-              Five steps from first call to an agent that keeps improving on its own.
-            </p>
+        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What we make</h2>
+        <div className="mt-10 grid gap-5 md:grid-cols-2">
+          {PRODUCTS.map((p) => (
+            <div key={p.slug} className="card flex flex-col p-8">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="text-2xl font-semibold text-[var(--color-fg)]">{p.name}</h3>
+                <span className="tag">{p.status}</span>
+              </div>
+              <p className="mt-4 flex-1 leading-relaxed text-[var(--color-muted)]">{p.line}</p>
+              <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                <Link href={`/products/${p.slug}`} className="link-u">More about {p.name} →</Link>
+                {p.slug === "bubbles" && (
+                  <a href={BUBBLES_REPO} target="_blank" rel="noopener noreferrer" className="link-u">View on GitHub ↗</a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Container>
+
+      {/* ───────────── THE LAB BEHIND IT ───────────── */}
+      <Container className="py-12">
+        <div className="card p-8 sm:p-12">
+          <div className="grid gap-10 lg:grid-cols-[1.25fr_1fr] lg:items-center">
+            <div>
+              <p className="mono-label">the lab behind it</p>
+              <h2 className="mt-4 text-balance text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">
+                Our system rediscovered a classic 48-multiplication method on its own. Then it went lower.
+              </h2>
+              <p className="mt-4 leading-relaxed text-[var(--color-muted)]">
+                We pointed Darweel, our evolutionary framework, at 4x4 matrix multiplication and
+                counted the multiplications each candidate used. Programs competed, mutated, and
+                reproduced. Without being shown the answer, it arrived at Winograd&apos;s 48. A
+                descendant then learned to skip multiplications by zero, which brought the average
+                below 48 on the test set. The same lab builds the simulations Lisn practises
+                against before it talks to your customers.
+              </p>
+            </div>
+            <MatmulChart />
           </div>
-          <ol className="divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
-            {PROCESS.map((p) => (
-              <li key={p.n} className="grid grid-cols-[3rem_1fr] gap-4 py-5 sm:grid-cols-[3rem_9rem_1fr]">
-                <span className="font-mono text-sm tabular-nums text-[var(--color-dim)]">{p.n}</span>
-                <span className="font-semibold text-[var(--color-fg)]">{p.t}</span>
-                <span className="col-start-2 text-sm leading-relaxed text-[var(--color-muted)] sm:col-start-3">{p.d}</span>
-              </li>
+
+          <div className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-border)] sm:grid-cols-4">
+            {MATMUL.map((m, i) => (
+              <div key={m.v} className="bg-[var(--color-panel)] p-5">
+                <div
+                  className={`text-3xl font-semibold tabular-nums ${
+                    i === MATMUL.length - 1 ? "text-[var(--color-fg)]" : "text-[var(--color-muted)]"
+                  }`}
+                >
+                  {m.v}
+                </div>
+                <div className="mt-2 text-xs leading-snug text-[var(--color-dim)]">{m.l}</div>
+              </div>
             ))}
-          </ol>
+          </div>
+          <p className="mt-3 text-xs text-[var(--color-dim)]">
+            Scalar multiplications per 4x4 product. 47.94 is a measured average over 500 test cases; the worst case is still 48. Winograd&apos;s 48 relies on the numbers commuting, so it applies to ordinary numbers, not to every kind of matrix algebra.
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+            <Link href="/research/code-that-beats-me" className="link-u">How it happened →</Link>
+            <a href={DARWEEL_REPORT_URL} target="_blank" rel="noopener noreferrer" className="link-u">
+              The original report ↗
+            </a>
+          </div>
         </div>
       </Container>
 

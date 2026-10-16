@@ -17,7 +17,7 @@ export default function WorkPage() {
       <PageHeader
         eyebrow="work"
         title="What we have built"
-        subtitle="A few things we have shipped and released. Some are live products, some are open source, some are research. Where a client's name is theirs to share, we describe the work instead."
+        subtitle="What Lisn and Bubbles are built from: systems we have shipped, open source, and research."
       />
       <Container className="py-16">
         <div className="grid gap-5 md:grid-cols-2">
@@ -37,7 +37,12 @@ export default function WorkPage() {
                   </li>
                 ))}
               </ul>
-              {w.link && (
+              {w.link && !w.link.href.startsWith("http") && (
+                <Link href={w.link.href} className="mt-6 inline-block text-sm text-[var(--color-fg)] underline-offset-4 hover:underline">
+                  {w.link.label}
+                </Link>
+              )}
+              {w.link && w.link.href.startsWith("http") && (
                 <a
                   href={w.link.href}
                   target="_blank"
@@ -52,7 +57,7 @@ export default function WorkPage() {
         </div>
 
         <div className="card-neon mt-12 p-10 text-center">
-          <p className="mono-label">your project</p>
+          <p className="mono-label">early access</p>
           <h2 className="mt-3 text-2xl font-semibold text-[var(--color-fg)] sm:text-3xl">
             Want Lisn working for your customers?
           </h2>

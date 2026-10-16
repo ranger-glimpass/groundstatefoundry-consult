@@ -1,4 +1,4 @@
-/** Case studies / proof. Shipped and open work, anonymized where required. */
+/** What Lisn and Bubbles are built from: shipped systems, open source, and research. */
 
 export type WorkItem = {
   slug: string;
@@ -15,36 +15,35 @@ export const WORK: WorkItem[] = [
   {
     slug: "voice-agent-platform",
     title: "Production voice-agent platform",
-    tag: "Voice AI",
+    tag: "Lisn: phone",
     status: "In production",
     summary:
       "A multi-tenant platform that runs AI phone agents over real telephony, on the phone numbers a business already has.",
     points: [
       "Provider-agnostic: works across Twilio, Plivo, and Exotel",
       "Campaign orchestration and a visual flow builder",
-      "Engineered for sub-second response, so callers do not sit in silence",
+      "Built so callers are not left in silence while the agent thinks",
     ],
     featured: true,
   },
   {
     slug: "autonomous-outreach",
     title: "An agent that does its own sales outreach",
-    tag: "Agents & Automation",
-    status: "Productized",
+    tag: "Lisn: tools",
+    status: "Precursor",
     summary:
       "An agent given a large toolbelt and left to run, it researches prospects, verifies emails, writes, sends, follows up, and books meetings.",
     points: [
       "Built on a toolbelt of 50+ tools the agent calls on its own",
       "Ran day and night without a person driving each step",
-      "Later turned into MechMagnet, a live outreach service with paying clients",
+      "The same toolbelt approach now lets Lisn act mid-conversation",
     ],
     link: { href: "https://mechmagnet.com", label: "mechmagnet.com" },
-    featured: true,
   },
   {
     slug: "demogod",
     title: "A voice agent that demos your product",
-    tag: "Voice AI",
+    tag: "Lisn: website",
     status: "Beta",
     summary:
       "An embeddable voice agent that walks a visitor through a live, interactive product demo on any website.",
@@ -54,6 +53,21 @@ export const WORK: WorkItem[] = [
       "Drops into any site as a widget",
     ],
     link: { href: "https://www.youtube.com/watch?v=qFtrS9HNJRE", label: "Watch the demo" },
+    featured: true,
+  },
+  {
+    slug: "simulation-suite",
+    title: "Agents that call agents",
+    tag: "Lisn: practice",
+    status: "In production",
+    summary:
+      "A simulation suite where one AI agent calls another through the real phone stack, so a voice system is tested before real customers reach it.",
+    points: [
+      "Paired caller and receiver agents run over real telephony, end to end",
+      "Verified at 20 concurrent calls through the full stack",
+      "The basis of how Lisn practises before it goes live",
+    ],
+    link: { href: "/research/test-with-more-ai", label: "How it works →" },
     featured: true,
   },
   {
@@ -69,7 +83,6 @@ export const WORK: WorkItem[] = [
       "Written in Go, released under MIT",
     ],
     link: { href: "https://github.com/Sentinal-Glimpass/bubbles", label: "View on GitHub" },
-    featured: true,
   },
   {
     slug: "darweel",
@@ -84,19 +97,6 @@ export const WORK: WorkItem[] = [
       "A descendant then averaged 47.94 across 500 test cases, all correct, by learning to skip multiplications by zero",
     ],
     link: { href: "https://www.onevoid.org/post/conditional-winograd-by-edbbc5b2", label: "Read the report" },
-  },
-  {
-    slug: "healthcare-ai",
-    title: "AI for a pharmacy workflow",
-    tag: "Healthcare",
-    status: "Shipped",
-    summary:
-      "A mobile and web system that reads a bill by camera, tracks stock and expiry, and handles compliant invoicing.",
-    points: [
-      "Scans a paper bill and turns it into structured data",
-      "Flags medicines nearing expiry before they are a loss",
-      "Shipped as an Android app with a web back office",
-    ],
   },
 ];
 

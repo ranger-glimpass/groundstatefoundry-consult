@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Sora, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SITE } from "@/lib/site";
+import { BUBBLES_REPO, LISN_DEMO_VIDEO } from "@/lib/products";
 
 const sora = Sora({
   variable: "--font-sora",
@@ -16,7 +17,7 @@ const mono = JetBrains_Mono({
 });
 
 const DESCRIPTION =
-  "Ground State Foundry is an applied AI research lab in Meydan Free Zone, Dubai, building Lisn: an AI that talks to your customers on your website and on the phone, resolves their issues, and improves by practising with other agents.";
+  "Ground State Foundry is a research-led product company in Meydan Free Zone, Dubai. We build Lisn, an AI that talks to your customers wherever they are, and Bubbles, an open-source tool for running fleets of AI coding agents.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -27,17 +28,16 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   applicationName: SITE.name,
   keywords: [
-    "applied AI research",
-    "AI engineering firm",
-    "AI company Dubai",
-    "voice AI",
-    "AI agents",
-    "AI automation",
-    "enterprise AI",
-    "LLM development",
-    "RAG systems",
+    "Lisn",
+    "AI customer agent",
+    "AI voice agent",
+    "Arabic voice AI",
+    "website AI guide",
     "agent simulation",
-    "AI strategy",
+    "Bubbles",
+    "open source agent IDE",
+    "Claude Code agents",
+    "AI research Dubai",
     "Meydan Free Zone",
     "UAE AI company",
     "Ground State Foundry",
@@ -83,7 +83,7 @@ export const viewport: Viewport = {
 
 const JSON_LD = {
   "@context": "https://schema.org",
-  "@type": "ProfessionalService",
+  "@type": "Organization",
   "@id": `${SITE.url}/#organization`,
   name: SITE.name,
   url: SITE.url,
@@ -91,7 +91,7 @@ const JSON_LD = {
   logo: `${SITE.url}/groundstate-logo.png`,
   description: DESCRIPTION,
   email: SITE.email,
-  sameAs: [SITE.linkedin],
+  sameAs: [SITE.linkedin, BUBBLES_REPO],
   legalName: SITE.legalName,
   identifier: { "@type": "PropertyValue", name: "Meydan Free Zone licence number", value: SITE.licence },
   areaServed: ["AE", "Worldwide"],
@@ -109,6 +109,24 @@ const JSON_LD = {
     url: f.linkedin,
     sameAs: [f.linkedin],
   })),
+  owns: [
+    {
+      "@type": "SoftwareApplication",
+      name: "Lisn",
+      applicationCategory: "BusinessApplication",
+      description: "An AI that talks to your customers wherever they are: on your website and on the phone.",
+      url: `${SITE.url}/products/lisn`,
+      subjectOf: LISN_DEMO_VIDEO,
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      name: "Bubbles",
+      description: "Open-source terminal tool for running fleets of AI coding agents.",
+      codeRepository: BUBBLES_REPO,
+      license: "https://opensource.org/licenses/MIT",
+      programmingLanguage: "Go",
+    },
+  ],
   knowsAbout: [
     "Artificial Intelligence",
     "Applied AI Research",
@@ -116,8 +134,9 @@ const JSON_LD = {
     "Large Language Models",
     "AI Agents",
     "Agent Simulation",
-    "Machine Learning Operations",
-    "AI Strategy",
+    "Conversational AI",
+    "Multi-agent Systems",
+    "Evolutionary Computation",
   ],
 };
 

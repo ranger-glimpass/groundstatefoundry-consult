@@ -8,14 +8,14 @@ export const metadata: Metadata = {
   title: "About",
   alternates: { canonical: "/about" },
   description:
-    "Ground State Foundry is an applied AI research lab in Meydan Free Zone, Dubai, building Lisn, an AI that talks to your customers wherever they are.",
+    "Ground State Foundry is a research-led product company in Meydan Free Zone, Dubai. We build Lisn, an AI that talks to your customers wherever they are, and Bubbles, an open-source tool for running fleets of AI coding agents.",
 };
 
 const VALUES = [
-  { t: "Execution over slideware", d: "We measure ourselves on systems in production, not decks. If it does not ship, it did not happen." },
-  { t: "Research is not a side project", d: "We build our own tools and study hard problems on purpose. That is what keeps the work we do for you ahead of the shelf." },
-  { t: "The people you meet build it", d: "The people who scope your work are the people who write the code. Nothing gets handed off." },
-  { t: "Honest about AI", d: "We will tell you when AI is not the answer. Trust is worth more to us than a bigger contract." },
+  { t: "Research is the edge", d: "We study hard problems on purpose: simulation, multi-agent systems, evolutionary search. What works goes straight into the products." },
+  { t: "Ship it, then make it practise", d: "Nothing reaches a real customer before it has talked to simulated ones. Every failure in practice becomes a fix." },
+  { t: "Open where we can", d: "Bubbles is open source under MIT. We publish what we learn in our research, including what did not work." },
+  { t: "Honest about AI", d: "We say what our systems can do today and what they cannot yet. No invented numbers." },
 ];
 
 const FOUNDERS = [
@@ -24,7 +24,7 @@ const FOUNDERS = [
     role: "Founder & Chief Scientist",
     img: "/rishi.png",
     linkedin: "https://www.linkedin.com/in/rishi-raj-jaiswal-4b353913a/",
-    body: "Applied AI and research. Built voice agents that run in production over real telephony, an open-source system for running fleets of AI agents, and a framework where code evolves its own algorithms. Sets the firm's direction and keeps every project tied to a real outcome.",
+    body: "Applied AI and research. Built voice agents that run in production over real telephony, an open-source system for running fleets of AI agents, and a framework where code evolves its own algorithms. Leads Lisn's research and product.",
   },
   {
     name: "Devashish",
@@ -41,12 +41,12 @@ export default function AboutPage() {
       <PageHeader
         eyebrow="about"
         title="Built from ground state up"
-        subtitle="We bring your business to its ground state: nothing wasted, nothing fragile."
+        subtitle="A research-led product company. We build Lisn and Bubbles, and the research behind them."
       />
       <Container className="py-16">
         <div className="mx-auto max-w-2xl">
           <p className="leading-relaxed text-[var(--color-muted)]">
-            Ground State Foundry is an applied AI research lab based in{" "}
+            Ground State Foundry is a research-led product company based in{" "}
             {SITE.address.zone}, Dubai. We are building Lisn, an AI that talks to your customers on
             your website and on the phone, and resolves their issues end to end. Our research in
             voice, agents, and evolutionary systems is what goes into it.

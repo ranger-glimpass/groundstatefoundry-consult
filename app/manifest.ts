@@ -5,7 +5,7 @@ export const dynamic = "force-static";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: `${SITE.name} · applied AI research & engineering`,
+    name: `${SITE.name} · Lisn and Bubbles`,
     short_name: SITE.name,
     description: SITE.positioning,
     start_url: "/",

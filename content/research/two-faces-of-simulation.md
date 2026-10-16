@@ -8,13 +8,13 @@ author: "Rishi Raj"
 
 Two problems landed on my desk in the same year, and on the surface they had nothing to do with each other.
 
-The first was a voice platform that had to hold up when a new client went live. Dozens of calls at once, all hitting the same pipeline, and no way to know it would survive until it did. The second was a much older problem wearing a new coat: how does a company actually work, and how would you ever find out without spending months interviewing everyone in it.
+The first was a voice platform that had to hold up when a new business went live. Dozens of calls at once, all hitting the same pipeline, and no way to know it would survive until it did. The second was a much older problem wearing a new coat: how does a company actually work, and how would you ever find out without spending months interviewing everyone in it.
 
 I solved both with the same trick. I built agents that stood in for something real. And it took me a while to notice that these were not two projects. They were two faces of one idea.
 
 ## Face one: agents that drive a real system
 
-Start with the voice platform. The bind is easy to state and hard to escape. You cannot scale-test with real customer calls, because there are not enough of them and the ones you have are precious, you cannot afford to break a real conversation to see what happens. But you also cannot onboard a new client without knowing the system holds at the concurrency they will bring. You need load, and the only honest source of load is real traffic, and real traffic is the thing you are not allowed to touch.
+Start with the voice platform. The bind is easy to state and hard to escape. You cannot scale-test with real customer calls, because there are not enough of them and the ones you have are precious, you cannot afford to break a real conversation to see what happens. But you also cannot onboard a new business without knowing the system holds at the concurrency they will bring. You need load, and the only honest source of load is real traffic, and real traffic is the thing you are not allowed to touch.
 
 So I closed the loop. I built a suite where one AI agent dials another through the entire production stack. Not a mock, not a recording. A real call: the telephony layer, speech to text, the model deciding what to say, text back to speech, all of it, on both ends. A dialer agent and a receiver agent, talking to each other like two strangers on a line, except neither is a person and you can spin up as many pairs as you dare.
 

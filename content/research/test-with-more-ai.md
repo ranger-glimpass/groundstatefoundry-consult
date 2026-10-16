@@ -6,7 +6,7 @@ excerpt: "Waiting for real users to find the failure is a terrible test plan, so
 author: "Rishi Raj"
 ---
 
-Here is a bad way to find out your system cannot handle load. A new client goes live on Monday morning. By ten o'clock their customers are calling in, dozens at once, and somewhere in the pipeline something buckles. Calls drop. The greeting takes six seconds. The client is on the phone with you, and the failure is now a real failure, happening to real people, on the one day it most needed not to.
+Here is a bad way to find out your system cannot handle load. A new business goes live on Monday morning. By ten o'clock their customers are calling in, dozens at once, and somewhere in the pipeline something buckles. Calls drop. The greeting takes six seconds. The business is on the phone with you, and the failure is now a real failure, happening to real people, on the one day it most needed not to.
 
 That was the trap I was staring at with a voice platform. And the more I looked at it, the more I realized the usual test plan was just a slower version of the same disaster.
 
@@ -14,7 +14,7 @@ That was the trap I was staring at with a voice platform. And the more I looked 
 
 The honest way to test a system under load is to put load on it. For a voice platform, load means calls. Lots of them, at the same time, going through the whole stack.
 
-But you cannot get that load anywhere safe. You will not manufacture a hundred real customers to call in on cue. You cannot borrow the client's live traffic to experiment on, because that traffic is real conversations you are not allowed to break. So the load you actually want, concurrent calls hammering the pipeline, only shows up on the day it is too late to learn anything gently. Your test environment is quiet, your production environment is where you find out, and finding out in production means finding out from the customer.
+But you cannot get that load anywhere safe. You will not manufacture a hundred real customers to call in on cue. You cannot borrow the business's live traffic to experiment on, because that traffic is real conversations you are not allowed to break. So the load you actually want, concurrent calls hammering the pipeline, only shows up on the day it is too late to learn anything gently. Your test environment is quiet, your production environment is where you find out, and finding out in production means finding out from the customer.
 
 People fill this gap with mocks. You fake the phone layer, you stub the speech engine, you send synthetic requests at the parts you can reach. It is better than nothing, and it lies to you in a specific way. A mock tests the piece you replaced with a mock. It cannot tell you what happens when the real telephony layer, the real speech to text, the real model, and the real speech synthesis all contend for the same resources at once. The failures that hurt live in the seams between those pieces, and mocks paper over exactly the seams.
 
@@ -34,7 +34,7 @@ This is not a thought experiment, and I want to be precise about what it deliver
 
 The suite verified twenty concurrent calls running end to end through the full stack. That is a logged result, not an estimate, and it is the tested ceiling from the runs I did, not a theoretical maximum I am dressing up. The system held at that concurrency, through real telephony, real speech, real model responses. When I say it held, I mean the calls connected and completed, because I watched them do it.
 
-It also caught something a benchmark number would have hidden. The telephony layer treats an external call, one that goes out through a public number and comes back, differently from a purely internal one that stays inside the switch. They are not the same path, and they do not behave the same under load. That is the kind of finding you only get by driving the real system, because a mock would have collapsed both paths into one and told you a comforting lie. It cost me some engineering to handle the internal path properly, and I would rather pay that cost against test agents than discover the difference from a client whose internal calls quietly misbehave.
+It also caught something a benchmark number would have hidden. The telephony layer treats an external call, one that goes out through a public number and comes back, differently from a purely internal one that stays inside the switch. They are not the same path, and they do not behave the same under load. That is the kind of finding you only get by driving the real system, because a mock would have collapsed both paths into one and told you a comforting lie. It cost me some engineering to handle the internal path properly, and I would rather pay that cost against test agents than discover the difference from a business whose internal calls quietly misbehave.
 
 ## Why this is the right shape
 

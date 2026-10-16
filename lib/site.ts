@@ -8,7 +8,7 @@ export const SITE = {
   url: "https://groundstatefoundry.com",
   tagline: "The most stable state your business can run in.",
   positioning:
-    "An applied AI research lab building Lisn, an AI that talks to your customers on your website and on the phone.",
+    "A research-led product company in Dubai. We build Lisn, an AI that talks to your customers wherever they are, and Bubbles, an open-source tool for running fleets of AI coding agents.",
   email: "hello@groundstatefoundry.com",
   linkedin: "https://www.linkedin.com/company/ground-state-foundry",
   founders: [
@@ -24,7 +24,7 @@ export const SITE = {
 } as const;
 
 export const NAV: { href: string; label: string }[] = [
-  { href: "/services", label: "Services" },
+  { href: "/products", label: "Products" },
   { href: "/research", label: "Research" },
   { href: "/work", label: "Work" },
   { href: "/about", label: "About" },

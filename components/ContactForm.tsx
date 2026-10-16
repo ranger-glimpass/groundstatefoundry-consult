@@ -7,8 +7,9 @@ const INTERESTS = [
   "Lisn on my website",
   "Lisn on my phone lines",
   "Both",
+  "Bubbles",
   "Research collaboration",
-  "Partnership or investment",
+  "Accelerator, partnership or investment",
   "Something else",
 ];
 
@@ -68,13 +69,13 @@ export default function ContactForm() {
       </div>
 
       <label className="mt-5 block">
-        <span className="mono-label">What are you trying to move?</span>
+        <span className="mono-label">Where do your customers reach you today?</span>
         <textarea
           name="message"
           required
           rows={5}
           className="field mt-2 resize-y"
-          placeholder="A sentence or two about the problem, the workflow, or the idea."
+          placeholder="Your website, your phone lines, the tools you use, or what you want to build with Bubbles."
         />
       </label>
 
