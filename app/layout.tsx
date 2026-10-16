@@ -16,12 +16,12 @@ const mono = JetBrains_Mono({
 });
 
 const DESCRIPTION =
-  "An applied AI research and engineering firm in Meydan Free Zone, Dubai. We do original research in voice AI, agents, and evolutionary systems, and build it into production systems for clients in the UAE and abroad.";
+  "Ground State Foundry is an applied AI research lab in Meydan Free Zone, Dubai, building Lisn: an AI that talks to your customers on your website and on the phone, resolves their issues, and improves by practising with other agents.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: "Ground State Foundry · Applied AI research & engineering",
+    default: "Lisn · An AI that talks to your customers · Ground State Foundry",
     template: "%s · Ground State Foundry",
   },
   description: DESCRIPTION,
@@ -52,14 +52,14 @@ export const metadata: Metadata = {
     siteName: SITE.name,
     url: SITE.url,
     locale: "en_US",
-    title: "Ground State Foundry · applied AI research & engineering",
+    title: "Lisn by Ground State Foundry",
     description:
-      "Original AI research, built into production systems for clients in the UAE and abroad. Voice AI, agents, simulation, and the infrastructure underneath.",
+      "Lisn, an AI that talks to your customers wherever they are: on your website and on the phone, in English and Arabic.",
     images: [{ url: "/groundstate-logo.png", width: 1254, height: 1254, alt: "Ground State Foundry" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ground State Foundry · applied AI research & engineering",
+    title: "Lisn by Ground State Foundry",
     description: DESCRIPTION,
     images: ["/groundstate-logo.png"],
   },

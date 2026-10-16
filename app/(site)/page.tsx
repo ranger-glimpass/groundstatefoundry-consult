@@ -9,6 +9,8 @@ import { WORK } from "@/lib/work";
 import { getAllResearch, categoryTitle } from "@/lib/research";
 
 const BUBBLES_URL = "https://github.com/Sentinal-Glimpass/bubbles";
+/** The homepage research list is hidden for now; the /research pages stay live. */
+const SHOW_RESEARCH_LIST = false;
 const DARWEEL_REPORT_URL = "https://www.onevoid.org/post/conditional-winograd-by-edbbc5b2";
 
 /** The three service lines we lead with; the rest live on /services. */
@@ -22,11 +24,11 @@ const MATMUL = [
 ];
 
 const PROCESS = [
-  { n: "01", t: "Discover", d: "We sit with your team, map the workflow, and find where AI moves a number that matters." },
-  { n: "02", t: "Design", d: "A scoped solution with one clear success metric, agreed before we build." },
-  { n: "03", t: "Build", d: "We ship a working version early and measure it against that metric from the first day." },
-  { n: "04", t: "Deploy", d: "A careful rollout inside your environment, with your people in the loop." },
-  { n: "05", t: "Hand over", d: "We document it, watch it in production, and hand it over, or stay on if you want us to." },
+  { n: "01", t: "Connect", d: "Point Lisn at your website, your phone numbers, and the tools it needs to get things done." },
+  { n: "02", t: "Teach", d: "Give it your products, policies, and the answers your best people give." },
+  { n: "03", t: "Practise", d: "Lisn talks to simulated customers first, and every conversation that goes wrong becomes a fix." },
+  { n: "04", t: "Go live", d: "It starts answering real visitors and callers, and hands over to a person when it should." },
+  { n: "05", t: "Improve", d: "It keeps practising against new situations, so it gets better every week." },
 ];
 
 const FOUNDERS = [
@@ -35,7 +37,7 @@ const FOUNDERS = [
     role: "Founder & Chief Scientist",
     img: "/rishi.png",
     linkedin: "https://www.linkedin.com/in/rishi-raj-jaiswal-4b353913a/",
-    body: "Applied AI and research. Built voice agents that run in production over real telephony, an open-source system for running fleets of AI agents, and a framework where code evolves its own algorithms. Sets the firm's direction and keeps every project tied to a real outcome.",
+    body: "Applied AI and research. Built voice agents that run in production over real telephony, an open-source system for running fleets of AI agents, and a framework where code evolves its own algorithms. Leads Lisn's research and product.",
   },
   {
     name: "Devashish",
@@ -59,26 +61,27 @@ export default function Home() {
         <Container className="grid min-h-[72vh] items-center gap-12 py-16 lg:grid-cols-[1.35fr_1fr]">
           <div>
           <p className="reveal mono-label" style={{ animationDelay: "0ms" }}>
-            Applied AI research & engineering
+            Lisn · by Ground State Foundry
           </p>
 
           <h1
             className="reveal mt-6 max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-[var(--color-fg)] sm:text-6xl"
             style={{ animationDelay: "90ms" }}
           >
-            We turn frontier AI research into systems that ship.
+            An AI that talks to your customers, wherever they are.
           </h1>
 
           <p
             className="reveal mt-6 max-w-2xl text-pretty text-base leading-relaxed text-[var(--color-muted)]"
             style={{ animationDelay: "200ms" }}
           >
-            We do original research in voice AI, agents, and evolutionary systems, and we build it
-            into production systems for clients in the UAE and abroad.
+            Lisn guides visitors on your website, answers and makes phone calls, and resolves the
+            issue end to end, in English and Arabic. It gets better by talking to other agents, before
+            it talks to your customers.
           </p>
 
           <div className="reveal mt-9 flex flex-wrap items-center gap-3" style={{ animationDelay: "320ms" }}>
-            <Link href="/contact" className="btn btn-primary">Book a consult →</Link>
+            <Link href="/contact" className="btn btn-primary">Request early access →</Link>
             <Link href="/research" className="btn btn-ghost">Read our research</Link>
             <span className="group relative inline-flex">
               <button
@@ -87,7 +90,7 @@ export default function Home() {
                 aria-describedby="demo-soon"
                 className="btn btn-ghost cursor-not-allowed opacity-40"
               >
-                Talk to our agent
+                Talk to Lisn
               </button>
               <span
                 id="demo-soon"
@@ -110,7 +113,7 @@ export default function Home() {
 
       {/* ───────────── SERVICES (lead three) ───────────── */}
       <Container className="py-12">
-        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What we do</h2>
+        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What Lisn does</h2>
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {lead.map((s) => (
             <Link
@@ -130,7 +133,7 @@ export default function Home() {
           ))}
         </div>
         <p className="mt-8 text-sm text-[var(--color-muted)]">
-          We also do{" "}
+          Built on the same stack:{" "}
           {others.map((s, i) => (
             <span key={s.slug}>
               <Link href={`/services/${s.slug}`} className="link-u">{s.title.replace(" Solutions", "")}</Link>
@@ -240,9 +243,9 @@ export default function Home() {
       <Container className="py-12">
         <div className="grid gap-10 lg:grid-cols-[1fr_2fr]">
           <div>
-            <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">How we work</h2>
+            <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">How Lisn goes live</h2>
             <p className="mt-4 max-w-sm leading-relaxed text-[var(--color-muted)]">
-              Five steps, one metric, agreed up front. If AI is not the answer, we say so in step one.
+              Five steps from first call to an agent that keeps improving on its own.
             </p>
           </div>
           <ol className="divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
@@ -258,7 +261,7 @@ export default function Home() {
       </Container>
 
       {/* ───────────── RESEARCH: editorial list ───────────── */}
-      {research.length > 0 && (
+      {SHOW_RESEARCH_LIST && research.length > 0 && (
         <Container className="py-12">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">From the lab</h2>
@@ -286,7 +289,7 @@ export default function Home() {
 
       {/* ───────────── FOUNDERS ───────────── */}
       <Container className="py-12">
-        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Who you will work with</h2>
+        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Who is building Lisn</h2>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
           {FOUNDERS.map((f) => (
             <FounderCard key={f.name} {...f} />
@@ -298,18 +301,18 @@ export default function Home() {
       <Container className="py-12">
         <div className="card-neon p-10 text-center sm:p-16">
           <h2 className="text-balance text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">
-            Tell us what you are trying to move.
+            Put Lisn where your customers already are.
           </h2>
           <p className="mx-auto mt-4 max-w-md text-[var(--color-muted)]">
-            A 30-minute call. We will tell you honestly whether AI is the answer, and how we would
-            approach it.
+            We are onboarding a small group of early teams. Tell us where your customers reach you,
+            and we will set Lisn up there first.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/contact" className="btn btn-primary">Book a consult →</Link>
+            <Link href="/contact" className="btn btn-primary">Request early access →</Link>
             <a href={`mailto:${SITE.email}`} className="btn btn-ghost">{SITE.email}</a>
           </div>
           <p className="mt-8 text-xs text-[var(--color-dim)]">
-            {SITE.address.zone}, Dubai · working with clients in the UAE and abroad
+            Ground State Foundry · {SITE.address.zone}, Dubai
           </p>
         </div>
       </Container>

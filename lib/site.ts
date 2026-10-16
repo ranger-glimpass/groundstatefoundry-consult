@@ -8,7 +8,7 @@ export const SITE = {
   url: "https://groundstatefoundry.com",
   tagline: "The most stable state your business can run in.",
   positioning:
-    "An applied AI research and engineering firm. We do original research and build it into production systems for clients in the UAE and abroad.",
+    "An applied AI research lab building Lisn, an AI that talks to your customers on your website and on the phone.",
   email: "hello@groundstatefoundry.com",
   linkedin: "https://www.linkedin.com/company/ground-state-foundry",
   founders: [

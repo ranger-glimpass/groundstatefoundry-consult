@@ -46,7 +46,7 @@ export default function ServicesPage() {
             Most engagements start with a short discovery sprint. We&apos;ll scope the smallest thing worth building.
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/contact" className="btn btn-primary">Book a consult →</Link>
+            <Link href="/contact" className="btn btn-primary">Request early access →</Link>
             <a href={`mailto:${SITE.email}`} className="btn btn-ghost">{SITE.email}</a>
           </div>
         </div>

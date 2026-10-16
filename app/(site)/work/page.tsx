@@ -54,13 +54,13 @@ export default function WorkPage() {
         <div className="card-neon mt-12 p-10 text-center">
           <p className="mono-label">your project</p>
           <h2 className="mt-3 text-2xl font-semibold text-[var(--color-fg)] sm:text-3xl">
-            Want something like this built?
+            Want Lisn working for your customers?
           </h2>
           <p className="mx-auto mt-3 max-w-md text-[var(--color-muted)]">
             Tell us the problem. We will tell you honestly what it takes.
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/contact" className="btn btn-primary">Book a consult →</Link>
+            <Link href="/contact" className="btn btn-primary">Request early access →</Link>
             <a href={`mailto:${SITE.email}`} className="btn btn-ghost">{SITE.email}</a>
           </div>
         </div>

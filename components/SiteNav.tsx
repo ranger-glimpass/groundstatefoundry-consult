@@ -22,7 +22,7 @@ export default function SiteNav() {
 
         <div className="hidden items-center gap-3 lg:flex">
           <Link href="/contact" className="btn btn-primary px-4 py-1.5 text-xs">
-            Book a consult
+            Request early access
           </Link>
         </div>
 
@@ -36,7 +36,7 @@ export default function SiteNav() {
               </Link>
             ))}
             <div className="my-2 border-t border-[var(--color-border)]" />
-            <Link href="/contact" className="block px-3 py-2 text-sm text-[var(--color-fg)]">Book a consult →</Link>
+            <Link href="/contact" className="block px-3 py-2 text-sm text-[var(--color-fg)]">Request early access →</Link>
           </div>
         </details>
       </div>

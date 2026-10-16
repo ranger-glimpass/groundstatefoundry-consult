@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "About",
   alternates: { canonical: "/about" },
   description:
-    "An applied AI research and engineering firm in Meydan Free Zone, Dubai. We do original research and build it into production systems for clients in the UAE and abroad.",
+    "Ground State Foundry is an applied AI research lab in Meydan Free Zone, Dubai, building Lisn, an AI that talks to your customers wherever they are.",
 };
 
 const VALUES = [
@@ -46,10 +46,10 @@ export default function AboutPage() {
       <Container className="py-16">
         <div className="mx-auto max-w-2xl">
           <p className="leading-relaxed text-[var(--color-muted)]">
-            Ground State Foundry is an applied AI research and engineering firm based in{" "}
-            {SITE.address.zone}, Dubai. We do two things that feed each other. We study hard problems
-            in AI, voice, agents, and evolutionary systems, and we build production systems that put
-            that work to use for clients in the UAE and abroad.
+            Ground State Foundry is an applied AI research lab based in{" "}
+            {SITE.address.zone}, Dubai. We are building Lisn, an AI that talks to your customers on
+            your website and on the phone, and resolves their issues end to end. Our research in
+            voice, agents, and evolutionary systems is what goes into it.
           </p>
           <p className="mt-4 leading-relaxed text-[var(--color-muted)]">
             The name comes from physics. A system&apos;s ground state is the lowest-energy, most stable
@@ -58,11 +58,11 @@ export default function AboutPage() {
             run on them.
           </p>
           <p className="mt-4 leading-relaxed text-[var(--color-muted)]">
-            We started because too much of what gets called AI transformation ends at a slide. We
-            are the opposite. A small team that works inside your problem, ships something real
-            early, and stays accountable to a number that matters. The research we do on our own time is not a
-            hobby. It is the reason the systems we ship for clients are sharper than the ones they
-            could buy off a shelf.
+            We started because most customer conversations still end in a hold queue or an
+            unanswered chat. We had already built voice agents that run on real phone lines, a
+            framework where code evolves its own algorithms, and open-source tools for running fleets
+            of agents. Lisn brings that work together into one agent. The research is not a hobby. It
+            is the reason Lisn keeps getting better.
           </p>
         </div>
 
