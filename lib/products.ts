@@ -80,7 +80,7 @@ export const LISN_CAPABILITIES = [
 ];
 
 export const LISN_STEPS = [
-  { n: "01", t: "Connect", d: "Add Lisn to your website with one script tag and connect your booking tool. It takes minutes." },
+  { n: "01", t: "Connect", d: "Paste groundstatefoundry.com/skill into your coding agent (Claude Code, Cursor and others) and it installs Lisn in minutes. Or we set it up for you." },
   { n: "02", t: "Teach", d: "Lisn learns your services, prices, hours, and FAQs from your own website. Add the answers your best people give." },
   { n: "03", t: "Practise", d: "Lisn talks to simulated customers first, and every conversation that goes wrong becomes a fix." },
   { n: "04", t: "Go live", d: "It starts answering real visitors and callers, and hands over to a person when it should." },

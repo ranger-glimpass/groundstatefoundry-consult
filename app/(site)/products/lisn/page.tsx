@@ -61,6 +61,11 @@ export default function LisnPage() {
             <p className="mt-4 max-w-sm leading-relaxed text-[var(--color-muted)]">
               Five steps from connecting your channels to an agent that keeps improving on its own.
             </p>
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-[var(--color-muted)]">
+              Using a coding agent? Paste{" "}
+              <a href="/skill/" className="link-u font-mono">groundstatefoundry.com/skill</a>{" "}
+              into it, and it installs Lisn in minutes.
+            </p>
           </div>
           <ol className="divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
             {LISN_STEPS.map((p) => (
