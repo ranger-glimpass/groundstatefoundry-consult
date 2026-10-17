@@ -2,8 +2,8 @@
 
 export const BUBBLES_REPO = "https://github.com/Sentinal-Glimpass/bubbles";
 export const PLAYGROUND = "/playground";
-/** The Lisn agent that runs on this site. Empty until it is created; the widget only loads when set. */
-export const LISN_AGENT_ID = "";
+/** The Lisn agent that runs on this site ("GSF Assistant"). The widget only loads when set. */
+export const LISN_AGENT_ID = "6ad3df8f20ae684a1d8fa881";
 export const LISN_WIDGET_SRC = "https://my.groundstatefoundry.com/widget-v2.js";
 
 export type Product = {

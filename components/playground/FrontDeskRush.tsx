@@ -17,6 +17,7 @@ declare global {
   interface Window {
     MarkaibleTools?: PageTool[];
     Markaible?: { setContext?: (ctx: object) => void };
+    MarkaibleContext?: object;
   }
 }
 
@@ -64,7 +65,9 @@ export default function FrontDeskRush() {
 
   // Keep Lisn's view of the page current.
   useEffect(() => {
-    window.Markaible?.setContext?.(context(game));
+    const ctx = context(game);
+    window.MarkaibleContext = ctx; // read once if the widget loads after this
+    window.Markaible?.setContext?.(ctx);
   }, [game]);
 
   // Lisn's hands on this page. Each tool shows what it is doing, then goes through the same rules as a click.
