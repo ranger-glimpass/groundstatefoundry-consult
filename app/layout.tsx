@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Sora, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SITE } from "@/lib/site";
-import { BUBBLES_REPO, LISN_DEMO_VIDEO } from "@/lib/products";
+import { BUBBLES_REPO } from "@/lib/products";
 
 const sora = Sora({
   variable: "--font-sora",
@@ -116,7 +116,6 @@ const JSON_LD = {
       applicationCategory: "BusinessApplication",
       description: "An AI that talks to your customers on your website by voice or chat, in English and Arabic, with phone lines next.",
       url: `${SITE.url}/products/lisn`,
-      subjectOf: LISN_DEMO_VIDEO,
     },
     {
       "@type": "SoftwareSourceCode",

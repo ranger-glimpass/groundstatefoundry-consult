@@ -1,7 +1,10 @@
 /** What Ground State Foundry makes. Drives /products, the product pages, the nav, and the homepage. */
 
 export const BUBBLES_REPO = "https://github.com/Sentinal-Glimpass/bubbles";
-export const LISN_DEMO_VIDEO = "https://www.youtube.com/watch?v=qFtrS9HNJRE";
+export const PLAYGROUND = "/playground";
+/** The Lisn agent that runs on this site. Empty until it is created; the widget only loads when set. */
+export const LISN_AGENT_ID = "";
+export const LISN_WIDGET_SRC = "https://my.groundstatefoundry.com/widget-v2.js";
 
 export type Product = {
   slug: "lisn" | "bubbles";
@@ -54,7 +57,7 @@ export const LISN_CAPABILITIES = [
     t: "On your website",
     d: "Visitors talk or type, and Lisn answers in their language. It learns your services, prices, hours, and FAQs from your own website, sticks to them, and says so when it does not know. It drops in with one script tag.",
     from: "From our embeddable demo agent",
-    link: { href: LISN_DEMO_VIDEO, label: "Watch it guide a visitor ↗" },
+    link: { href: PLAYGROUND, label: "Try it in the playground →" },
   },
   {
     id: "phone",

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Container } from "@/components/ui";
 import ResearchLinks from "@/components/ResearchLinks";
-import { LISN_CAPABILITIES, LISN_STEPS, LISN_RESEARCH, LISN_DEMO_VIDEO } from "@/lib/products";
+import { LISN_CAPABILITIES, LISN_STEPS, LISN_RESEARCH, PLAYGROUND } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Lisn",
@@ -31,7 +31,7 @@ export default function LisnPage() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/contact" className="btn btn-primary">Request early access →</Link>
-            <a href={LISN_DEMO_VIDEO} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Watch it guide a visitor ↗</a>
+            <Link href={PLAYGROUND} className="btn btn-ghost">Try it live</Link>
           </div>
         </Container>
       </header>

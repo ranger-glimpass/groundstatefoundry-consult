@@ -52,7 +52,7 @@ export const WORK: WorkItem[] = [
       "Speaks and listens in real time",
       "Drops into any site as a widget",
     ],
-    link: { href: "https://www.youtube.com/watch?v=qFtrS9HNJRE", label: "Watch the demo" },
+    link: { href: "/playground", label: "Try Lisn live" },
     featured: true,
   },
   {
