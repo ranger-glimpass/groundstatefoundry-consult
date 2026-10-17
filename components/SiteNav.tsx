@@ -21,7 +21,7 @@ export default function SiteNav() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <Link href="/contact" className="btn btn-primary px-4 py-1.5 text-xs">
+          <Link href="/contact" className="btn btn-primary whitespace-nowrap px-4 py-1.5 text-xs">
             Request early access
           </Link>
         </div>

@@ -1,50 +1,45 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui";
-import FrontDeskRush from "@/components/playground/FrontDeskRush";
+import Playground from "@/components/playground/Playground";
+import { PAGE_BRIEF } from "@/components/playground/engine/brief";
 import { LISN_AGENT_ID } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Playground",
   alternates: { canonical: "/playground" },
-  description: "Run the front desk of a made-up clinic with Lisn. Talk or type, and watch it book, call back, capture leads, and hand over to a person.",
-};
-
-// Read by the Lisn widget on this page only.
-const PAGE_BRIEF = {
-  instructions: [
-    "You are Lisn, playing Front Desk Rush with the visitor on groundstatefoundry.com/playground.",
-    "The visitor runs the front desk of Cedar Clinic, a made-up clinic. Customer tickets arrive one at a time; the current ticket and the free slots are in the page context.",
-    "When the visitor asks you to handle a ticket, resolve it with one tool call: book_appointment, book_callback, capture_lead or hand_off.",
-    "Only use slots listed as free in the page context. Never invent slots, names or ticket details. If a tool fails, read the error, tell the visitor briefly, and fix it.",
-    "Reply in the visitor's language. Keep every turn to one or two sentences.",
-    "If the visitor asks how Lisn would work on their own website, answer from groundstatefoundry.com and point them to Request early access.",
-  ].join(" "),
+  description:
+    "Watch Lisn work a website. Pick a made-up site, talk or type to Lisn, and it clicks, fills forms and points things out on the page in front of you. Or press Autoplay.",
 };
 
 export default function PlaygroundPage() {
   return (
     <>
+      {/* Read by the Lisn widget on this page only. */}
       <script type="application/json" id="markaible-page" dangerouslySetInnerHTML={{ __html: JSON.stringify(PAGE_BRIEF) }} />
-      <header className="border-b border-[var(--color-border)] py-14">
+      <header className="border-b border-[var(--color-border)] py-12">
         <Container>
           <p className="mono-label mb-3">playground</p>
           <h1 className="max-w-3xl text-balance text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-5xl">
-            Front Desk Rush
+            Watch Lisn work a website
           </h1>
           <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-            Five customers are waiting at a made-up clinic. Talk or type to Lisn and it works the
-            site in front of you: it books the slot, switches to Arabic, takes a callback when the
-            day is full, captures a sales lead, and hands the angry one to a person.
+            Pick a website below. They are made up for this demo, but they behave like real ones. Then talk or type to
+            Lisn and ask for something, the way a customer would. It clicks through the pages, fills in the forms, and
+            lights up the line you need to read.
+          </p>
+          <p className="mt-3 max-w-2xl leading-relaxed text-[var(--color-muted)]">
+            No microphone handy? Press Autoplay and Lisn runs through the tasks on its own. You can also click around
+            yourself at any point. Lisn sees where you are, and stops when you take over.
           </p>
           {!LISN_AGENT_ID && (
             <p className="mt-4 max-w-2xl text-sm text-[var(--color-dim)]">
-              Lisn is being connected to this page. Until then, you can play the desk by hand.
+              Lisn is being connected to this page. Until then, Autoplay and your own clicks still work.
             </p>
           )}
         </Container>
       </header>
-      <Container className="py-12">
-        <FrontDeskRush />
+      <Container className="py-8">
+        <Playground />
       </Container>
     </>
   );

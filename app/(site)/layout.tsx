@@ -10,7 +10,7 @@ export default function SiteLayout({ children }: Readonly<{ children: React.Reac
       <SiteNav />
       <main className="flex-1">{children}</main>
       <SiteFooter />
-      {LISN_AGENT_ID && <Script src={LISN_WIDGET_SRC} data-agent={LISN_AGENT_ID} strategy="afterInteractive" />}
+      {LISN_AGENT_ID && <Script src={LISN_WIDGET_SRC} data-agent={LISN_AGENT_ID} data-layout="dock" strategy="afterInteractive" />}
     </div>
   );
 }
