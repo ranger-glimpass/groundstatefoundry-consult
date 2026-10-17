@@ -5,7 +5,7 @@ import { SITE } from "@/lib/site";
 
 const INTERESTS = [
   "Lisn on my website",
-  "Lisn on my phone lines",
+  "Lisn on my phone lines (coming next)",
   "Both",
   "Bubbles",
   "Research collaboration",

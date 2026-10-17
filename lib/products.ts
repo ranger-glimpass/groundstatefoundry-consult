@@ -19,12 +19,12 @@ export const PRODUCTS: Product[] = [
     status: "Early access",
     line: "An AI that talks to your customers, wherever they are.",
     summary:
-      "Lisn guides visitors on your website, answers and makes phone calls, and resolves the issue end to end. It practises against simulated customers before it talks to real ones.",
+      "Lisn talks and chats with visitors on your website, answers from your own business knowledge, captures leads, and books appointments. Phone lines are next. It practises against simulated customers before it talks to real ones.",
     bullets: [
-      "Guides visitors through your website by voice",
-      "Answers and makes calls on the numbers you already have",
-      "Uses your tools mid-conversation to get the job done",
-      "English and Arabic",
+      "Voice and chat on your website, from one script tag",
+      "Answers from your own business knowledge, and says when it does not know",
+      "Captures leads, books appointments and callbacks, hands over to a person",
+      "English and Arabic, including mixed-language speech",
     ],
   },
   {
@@ -52,36 +52,36 @@ export const LISN_CAPABILITIES = [
   {
     id: "website",
     t: "On your website",
-    d: "Lisn talks to visitors by voice and moves them through the page: it highlights, scrolls, opens the right screen, and fills the form. It runs in the browser, with no install, and drops in as a widget.",
+    d: "Visitors talk or type, and Lisn answers in their language. It learns your services, prices, hours, and FAQs from your own website, sticks to them, and says so when it does not know. It drops in with one script tag.",
     from: "From our embeddable demo agent",
     link: { href: LISN_DEMO_VIDEO, label: "Watch it guide a visitor ↗" },
   },
   {
     id: "phone",
-    t: "On the phone",
-    d: "Inbound and outbound calls on the numbers you already have, over Twilio, Plivo, Exotel, or a SIP trunk. It books, reschedules, qualifies, follows up, and hands over to a person when it should.",
-    from: "From our production voice platform",
+    t: "On the phone, next",
+    d: "Coming next: inbound and outbound calls on the numbers you already have. The same agent that talks on your website will answer your lines, built on the voice platform we have already run on real telephony.",
+    from: "Coming next, from our production voice platform",
     link: { href: "/research/one-integration-any-carrier", label: "One integration, any carrier →" },
   },
   {
     id: "resolve",
     t: "Gets it done",
-    d: "Lisn calls your tools during the conversation, so the appointment is actually moved and the message is actually sent. Hard guardrails stop it from promising what it should not.",
+    d: "Lisn checks availability and books through your booking tool, takes callbacks at the time the customer gives, and sends you the lead with a summary of the conversation. It hands over to a person during working hours, and it does not promise what it should not.",
     from: "Tool calls during a live call",
     link: { href: "/research/giving-a-voice-agent-hands", label: "Giving a voice agent hands →" },
   },
   {
     id: "practice",
     t: "Practises first",
-    d: "Before it talks to your customers, other agents play them: impatient, confused, switching language mid-sentence. They call through the same phone stack, and every failure becomes a fix.",
+    d: "Before it talks to your customers, other agents play them: impatient, confused, switching language mid-sentence. They talk to it through the same stack your customers will, and every failure becomes a fix.",
     from: "From our simulation suite",
     link: { href: "/research/test-with-more-ai", label: "Test your AI with more AI →" },
   },
 ];
 
 export const LISN_STEPS = [
-  { n: "01", t: "Connect", d: "Point Lisn at your website, your phone numbers, and the tools it needs to get things done." },
-  { n: "02", t: "Teach", d: "Give it your products, policies, and the answers your best people give." },
+  { n: "01", t: "Connect", d: "Add Lisn to your website with one script tag and connect your booking tool. It takes minutes." },
+  { n: "02", t: "Teach", d: "Lisn learns your services, prices, hours, and FAQs from your own website. Add the answers your best people give." },
   { n: "03", t: "Practise", d: "Lisn talks to simulated customers first, and every conversation that goes wrong becomes a fix." },
   { n: "04", t: "Go live", d: "It starts answering real visitors and callers, and hands over to a person when it should." },
   { n: "05", t: "Improve", d: "It keeps practising against new situations, so it gets better every week." },

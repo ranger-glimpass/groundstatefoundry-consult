@@ -61,9 +61,10 @@ export default function Home() {
             className="reveal mt-6 max-w-2xl text-pretty text-base leading-relaxed text-[var(--color-muted)]"
             style={{ animationDelay: "200ms" }}
           >
-            Lisn guides visitors on your website, answers and makes phone calls, and resolves the
-            issue end to end, in English and Arabic. It gets better by talking to other agents, before
-            it talks to your customers.
+            Lisn talks and chats with visitors on your website, answers from your own business
+            knowledge, captures the lead, books the appointment, and hands over to a person when it
+            should, in English and Arabic. Phone lines are next. It gets better by talking to other
+            agents, before it talks to your customers.
           </p>
 
           <div className="reveal mt-9 flex flex-wrap items-center gap-3" style={{ animationDelay: "320ms" }}>

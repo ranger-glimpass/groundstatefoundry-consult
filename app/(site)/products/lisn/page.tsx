@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "Lisn",
   alternates: { canonical: "/products/lisn" },
   description:
-    "Lisn is an AI that talks to your customers wherever they are: it guides visitors on your website, answers and makes phone calls, and resolves the issue end to end.",
+    "Lisn is an AI that talks to your customers wherever they are: it talks with visitors on your website by voice or chat, captures leads, books appointments, and hands over to a person when it should. Phone lines are next.",
 };
 
 export default function LisnPage() {
@@ -24,9 +24,10 @@ export default function LisnPage() {
             Lisn talks to your customers, wherever they are.
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[var(--color-muted)]">
-            One agent for your website and your phone lines. It guides visitors, answers and makes
-            calls, and resolves the issue end to end, in English and Arabic. It practises against
-            simulated customers before it talks to real ones.
+            One agent on your website today, and on your phone lines next. It talks or chats with
+            visitors, answers from what your business actually offers, books, and hands over to a
+            person, in English and Arabic. It practises against simulated customers before it talks
+            to real ones.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/contact" className="btn btn-primary">Request early access →</Link>

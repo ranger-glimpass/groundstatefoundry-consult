@@ -48,7 +48,7 @@ export default function AboutPage() {
           <p className="leading-relaxed text-[var(--color-muted)]">
             Ground State Foundry is a research-led product company based in{" "}
             {SITE.address.zone}, Dubai. We are building Lisn, an AI that talks to your customers on
-            your website and on the phone, and resolves their issues end to end. Our research in
+            your website today and on the phone next, and gets their request done. Our research in
             voice, agents, and evolutionary systems is what goes into it.
           </p>
           <p className="mt-4 leading-relaxed text-[var(--color-muted)]">

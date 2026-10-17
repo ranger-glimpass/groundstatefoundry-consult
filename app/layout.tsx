@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     title: "Lisn by Ground State Foundry",
     description:
-      "Lisn, an AI that talks to your customers wherever they are: on your website and on the phone, in English and Arabic.",
+      "Lisn, an AI that talks to your customers wherever they are: on your website today, by voice or chat, in English and Arabic.",
     images: [{ url: "/groundstate-logo.png", width: 1254, height: 1254, alt: "Ground State Foundry" }],
   },
   twitter: {
@@ -114,7 +114,7 @@ const JSON_LD = {
       "@type": "SoftwareApplication",
       name: "Lisn",
       applicationCategory: "BusinessApplication",
-      description: "An AI that talks to your customers wherever they are: on your website and on the phone.",
+      description: "An AI that talks to your customers on your website by voice or chat, in English and Arabic, with phone lines next.",
       url: `${SITE.url}/products/lisn`,
       subjectOf: LISN_DEMO_VIDEO,
     },
