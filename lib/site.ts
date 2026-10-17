@@ -26,7 +26,6 @@ export const SITE = {
 export const NAV: { href: string; label: string }[] = [
   { href: "/products", label: "Products" },
   { href: "/research", label: "Research" },
-  { href: "/work", label: "Work" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];

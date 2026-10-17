@@ -127,7 +127,7 @@ export default function Home() {
       <Container className="py-12">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What Lisn is built on</h2>
-          <Link href="/work" className="link-u text-sm">All work →</Link>
+          <Link href="/products/lisn" className="link-u text-sm">How Lisn works →</Link>
         </div>
 
         {caseStudy && (
