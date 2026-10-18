@@ -10,7 +10,7 @@ export type Fx = {
   pointUrl: () => Promise<void>;
   press: () => Promise<void>;
   type: (id: string, text: string) => Promise<void>;
-  ring: (ids: string[], o: { label: string; note?: string; dim?: boolean }) => void;
+  ring: (ids: string[], o: { label: string; note?: string; dim?: boolean }) => void; // ids may include PAGE (the whole viewport)
   badge: (id: string, n: number) => void;
   readText: (page: string) => string;
   settle: () => Promise<void>; // wait for React to paint and the page to finish fading in
@@ -20,12 +20,17 @@ export type Driver = {
   scn: () => Scenario;
   state: () => State;
   commit: (a: Action) => Result; // always by Lisn
-  start: (id: string) => Promise<string | null>; // null = ok, else an error
+  reset: () => Promise<void>; // back to the scenario's first page, forms empty
   fx: () => Fx | null;
   queue: Queue;
 };
 
 class StepError extends Error {}
+
+/** Ring the whole mock viewport (used after Lisn lands on a page, so a navigation is highlighted too). */
+export const PAGE = "@page";
+/** Highlight mode: how long the ring and caption sit on a target before Lisn presses it. */
+const DWELL = 420;
 
 const clip = (x: string, n: number) => (x.length > n ? `${x.slice(0, n - 1)}…` : x);
 const str = (v: unknown) => (typeof v === "string" ? v : v == null ? "" : String(v));
@@ -60,7 +65,10 @@ async function goTo(c: Ctx, pageRef: unknown) {
   const r = resolvePage(scn, pageRef);
   if ("error" in r) throw new StepError(r.error);
   const s = d.state();
-  if (r.page.id === s.page) return commitOrThrow(d, { type: "note", text: `already on ${r.page.title}` });
+  if (r.page.id === s.page) {
+    await landed(c, r.page.title);
+    return commitOrThrow(d, { type: "note", text: `already on ${r.page.title}` });
+  }
   const fx = d.fx();
   // Click a real link when one is on screen (nav first), so the visitor sees how to get there.
   const links = visibleEls(scn, s).filter((e) => e.to === r.page.id && !e.when);
@@ -68,8 +76,9 @@ async function goTo(c: Ctx, pageRef: unknown) {
   if (fx) {
     if (link) {
       await fx.point(link.id); check(t);
-      fx.ring([link.id], { label: label(c, "GO"), note: r.page.title });
+      fx.ring([link.id], { label: label(c, "GO"), note: `${link.label} → ${r.page.title}` });
       if (c.badge && c.n) fx.badge(link.id, c.n);
+      await sleep(DWELL); check(t);
     } else {
       await fx.pointUrl(); check(t);
     }
@@ -78,7 +87,16 @@ async function goTo(c: Ctx, pageRef: unknown) {
   const text = link ? commitOrThrow(d, { type: "click", id: link.id }) : commitOrThrow(d, { type: "go", page: r.page.id });
   // A link with its own logic might land elsewhere; make sure we end where asked.
   if (d.state().page !== r.page.id) commitOrThrow(d, { type: "go", page: r.page.id });
+  await landed(c, r.page.title);
   return text;
+}
+
+/** After a move that changed the page, keep it highlighted: ring the new page with a caption. */
+async function landed(c: Ctx, title: string) {
+  const fx = c.d.fx();
+  if (!fx) return;
+  await fx.settle();
+  fx.ring([PAGE], { label: label(c, "NOW ON"), note: title });
 }
 
 async function click(c: Ctx, id: unknown, pageArg?: unknown) {
@@ -91,9 +109,14 @@ async function click(c: Ctx, id: unknown, pageArg?: unknown) {
     await fx.point(r.el.id); check(t);
     fx.ring([r.el.id], { label: label(c, "CLICK"), note: r.el.label });
     if (c.badge && c.n) fx.badge(r.el.id, c.n);
+    await sleep(DWELL); check(t);
     await fx.press(); check(t);
   }
-  return commitOrThrow(d, { type: "click", id: r.el.id });
+  const before = d.state();
+  const text = commitOrThrow(d, { type: "click", id: r.el.id });
+  const after = d.state();
+  if (after.page !== before.page || after.at !== before.at) await landed(c, pageOf(d.scn(), after.page)?.title ?? after.page);
+  return text;
 }
 
 async function fill(c: Ctx, fields: unknown, pageArg?: unknown) {
@@ -115,8 +138,9 @@ async function fill(c: Ctx, fields: unknown, pageArg?: unknown) {
     const shown = el.options?.find((o) => o.value === value)?.label ?? value;
     if (fx) {
       await fx.point(el.id); check(t);
-      fx.ring([el.id], { label: label(c, "FILL"), note: `${el.label}: ${shown}` });
+      fx.ring([el.id], { label: label(c, "FILL"), note: clip(`${el.label}: ${shown}`, 80) });
       if (c.badge && c.n) fx.badge(el.id, c.n);
+      await sleep(DWELL / 2); check(t);
       await fx.press(); check(t);
       if (el.options) await sleep(220);
       else await fx.type(el.id, value);
@@ -195,7 +219,7 @@ const FIELDS = {
   items: { type: "object", properties: { id: ID, value: S }, required: ["id", "value"] },
 } as const;
 
-export function makeTools(d: Driver, scenarioIds: string[]): PageTool[] {
+export function makeTools(d: Driver): PageTool[] {
   return [
     {
       name: "demo_go_to",
@@ -205,13 +229,13 @@ export function makeTools(d: Driver, scenarioIds: string[]): PageTool[] {
     },
     {
       name: "demo_highlight",
-      description: "Spotlight 1 to 3 elements on the current page with a short caption, so the visitor sees what you mean. Do this before explaining.",
+      description: "Highlight mode: spotlight 1 to 3 elements on the current page with a short caption, so the visitor sees what you mean. Call it before you explain anything, and keep it on what you are talking about.",
       parameters: { type: "object", properties: { ids: { type: "array", items: ID, maxItems: 3 }, note: { type: "string", description: "Caption, at most 80 characters" } }, required: ["ids"] },
       run: (a) => job(d, (c) => highlight(c, a.ids, a.note), a),
     },
     {
       name: "demo_click",
-      description: "Click a link, button, tab or card on the current page of the mock website.",
+      description: "Click a link, button, tab or card on the current page of the mock website. The target is highlighted for the visitor automatically.",
       parameters: { type: "object", properties: { id: ID, on_page: { type: "string", description: "Page you expect to be on" } }, required: ["id"] },
       run: (a) => job(d, (c) => click(c, a.id, a.on_page), a),
     },
@@ -268,14 +292,13 @@ export function makeTools(d: Driver, scenarioIds: string[]): PageTool[] {
     },
     {
       name: "demo_start",
-      description: `Switch the playground to another made-up website and start it fresh. scenario: ${scenarioIds.join(", ")}.`,
-      parameters: { type: "object", properties: { scenario: { type: "string", enum: scenarioIds } }, required: ["scenario"] },
+      description: "Reset this made-up website to its first page with empty forms. Other websites are opened by the visitor from All demos.",
+      parameters: { type: "object", properties: {} },
       run: (a) =>
         job(d, async () => {
-          const err = await d.start(str(a.scenario).toLowerCase());
-          if (err) throw new StepError(err);
+          await d.reset();
           const scn = d.scn();
-          return `started ${scn.name}, first task: ${taskProgress(scn, d.state()).goal}`;
+          return `reset ${scn.name}, first task: ${taskProgress(scn, d.state()).goal}`;
         }, a),
     },
   ];

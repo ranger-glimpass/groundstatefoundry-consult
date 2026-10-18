@@ -2,31 +2,38 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Stage from "./engine/Stage";
-import ScenarioPicker from "./engine/ui/ScenarioPicker";
 import type { TrailItem } from "./engine/ActionTrail";
 import { buildContext } from "./engine/context";
 import { Queue } from "./engine/queue";
-import { initState, pageOf, reduce, taskProgress } from "./engine/reduce";
+import { initState, pageOf, reduce } from "./engine/reduce";
 import { makeTools, type Driver, type Fx } from "./engine/tools";
 import { auditScenario } from "./engine/resolve";
-import type { Action, By, PageTool, Scenario, State } from "./engine/types";
-import { LINEUP, SCENARIOS, scenarioById } from "./scenarios";
+import type { Action, By, State } from "./engine/types";
+import { scenarioById, SCENARIOS } from "./scenarios";
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const frame = () => new Promise((r) => requestAnimationFrame(() => r(null)));
 const clip = (x: string, n: number) => (x.length > n ? `${x.slice(0, n - 1)}…` : x);
+const BAR = 44;
 
-/** The playground: pick a made-up website, then Lisn (or you, or Autoplay) works it. */
-export default function Playground() {
-  const [scn, setScn] = useState<Scenario>(SCENARIOS[0]);
-  const [state, setState] = useState<State>(() => initState(SCENARIOS[0]));
+/** Open Lisn's chat: the widget's opener when it has one, else a click on its launcher button. */
+function openLisn() {
+  if (window.Markaible?.open) {
+    try { window.Markaible.open({ tab: "chat" }); return; } catch { /* fall back to the launcher */ }
+  }
+  for (const host of document.body.children) {
+    const launch = host.shadowRoot?.querySelector<HTMLElement>(".launch");
+    if (launch) { launch.click(); return; }
+  }
+}
+
+/** One live demo, full page: a slim bar on top, the made-up website under it, Lisn docked on the side. */
+export default function Playground({ id }: { id: string }) {
+  const scn = scenarioById(id) ?? SCENARIOS[0];
+  const [state, setState] = useState<State>(() => initState(scn));
   const [trail, setTrail] = useState<TrailItem[]>([]);
-  const [auto, setAuto] = useState<number | null>(null); // step Autoplay is on
-  const scnRef = useRef(scn);
+  const [copied, setCopied] = useState<string | null>(null);
   const stateRef = useRef(state);
   const fxRef = useRef<Fx | null>(null);
-  const toolsRef = useRef<PageTool[]>([]);
-  const autoRun = useRef(0);
   const trailN = useRef(0);
   const [queue] = useState(() => new Queue());
 
@@ -42,7 +49,7 @@ export default function Playground() {
       });
 
     const commit = (a: Action, by: By) => {
-      const scn = scnRef.current, before = stateRef.current;
+      const before = stateRef.current;
       const r = reduce(scn, before, a);
       if (!r.ok) {
         if (!(by === "you" && a.type === "fill")) push(by, r.error, "error");
@@ -59,58 +66,41 @@ export default function Playground() {
       return r;
     };
 
-    const start = async (id: string) => {
-      const next = scenarioById(id);
-      if (!next) {
-        const soon = LINEUP.find((x) => x.id === id);
-        return `${soon ? `${soon.name} is coming soon` : `No scenario "${id}"`}. Ready now: ${SCENARIOS.map((s) => s.id).join(", ")}.`;
-      }
-      const s = initState(next);
-      scnRef.current = next;
+    const reset = async () => {
+      const s = initState(scn);
       stateRef.current = s;
-      setScn(next);
       setState(s);
       setTrail([]);
       await frame(); await frame();
-      return null;
     };
 
     return {
-      scn: () => scnRef.current,
+      scn: () => scn,
       state: () => stateRef.current,
       commit: (a) => commit(a, "lisn"),
       visitorCommit: (a) => commit(a, "you"),
-      start,
+      reset,
       fx: () => fxRef.current,
       queue,
     };
-  }, [queue]);
-
-  const stopAuto = useCallback((why: string) => {
-    autoRun.current++;
-    setAuto(null);
-    queue.abort(why);
-  }, [queue]);
+  }, [queue, scn]);
 
   // The visitor's own hands always win: anything they do stops what Lisn has queued.
   const onVisitor = useCallback((a: Action) => {
-    stopAuto("visitor took over");
+    queue.abort("visitor took over");
     driver.visitorCommit(a);
-  }, [driver, stopAuto]);
+  }, [driver, queue]);
 
   // Dev check: scenario data mistakes show up in the console.
   useEffect(() => {
     if (process.env.NODE_ENV === "production") return;
-    for (const s of SCENARIOS) {
-      const issues = auditScenario(s);
-      if (issues.length) console.warn(`[playground] ${s.id} audit:`, issues);
-    }
-  }, []);
+    const issues = auditScenario(scn);
+    if (issues.length) console.warn(`[playground] ${scn.id} audit:`, issues);
+  }, [scn]);
 
   // Register Lisn's page tools once.
   useEffect(() => {
-    const tools = makeTools(driver, SCENARIOS.map((s) => s.id));
-    toolsRef.current = tools;
+    const tools = makeTools(driver);
     window.MarkaibleTools = (window.MarkaibleTools || []).filter((t) => !tools.some((x) => x.name === t.name));
     window.MarkaibleTools.push(...tools);
     return () => {
@@ -125,83 +115,76 @@ export default function Playground() {
     window.Markaible?.setContext?.(ctx);
   }, [scn, state]);
 
-  async function pick(id: string) {
-    stopAuto("visitor switched website");
-    await driver.start(id);
+  /** A suggestion chip: open Lisn, and put the question on the clipboard to paste (the widget cannot take text yet). */
+  async function ask(text: string) {
+    openLisn();
+    try { await navigator.clipboard?.writeText(text); } catch { /* clipboard blocked: the chat still opens */ }
+    setCopied(text);
+    setTimeout(() => setCopied((c) => (c === text ? null : c)), 2400);
   }
-
-  /** Autoplay runs the scenario's solution through the very same tools Lisn calls. */
-  async function autoplay() {
-    if (auto !== null) return stopAuto("autoplay stopped");
-    stopAuto("autoplay restarted");
-    const run = autoRun.current;
-    await driver.start(scnRef.current.id);
-    const tools = Object.fromEntries(toolsRef.current.map((t) => [t.name, t]));
-    const steps = scnRef.current.solution;
-    for (let i = 0; i < steps.length; i++) {
-      if (autoRun.current !== run) return;
-      setAuto(i + 1);
-      const { action, ...args } = steps[i];
-      const r = await tools[`demo_${action}`].run({ ...args, __n: i + 1, __badge: true });
-      if (autoRun.current !== run) return;
-      if (r.status !== "done") {
-        setTrail((t) => [...t, { n: ++trailN.current, by: "lisn", text: clip(r.error ?? "stopped", 60), tone: "error" }]);
-        break;
-      }
-      await sleep(action === "highlight" ? 2200 : action === "fill" ? 700 : 450);
-    }
-    if (autoRun.current === run) setAuto(null);
-  }
-
-  const progress = taskProgress(scn, state);
 
   return (
-    <div className="@container space-y-4">
-      <ScenarioPicker lineup={LINEUP} selected={scn.id} onSelect={pick} />
-
-      <div className="flex flex-col gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-panel)] px-4 py-3 @3xl:flex-row @3xl:items-center">
-        <div className="min-w-0 flex-1">
-          <p className="mono-label">
-            tasks · {progress.n} of {progress.of} done
+    <div className="flex h-[100dvh] min-w-0 flex-col overflow-hidden">
+      <div
+        style={{ height: BAR }}
+        className="@container relative flex shrink-0 items-center gap-3 border-b border-[var(--color-border)] bg-[var(--color-bg)] px-3"
+      >
+        {/* Full page loads on purpose: each page brings its own Lisn widget. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a href="/" aria-label="Ground State Foundry, home" className="group flex shrink-0 flex-col items-center gap-[4px] px-1">
+          <span className="h-[2px] w-5 rounded bg-[var(--color-fg)] transition-colors group-hover:bg-[var(--color-neon)]" />
+          <span className="h-[5px] w-[5px] rounded-full bg-[var(--color-neon)] shadow-[0_0_8px_1px_rgba(185,242,58,0.7)]" />
+        </a>
+        {/* Full page loads on purpose: each page brings its own Lisn widget. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a href="/playground/" className="shrink-0 whitespace-nowrap text-xs text-[var(--color-muted)] transition-colors hover:text-[var(--color-fg)]">
+          ← All demos
+        </a>
+        <span className="h-4 w-px shrink-0 bg-[var(--color-border-bright)]" />
+        <span className="flex min-w-0 shrink-0 items-center gap-2">
+          <span className="h-2.5 w-2.5 shrink-0 rounded-[3px] ring-1 ring-white/15" style={{ background: scn.brand.swatch }} />
+          <span className="whitespace-nowrap text-sm font-semibold text-[var(--color-fg)]">{scn.name}</span>
+          <span className="hidden whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-dim)] @5xl:inline">
+            made up for this demo
+          </span>
+        </span>
+        <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto [scrollbar-width:none]">
+          <span className="hidden shrink-0 text-xs text-[var(--color-dim)] @3xl:inline">Ask Lisn:</span>
+          {scn.suggestions.map((q) => (
+            <button
+              key={q}
+              type="button"
+              onClick={() => ask(q)}
+              title="Opens Lisn and copies the question"
+              className="shrink-0 whitespace-nowrap rounded-full border border-[var(--color-border-bright)] px-2.5 py-0.5 text-xs text-[var(--color-fg)] transition-colors hover:border-[var(--color-neon)]"
+            >
+              {q}
+            </button>
+          ))}
+        </div>
+        <button type="button" onClick={() => { queue.abort("visitor reset"); driver.reset(); }} className="hidden shrink-0 text-xs text-[var(--color-muted)] transition-colors hover:text-[var(--color-fg)] @2xl:inline">
+          Reset
+        </button>
+        <a href="/contact/" className="btn btn-primary shrink-0 whitespace-nowrap px-3 py-1 text-xs">
+          Request early access
+        </a>
+        {copied && (
+          <p role="status" className="absolute right-3 top-full z-40 mt-2 rounded-lg bg-[var(--color-neon)] px-3 py-1.5 text-xs font-medium text-[var(--color-accent-fg)] shadow-lg">
+            Copied, paste it to Lisn
           </p>
-          <ol className="mt-2 flex flex-wrap gap-1.5">
-            {scn.tasks.map((t, i) => {
-              const done = progress.done[i];
-              const next = !done && t.goal === progress.goal;
-              return (
-                <li
-                  key={t.goal}
-                  className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs ${
-                    done ? "border-transparent bg-white/5 text-[var(--color-muted)]"
-                    : next ? "border-[var(--color-muted)] text-[var(--color-fg)]"
-                    : "border-[var(--color-border-bright)] text-[var(--color-muted)]"
-                  }`}
-                >
-                  <span className={`grid h-4 w-4 place-items-center rounded-full font-mono text-[10px] ${done ? "bg-[var(--color-neon)] text-[var(--color-accent-fg)]" : "bg-white/10"}`}>
-                    {done ? <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.4" aria-label="done"><path d="m2.5 6.5 2.3 2.3L9.5 3.8" /></svg> : i + 1}
-                  </span>
-                  {t.goal}
-                </li>
-              );
-            })}
-          </ol>
-        </div>
-        <div className="flex shrink-0 items-center gap-2">
-          <button type="button" onClick={() => pick(scn.id)} className="btn btn-ghost px-4 py-2 text-xs">Reset</button>
-          <button type="button" onClick={autoplay} className={`btn px-4 py-2 text-xs ${auto !== null ? "btn-ghost" : "btn-primary"}`}>
-            {auto !== null ? `Stop · step ${auto} of ${scn.solution.length}` : "▶ Autoplay"}
-          </button>
-        </div>
+        )}
       </div>
-
-      <Stage
-        scn={scn}
-        state={state}
-        trail={trail}
-        fxRef={fxRef}
-        onVisitor={onVisitor}
-        onReload={() => stopAuto("visitor reloaded")}
-      />
+      <div className="min-h-0 min-w-0 flex-1">
+        <Stage
+          scn={scn}
+          state={state}
+          trail={trail}
+          fxRef={fxRef}
+          onVisitor={onVisitor}
+          onReload={() => queue.abort("visitor reloaded")}
+          full
+        />
+      </div>
     </div>
   );
 }

@@ -4,10 +4,11 @@ import { useEffect, useState, type ReactNode, type RefObject } from "react";
 
 /** Browser chrome around the mock site: real back/forward (in-memory history), reload, a URL that types itself. */
 export default function MockBrowser({
-  rootRef, urlRef, domain, path, navKey, canBack, canForward, onBack, onForward, onReload, trail, children,
+  rootRef, urlRef, full = false, domain, path, navKey, canBack, canForward, onBack, onForward, onReload, trail, children,
 }: {
   rootRef: RefObject<HTMLDivElement | null>;
   urlRef: RefObject<HTMLDivElement | null>;
+  full?: boolean; // fill the parent edge to edge (demo pages)
   domain: string;
   path: string;
   navKey: number;
@@ -44,8 +45,8 @@ export default function MockBrowser({
   return (
     <div
       ref={rootRef}
-      style={{ height: "max(560px, calc(100vh - 180px))" }}
-      className="relative flex flex-col overflow-hidden rounded-xl border border-[var(--color-border-bright)] bg-[var(--color-panel)]"
+      style={full ? undefined : { height: "max(560px, calc(100vh - 180px))" }}
+      className={`relative flex flex-col overflow-hidden bg-[var(--color-panel)] ${full ? "h-full w-full" : "rounded-xl border border-[var(--color-border-bright)]"}`}
     >
       <div className="relative flex h-10 shrink-0 items-center gap-1 border-b border-[var(--color-border)] bg-[var(--color-panel-2)] px-2">
         <button type="button" aria-label="Back" className={nav} disabled={!canBack} onClick={onBack}>

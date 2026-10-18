@@ -1,4 +1,4 @@
-/** Playground engine types. A scenario is data (pages, elements, tasks, a solution) plus page components. */
+/** Playground engine types. A scenario is data (pages, elements, tasks, an opening line) plus page components. */
 import type { ComponentType, CSSProperties } from "react";
 
 export type By = "lisn" | "you";
@@ -52,7 +52,7 @@ export type Action =
 
 export type Result = { ok: true; state: State; text: string } | { ok: false; error: string };
 
-/** One move, shared by demo_do_steps, the Autoplay solution and the tests. */
+/** One move inside demo_do_steps. */
 export type Step =
   | { action: "go_to"; page: string }
   | { action: "click"; id: string }
@@ -82,12 +82,12 @@ export type Scenario = {
   domain: string; // "noor-bank.example"
   task: string; // one line for the picker card
   label: string; // mono label, "6 PAGES · APPLY"
-  prompts: [string, string];
+  opening: string; // Lisn's first line on the demo page: introduce itself, offer the first task as a question
+  suggestions: [string, string, string]; // short things a visitor might ask, shown as chips in the top bar
   brand: { swatch: string; style: CSSProperties; className?: string }; // style holds the --mk-* vars + fonts
   pages: PageDef[];
   els: El[];
   tasks: Task[];
-  solution: Step[];
   initial?: { page?: string; values?: Record<string, string>; flags?: Flags };
   onClick?: (s: State, id: string) => Effect | null;
   Page: ComponentType<{ site: Site; page: string }>;
@@ -107,7 +107,7 @@ export type PageTool = {
 declare global {
   interface Window {
     MarkaibleTools?: PageTool[];
-    Markaible?: { setContext?: (ctx: object) => void; open?: (text?: string) => void };
+    Markaible?: { setContext?: (ctx: object) => void; open?: (opts?: { tab?: "chat" | "call" }) => unknown };
     MarkaibleContext?: object;
   }
 }

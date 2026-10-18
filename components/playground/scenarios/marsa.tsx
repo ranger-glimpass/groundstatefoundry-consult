@@ -822,7 +822,6 @@ function MarsaPage({ site, page }: { site: Site; page: string }) {
 
 /* ---------- scenario ---------- */
 
-const DEMO = calc({ flags: { calc_price: String(LISTINGS.bayline.price), calc_down: "20", calc_years: "25" } } as unknown as State);
 
 export const marsa: Scenario = {
   id: "marsa",
@@ -830,7 +829,8 @@ export const marsa: Scenario = {
   domain: "marsa-homes.example",
   task: "Find a 2-bed in Dubai Marina, check you can afford it, book a viewing.",
   label: "6 PAGES · BOOK",
-  prompts: ["Find me a 2-bed in Dubai Marina under 2M", "Book a viewing on Saturday"],
+  opening: "Hi, I'm Lisn. This is Marsa Homes, a made-up property site for this demo. Should I help you find a 2-bed in Dubai Marina under AED 2M?",
+  suggestions: ["Find me a 2-bed in Dubai Marina under 2M", "Can I afford this one?", "Book a viewing on Saturday"],
   brand: {
     swatch: "#b4532a",
     className: `${display.variable} ${sans.variable}`,
@@ -870,46 +870,4 @@ export const marsa: Scenario = {
   ],
   onClick,
   Page: MarsaPage,
-  solution: [
-    {
-      action: "fill",
-      fields: [
-        { id: "marsa.search.area", value: "dubai_marina" },
-        { id: "marsa.search.beds", value: "2" },
-        { id: "marsa.search.max_price", value: "2000000" },
-      ],
-    },
-    { action: "click", id: "marsa.search.apply" },
-    { action: "highlight", ids: ["marsa.search.bayline_sqft", "marsa.search.mizan_sqft", "marsa.search.coral_sqft"], note: `Three under 2M. Coral Quay is cheapest per sqft at AED ${fmt(pps(LISTINGS.coral))}` },
-    { action: "click", id: "marsa.search.bayline" },
-    { action: "highlight", ids: ["marsa.listing.price", "marsa.listing.price_sqft", "marsa.listing.service"], note: `${aed(LISTINGS.bayline.price)}, plus about ${aed(LISTINGS.bayline.service * LISTINGS.bayline.sqft)} a year in service charge` },
-    { action: "click", id: "marsa.listing.floorplan" },
-    { action: "highlight", ids: ["marsa.floorplan.maids", "marsa.floorplan.kitchen"], note: "The maid's room is off the kitchen, with its own WC" },
-    { action: "click", id: "marsa.floorplan.sun" },
-    { action: "highlight", ids: ["marsa.floorplan.balcony", "marsa.floorplan.orientation"], note: "The balcony faces west: sunset over the marina" },
-    { action: "click", id: "marsa.floorplan.back" },
-    { action: "click", id: "marsa.listing.afford" },
-    { action: "fill", fields: [{ id: "marsa.mortgage.down", value: "20" }, { id: "marsa.mortgage.years", value: "25" }] },
-    { action: "highlight", ids: ["marsa.mortgage.rate"], note: `Fixed demo rate of ${RATE}%` },
-    { action: "click", id: "marsa.mortgage.calculate" },
-    { action: "highlight", ids: ["marsa.mortgage.monthly"], note: `${aed(DEMO.monthly)} a month for 25 years` },
-    { action: "highlight", ids: ["marsa.mortgage.upfront", "marsa.mortgage.salary"], note: `Upfront ${aed(DEMO.downCash + DEMO.dld + DEMO.agency)}, salary about ${aed(DEMO.salary)}` },
-    { action: "go_to", page: "agents" },
-    { action: "click", id: "marsa.agents.filter_arabic" },
-    { action: "highlight", ids: ["marsa.agents.layla"], note: "Layla lists Bayline and speaks Arabic" },
-    { action: "click", id: "marsa.agents.layla_book" },
-    { action: "click", id: "marsa.book.day_sat" },
-    { action: "click", id: "marsa.book.slot_1100" },
-    {
-      action: "fill",
-      fields: [
-        { id: "marsa.book.name", value: "Khalid Rahman" },
-        { id: "marsa.book.email", value: "khalid@example.com" },
-        { id: "marsa.book.mobile", value: "055 987 6543" },
-        { id: "marsa.book.language", value: "ar" },
-      ],
-    },
-    { action: "click", id: "marsa.book.submit" },
-    { action: "highlight", ids: ["marsa.book.confirmation"], note: "Booked. Layla gets the lead and confirms in Arabic" },
-  ],
 };

@@ -52,6 +52,8 @@ export default function Spotlight({
       if (h) {
         const hr = h.getBoundingClientRect();
         const box = (el: HTMLElement): Box => {
+          // The whole viewport (Lisn just landed on a page): ring it from the inside.
+          if (el === h) return { x: 10, y: 10, w: Math.round(hr.width) - 20, h: Math.round(hr.height) - 20 };
           const r = el.getBoundingClientRect();
           return { x: Math.round(r.left - hr.left), y: Math.round(r.top - hr.top), w: Math.round(r.width), h: Math.round(r.height) };
         };

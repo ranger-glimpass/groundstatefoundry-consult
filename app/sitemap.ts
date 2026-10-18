@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/site";
 import { getAllResearch } from "@/lib/research";
+import { SCENARIOS } from "@/components/playground/scenarios";
 
 export const dynamic = "force-static";
 
@@ -11,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/products/lisn", priority: 0.9, changeFrequency: "monthly" as const },
     { path: "/products/bubbles", priority: 0.8, changeFrequency: "monthly" as const },
     { path: "/playground", priority: 0.8, changeFrequency: "monthly" as const },
+    ...SCENARIOS.map((x) => ({ path: `/playground/${x.id}`, priority: 0.7, changeFrequency: "monthly" as const })),
     { path: "/research", priority: 0.9, changeFrequency: "weekly" as const },
     { path: "/about", priority: 0.7, changeFrequency: "monthly" as const },
     { path: "/contact", priority: 0.6, changeFrequency: "yearly" as const },

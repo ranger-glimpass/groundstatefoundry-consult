@@ -6,7 +6,7 @@ import Spotlight, { type Badge, type Spot } from "./Spotlight";
 import GhostCursor, { glide, press, type Pos } from "./GhostCursor";
 import ActionTrail, { type TrailItem } from "./ActionTrail";
 import { pageOf, visibleEls } from "./reduce";
-import type { Fx } from "./tools";
+import { PAGE, type Fx } from "./tools";
 import type { Action, Scenario, Site, State } from "./types";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -25,7 +25,7 @@ function textOf(node: Element | null) {
 
 /** The mock site on stage: browser chrome, the brand's pages, and Lisn's cursor and spotlight on top. */
 export default function Stage({
-  scn, state, trail, fxRef, onVisitor, onReload,
+  scn, state, trail, fxRef, onVisitor, onReload, full = false,
 }: {
   scn: Scenario;
   state: State;
@@ -33,6 +33,7 @@ export default function Stage({
   fxRef: MutableRefObject<Fx | null>;
   onVisitor: (a: Action) => void;
   onReload: () => void;
+  full?: boolean; // fill the parent (demo pages) instead of sitting in the page as a card
 }) {
   const root = useRef<HTMLDivElement>(null);
   const url = useRef<HTMLDivElement>(null);
@@ -73,7 +74,10 @@ export default function Stage({
     return () => clearTimeout(t);
   }, [badges]);
 
-  const find = useCallback((id: string) => current.current?.querySelector<HTMLElement>(`[data-el="${id}"]`) ?? null, []);
+  const find = useCallback(
+    (id: string) => (id === PAGE ? viewport.current : current.current?.querySelector<HTMLElement>(`[data-el="${id}"]`) ?? null),
+    [],
+  );
 
   const site: Site = useMemo(() => ({
     s: state,
@@ -199,6 +203,7 @@ export default function Stage({
     <MockBrowser
       rootRef={root}
       urlRef={url}
+      full={full}
       domain={scn.domain}
       path={page?.path ?? "/"}
       navKey={navKey}

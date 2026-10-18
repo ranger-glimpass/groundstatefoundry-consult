@@ -73,7 +73,7 @@ export function resolvePage(scn: Scenario, ref: unknown): { page: PageDef } | { 
   return { error: `No page "${r}". Pages: ${scn.pages.map((x) => x.id).join(", ")}.` };
 }
 
-/** Catch scenario mistakes early: bad ids, duplicates, broken links, a solution that points at nothing. */
+/** Catch scenario mistakes early: bad ids, duplicates, broken links. */
 export function auditScenario(scn: Scenario): string[] {
   const out: string[] = [];
   const ids = new Set<string>();
@@ -85,11 +85,6 @@ export function auditScenario(scn: Scenario): string[] {
     ids.add(e.id);
     if (e.page !== "*" && !pages.has(e.page)) out.push(`${e.id} on unknown page ${e.page}`);
     if (e.to && !pages.has(e.to)) out.push(`${e.id} links to unknown page ${e.to}`);
-  }
-  for (const st of scn.solution) {
-    const refs = st.action === "click" ? [st.id] : st.action === "fill" ? st.fields.map((f) => f.id) : st.action === "highlight" ? st.ids : [];
-    for (const r of refs) if (!ids.has(r)) out.push(`solution uses unknown id ${r}`);
-    if (st.action === "go_to" && !pages.has(st.page)) out.push(`solution goes to unknown page ${st.page}`);
   }
   return out;
 }
