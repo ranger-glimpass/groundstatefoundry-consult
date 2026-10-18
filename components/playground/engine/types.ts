@@ -107,7 +107,7 @@ export type PageTool = {
 declare global {
   interface Window {
     MarkaibleTools?: PageTool[];
-    Markaible?: { setContext?: (ctx: object) => void; open?: (opts?: { tab?: "chat" | "call" }) => unknown };
+    Markaible?: { setContext?: (ctx: object) => void; open?: (opts?: { tab?: "chat" | "call"; prefill?: string }) => unknown; send?: (text: string) => unknown };
     MarkaibleContext?: object;
   }
 }

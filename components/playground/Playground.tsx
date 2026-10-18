@@ -115,8 +115,11 @@ export default function Playground({ id }: { id: string }) {
     window.Markaible?.setContext?.(ctx);
   }, [scn, state]);
 
-  /** A suggestion chip: open Lisn, and put the question on the clipboard to paste (the widget cannot take text yet). */
+  /** A suggestion chip: send the question to Lisn, or on an older widget open it and copy the question to paste. */
   async function ask(text: string) {
+    if (window.Markaible?.send) {
+      try { openLisn(); window.Markaible.send(text); return; } catch { /* fall back to copy and paste */ }
+    }
     openLisn();
     try { await navigator.clipboard?.writeText(text); } catch { /* clipboard blocked: the chat still opens */ }
     setCopied(text);
