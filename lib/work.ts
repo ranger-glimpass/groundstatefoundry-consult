@@ -82,7 +82,7 @@ export const WORK: WorkItem[] = [
       "Sessions run as long-lived background workers",
       "Written in Go, released under MIT",
     ],
-    link: { href: "https://github.com/Sentinal-Glimpass/bubbles", label: "View on GitHub" },
+    link: { href: "https://github.com/Ground-State-Foundry/bubbles", label: "View on GitHub" },
   },
   {
     slug: "darweel",

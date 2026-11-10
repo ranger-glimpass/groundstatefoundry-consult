@@ -1,13 +1,17 @@
 /** What Ground State Foundry makes. Drives /products, the product pages, the nav, and the homepage. */
 
-export const BUBBLES_REPO = "https://github.com/Sentinal-Glimpass/bubbles";
+export const GITHUB_ORG = "https://github.com/Ground-State-Foundry";
+export const BUBBLES_REPO = `${GITHUB_ORG}/bubbles`;
+export const NEARFIELD_REPO = `${GITHUB_ORG}/nearfield`;
 export const PLAYGROUND = "/playground";
 /** The Lisn agent that runs on this site ("GSF Assistant"). The widget only loads when set. */
 export const LISN_AGENT_ID = "6ad3df8f20ae684a1d8fa881";
 export const LISN_WIDGET_SRC = "https://my.groundstatefoundry.com/widget-v2.js";
 
 export type Product = {
-  slug: "lisn" | "bubbles";
+  slug: "lisn" | "bubbles" | "nearfield";
+  repo?: string; // open-source products link here
+  page?: boolean; // has its own /products/<slug> page
   name: string;
   status: string;
   line: string;
@@ -20,6 +24,7 @@ export const PRODUCTS: Product[] = [
     slug: "lisn",
     name: "Lisn",
     status: "Early access",
+    page: true,
     line: "An AI that talks to your customers, wherever they are.",
     summary:
       "Lisn talks and chats with visitors on your website, answers from your own business knowledge, captures leads, and books appointments. Phone lines are next. It practises against simulated customers before it talks to real ones.",
@@ -34,6 +39,8 @@ export const PRODUCTS: Product[] = [
     slug: "bubbles",
     name: "Bubbles",
     status: "Open source · MIT",
+    repo: BUBBLES_REPO,
+    page: true,
     line: "A terminal tool that runs a whole fleet of AI coding agents.",
     summary:
       "Bubbles keeps Claude Code agents alive as long-running workers, lets them message each other and hand off work, and lets them spawn more agents on their own.",
@@ -42,6 +49,21 @@ export const PRODUCTS: Product[] = [
       "Messaging between agents that never interrupts their work",
       "Agents can spawn and manage their own sub-agents",
       "Written in Go, released under MIT",
+    ],
+  },
+  {
+    slug: "nearfield",
+    name: "Nearfield",
+    status: "Open source · Apache-2.0",
+    repo: NEARFIELD_REPO,
+    line: "Keeps the caller's voice and removes everything else, in real time.",
+    summary:
+      "Nearfield cleans the audio of a phone or voice-agent call as it happens. It keeps the voice closest to the microphone and removes background noise and other people talking nearby, so the agent hears only the caller.",
+    bullets: [
+      "One 11 MB model, 30 ms of delay, light enough for one CPU thread",
+      "Works on 8, 16 and 48 kHz audio",
+      "Drop-in filter for Pipecat voice agents",
+      "Python package, released under Apache-2.0",
     ],
   },
 ];

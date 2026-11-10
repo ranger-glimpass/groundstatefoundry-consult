@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Logo from "./Logo";
 import { SITE, NAV } from "@/lib/site";
-import { BUBBLES_REPO } from "@/lib/products";
+import { GITHUB_ORG } from "@/lib/products";
 
 export default function SiteFooter() {
   return (
@@ -22,7 +22,7 @@ export default function SiteFooter() {
               LinkedIn ↗
             </a>
             <a
-              href={BUBBLES_REPO}
+              href={GITHUB_ORG}
               target="_blank"
               rel="noopener noreferrer"
               className="ml-5 mt-4 inline-block text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-fg)]"

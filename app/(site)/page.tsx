@@ -4,7 +4,7 @@ import { Container } from "@/components/ui";
 import GroundStateMark from "@/components/GroundStateMark";
 import MatmulChart from "@/components/MatmulChart";
 import { SITE } from "@/lib/site";
-import { PRODUCTS, LISN_CAPABILITIES, LISN_STEPS, BUBBLES_REPO } from "@/lib/products";
+import { PRODUCTS, LISN_CAPABILITIES, LISN_STEPS } from "@/lib/products";
 import { WORK } from "@/lib/work";
 import { getAllResearch, categoryTitle } from "@/lib/research";
 
@@ -172,7 +172,7 @@ export default function Home() {
       {/* ───────────── PRODUCTS ───────────── */}
       <Container className="py-12">
         <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What we make</h2>
-        <div className="mt-10 grid gap-5 md:grid-cols-2">
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
           {PRODUCTS.map((p) => (
             <div key={p.slug} className="card flex flex-col p-8">
               <div className="flex items-center justify-between gap-3">
@@ -181,9 +181,9 @@ export default function Home() {
               </div>
               <p className="mt-4 flex-1 leading-relaxed text-[var(--color-muted)]">{p.line}</p>
               <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-                <Link href={`/products/${p.slug}`} className="link-u">More about {p.name} →</Link>
-                {p.slug === "bubbles" && (
-                  <a href={BUBBLES_REPO} target="_blank" rel="noopener noreferrer" className="link-u">View on GitHub ↗</a>
+                {p.page && <Link href={`/products/${p.slug}`} className="link-u">More about {p.name} →</Link>}
+                {p.repo && (
+                  <a href={p.repo} target="_blank" rel="noopener noreferrer" className="link-u">View on GitHub ↗</a>
                 )}
               </div>
             </div>

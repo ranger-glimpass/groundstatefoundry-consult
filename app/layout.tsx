@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Sora, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SITE } from "@/lib/site";
-import { BUBBLES_REPO } from "@/lib/products";
+import { BUBBLES_REPO, GITHUB_ORG, NEARFIELD_REPO } from "@/lib/products";
 
 const sora = Sora({
   variable: "--font-sora",
@@ -91,7 +91,7 @@ const JSON_LD = {
   logo: `${SITE.url}/groundstate-logo.png`,
   description: DESCRIPTION,
   email: SITE.email,
-  sameAs: [SITE.linkedin, BUBBLES_REPO],
+  sameAs: [SITE.linkedin, GITHUB_ORG],
   legalName: SITE.legalName,
   identifier: { "@type": "PropertyValue", name: "Meydan Free Zone licence number", value: SITE.licence },
   areaServed: ["AE", "Worldwide"],
@@ -124,6 +124,14 @@ const JSON_LD = {
       codeRepository: BUBBLES_REPO,
       license: "https://opensource.org/licenses/MIT",
       programmingLanguage: "Go",
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      name: "Nearfield",
+      description: "Open-source real-time caller voice isolation for voice agents.",
+      codeRepository: NEARFIELD_REPO,
+      license: "https://opensource.org/licenses/Apache-2.0",
+      programmingLanguage: "Python",
     },
   ],
   knowsAbout: [

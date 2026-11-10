@@ -1,21 +1,21 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Container, PageHeader } from "@/components/ui";
-import { PRODUCTS, BUBBLES_REPO } from "@/lib/products";
+import { PRODUCTS } from "@/lib/products";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Products",
   alternates: { canonical: "/products" },
-  description: "Lisn, an AI that talks to your customers wherever they are, and Bubbles, an open-source tool for running fleets of AI coding agents.",
+  description: "Lisn, an AI that talks to your customers wherever they are, plus two open-source projects: Bubbles, for running fleets of AI coding agents, and Nearfield, which isolates a caller's voice in real time.",
 };
 
 export default function ProductsPage() {
   return (
     <>
-      <PageHeader eyebrow="products" title="What we make" subtitle="Two products, one research lab behind them." />
+      <PageHeader eyebrow="products" title="What we make" subtitle="One product, two open-source projects, one research lab behind them." />
       <Container className="py-16">
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {PRODUCTS.map((p) => (
             <div key={p.slug} className="card flex flex-col p-8">
               <div className="flex items-center justify-between gap-3">
@@ -33,11 +33,11 @@ export default function ProductsPage() {
                 ))}
               </ul>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link href={`/products/${p.slug}`} className="btn btn-ghost">More about {p.name} →</Link>
-                {p.slug === "lisn" ? (
-                  <Link href="/contact" className="btn btn-primary">Request early access →</Link>
+                {p.page && <Link href={`/products/${p.slug}`} className="btn btn-ghost">More about {p.name} →</Link>}
+                {p.repo ? (
+                  <a href={p.repo} target="_blank" rel="noopener noreferrer" className="btn btn-primary">View on GitHub ↗</a>
                 ) : (
-                  <a href={BUBBLES_REPO} target="_blank" rel="noopener noreferrer" className="btn btn-primary">View on GitHub ↗</a>
+                  <Link href="/contact" className="btn btn-primary">Request early access →</Link>
                 )}
               </div>
             </div>
@@ -48,7 +48,7 @@ export default function ProductsPage() {
           <div className="max-w-xl">
             <p className="mono-label">the lab behind them</p>
             <p className="mt-3 leading-relaxed text-[var(--color-muted)]">
-              Both products come out of our research in voice AI, agent simulation, multi-agent
+              All three come out of our research in voice AI, agent simulation, multi-agent
               systems, and evolutionary search. Our evolutionary framework rediscovered Winograd&apos;s
               48-multiplication method on its own, then averaged 47.94 on a 500-case test set.
             </p>
