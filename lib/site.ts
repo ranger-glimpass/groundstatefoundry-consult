@@ -8,7 +8,7 @@ export const SITE = {
   url: "https://groundstatefoundry.com",
   tagline: "The most stable state your business can run in.",
   positioning:
-    "A research-led product company in Dubai. We build Lisn, an AI that talks to your customers wherever they are, and Bubbles, an open-source tool for running fleets of AI coding agents.",
+    "An AI research lab. We study how AI listens, acts and improves, and ship what works: Nearfield and Bubbles as open source, and Lisn, an AI that talks to your customers.",
   email: "hello@groundstatefoundry.com",
   linkedin: "https://www.linkedin.com/company/ground-state-foundry",
   founders: [

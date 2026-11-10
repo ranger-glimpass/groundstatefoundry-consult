@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Contact",
   alternates: { canonical: "/contact" },
   description:
-    "Talk to Ground State Foundry, the applied AI research lab building Lisn, in Meydan Free Zone, Dubai. Request early access to Lisn or send an enquiry.",
+    "Talk to Ground State Foundry, an AI research lab in Meydan Free Zone, Dubai. Collaborate on research, ask about Nearfield or Bubbles, or request early access to Lisn.",
 };
 
 export default function ContactPage() {
@@ -15,8 +15,8 @@ export default function ContactPage() {
     <>
       <PageHeader
         eyebrow="contact"
-        title="Get early access to Lisn"
-        subtitle="We are onboarding a small group of early teams. Tell us where your customers reach you, and we will set Lisn up there first."
+        title="Get in touch"
+        subtitle="Collaborate with us on research, ask about our open-source work on Nearfield and Bubbles, or get early access to Lisn. Tell us what you have in mind and we will reply."
       />
       <Container className="py-16">
         <div className="grid gap-8 lg:grid-cols-[1.3fr_1fr]">

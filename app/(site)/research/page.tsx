@@ -27,7 +27,7 @@ export default function ResearchPage() {
             const pieces = all.filter((p) => p.category === cat.slug);
             if (pieces.length === 0) return null;
             return (
-              <section key={cat.slug}>
+              <section key={cat.slug} id={cat.slug} className="scroll-mt-24">
                 <div className="mb-6 max-w-2xl">
                   <p className="mono-label">{cat.slug}</p>
                   <h2 className="mt-3 text-2xl font-semibold text-[var(--color-fg)]">{cat.title}</h2>

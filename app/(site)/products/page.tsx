@@ -5,18 +5,21 @@ import { PRODUCTS } from "@/lib/products";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Products",
+  title: "What we've shipped",
   alternates: { canonical: "/products" },
-  description: "Lisn, an AI that talks to your customers wherever they are, plus two open-source projects: Bubbles, for running fleets of AI coding agents, and Nearfield, which isolates a caller's voice in real time.",
+  description: "What Ground State Foundry has shipped: Nearfield, which isolates a caller's voice in real time, and Bubbles, for running fleets of AI coding agents, both open source; and Lisn, an AI that talks to your customers.",
 };
+
+const ORDER = ["nearfield", "bubbles", "lisn"];
+const SHIPPED = [...PRODUCTS].sort((a, b) => ORDER.indexOf(a.slug) - ORDER.indexOf(b.slug));
 
 export default function ProductsPage() {
   return (
     <>
-      <PageHeader eyebrow="products" title="What we make" subtitle="One product, two open-source projects, one research lab behind them." />
+      <PageHeader eyebrow="products" title="What we've shipped" subtitle="Two open-source projects and one product, all out of the same research lab." />
       <Container className="py-16">
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {PRODUCTS.map((p) => (
+          {SHIPPED.map((p) => (
             <div key={p.slug} className="card flex flex-col p-8">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-2xl font-semibold text-[var(--color-fg)]">{p.name}</h2>
@@ -48,9 +51,11 @@ export default function ProductsPage() {
           <div className="max-w-xl">
             <p className="mono-label">the lab behind them</p>
             <p className="mt-3 leading-relaxed text-[var(--color-muted)]">
-              All three come out of our research in voice AI, agent simulation, multi-agent
-              systems, and evolutionary search. Our evolutionary framework rediscovered Winograd&apos;s
-              48-multiplication method on its own, then averaged 47.94 on a 500-case test set.
+              Nearfield comes out of our voice research, Bubbles out of our work on multi-agent
+              systems, and Lisn out of both, plus the simulations it practises against before it
+              talks to customers. The same lab runs evolutionary search: our framework rediscovered
+              Winograd&apos;s 48-multiplication method on its own, then averaged 47.94 on a 500-case
+              test set.
             </p>
           </div>
           <Link href="/research" className="btn btn-ghost shrink-0">Read the research →</Link>

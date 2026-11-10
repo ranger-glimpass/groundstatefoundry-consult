@@ -56,6 +56,7 @@ export const PRODUCTS: Product[] = [
     name: "Nearfield",
     status: "Open source · Apache-2.0",
     repo: NEARFIELD_REPO,
+    page: true,
     line: "Keeps the caller's voice and removes everything else, in real time.",
     summary:
       "Nearfield cleans the audio of a phone or voice-agent call as it happens. It keeps the voice closest to the microphone and removes background noise and other people talking nearby, so the agent hears only the caller.",
@@ -123,6 +124,9 @@ export const LISN_RESEARCH = [
   "test-with-more-ai",
   "grading-the-agent-blind",
 ];
+
+/** Research behind Nearfield. Slugs without a file yet are skipped by the page. */
+export const NEARFIELD_RESEARCH = ["hearing-only-the-caller"];
 
 export const BUBBLES_RESEARCH = [
   "running-a-fleet",

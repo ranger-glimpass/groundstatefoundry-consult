@@ -4,12 +4,9 @@ import { Container } from "@/components/ui";
 import GroundStateMark from "@/components/GroundStateMark";
 import MatmulChart from "@/components/MatmulChart";
 import { SITE } from "@/lib/site";
-import { PRODUCTS, LISN_CAPABILITIES, LISN_STEPS } from "@/lib/products";
-import { WORK } from "@/lib/work";
-import { getAllResearch, categoryTitle } from "@/lib/research";
+import { PRODUCTS, PLAYGROUND, NEARFIELD_REPO } from "@/lib/products";
+import { getAllResearch, categoryTitle, RESEARCH_CATEGORIES } from "@/lib/research";
 
-/** The homepage research list is hidden for now; the /research pages stay live. */
-const SHOW_RESEARCH_LIST = false;
 const DARWEEL_REPORT_URL = "https://www.onevoid.org/post/conditional-winograd-by-edbbc5b2";
 
 const MATMUL = [
@@ -17,6 +14,35 @@ const MATMUL = [
   { v: "49", l: "Strassen, applied twice" },
   { v: "48", l: "rediscovered by our system, matching Winograd" },
   { v: "47.94", l: "average across 500 test cases, all correct" },
+];
+
+const RESULTS = [
+  {
+    label: "voice · nearfield",
+    v: "-41 dB",
+    unit: "background while the caller is silent, at STOI 0.882",
+    body: "Nearfield keeps the voice closest to the microphone and cuts everything else. On 48 held-out simulated calls, with speakers and rooms it never trained on, it brought background sound down by 41 dB in the gaps where the caller was silent.",
+    note: "STOI scores how intelligible the kept speech stays, from 0 to 1. DeepFilterNet3 alone: -16 dB at STOI 0.878. Background voices that overlap the caller in pitch can stay faintly audible while the caller talks.",
+    links: [
+      { href: "/products/nearfield", label: "Try the demo" },
+      { href: NEARFIELD_REPO, label: "Code on GitHub" },
+    ],
+  },
+  {
+    label: "simulation · agents that call agents",
+    v: "20",
+    unit: "concurrent calls, end to end, through the full stack",
+    body: "We test voice agents by having other AI agents call them over real telephony. Paired caller and receiver agents put the whole pipeline under genuine load, with no customer anywhere near it.",
+    note: "20 is the tested ceiling from logged runs, not a theoretical maximum.",
+    links: [{ href: "/research/test-with-more-ai", label: "How it works" }],
+  },
+];
+
+const AREAS = [
+  { slug: "voice-ai", t: "Voice", d: "Latency, turn-taking, and hearing only the person you are talking to." },
+  { slug: "multi-agent-systems", t: "Agents", d: "Many agents working, messaging, and handing off work to each other." },
+  { slug: "agent-simulation", t: "Simulation", d: "Simulated people and traffic that test a system before real users reach it." },
+  { slug: "evolutionary-systems", t: "Evolutionary search", d: "Code that changes itself and finds answers we did not hand it." },
 ];
 
 const FOUNDERS = [
@@ -37,8 +63,11 @@ const FOUNDERS = [
 ];
 
 export default function Home() {
-  const [caseStudy, ...moreWork] = WORK.filter((w) => w.featured);
-  const research = getAllResearch().slice(0, 4);
+  const research = getAllResearch().slice(0, 5);
+  const areas = AREAS.map((a) => ({ ...a, cat: RESEARCH_CATEGORIES.find((c) => c.slug === a.slug) })).filter(
+    (a) => a.cat,
+  );
+  const openSource = PRODUCTS.filter((p) => p.repo);
 
   return (
     <>
@@ -47,29 +76,28 @@ export default function Home() {
         <Container className="grid min-h-[72vh] items-center gap-12 py-16 lg:grid-cols-[1.35fr_1fr]">
           <div>
           <p className="reveal mono-label" style={{ animationDelay: "0ms" }}>
-            Lisn · by Ground State Foundry
+            Ground State Foundry · AI research lab
           </p>
 
           <h1
             className="reveal mt-6 max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-[var(--color-fg)] sm:text-6xl"
             style={{ animationDelay: "90ms" }}
           >
-            An AI that talks to your customers, wherever they are.
+            We study how AI listens, acts and improves. Then we ship what works.
           </h1>
 
           <p
             className="reveal mt-6 max-w-2xl text-pretty text-base leading-relaxed text-[var(--color-muted)]"
             style={{ animationDelay: "200ms" }}
           >
-            Lisn talks and chats with visitors on your website, answers from your own business
-            knowledge, captures the lead, books the appointment, and hands over to a person when it
-            should, in English and Arabic. Phone lines are next. It gets better by talking to other
-            agents, before it talks to your customers.
+            Our research covers voice, agents, simulation and evolutionary search. We publish what
+            we find, release the tools as open source, and put the rest into Lisn, an AI that talks
+            to your customers.
           </p>
 
           <div className="reveal mt-9 flex flex-wrap items-center gap-3" style={{ animationDelay: "320ms" }}>
-            <Link href="/contact" className="btn btn-primary">Request early access →</Link>
-            <Link href="/products/lisn" className="btn btn-ghost">See how Lisn works</Link>
+            <Link href="/research" className="btn btn-primary">Read research →</Link>
+            <Link href="/products" className="btn btn-ghost">What we&apos;ve shipped</Link>
           </div>
 
           </div>
@@ -81,132 +109,30 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* ───────────── WHAT LISN DOES ───────────── */}
+      {/* ───────────── RESULTS ───────────── */}
       <Container className="py-12">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What Lisn does</h2>
-          <Link href="/products/lisn" className="link-u text-sm">More about Lisn →</Link>
-        </div>
-        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {LISN_CAPABILITIES.map((c) => (
-            <Link
-              key={c.id}
-              href={`/products/lisn#${c.id}`}
-              className="card group flex flex-col p-7 transition-colors duration-300 hover:border-[var(--color-muted)]"
-            >
-              <h3 className="text-lg font-semibold text-[var(--color-fg)]">{c.t}</h3>
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--color-muted)]">{c.d}</p>
-              <p className="mt-5 text-xs text-[var(--color-dim)]">{c.from}</p>
-            </Link>
-          ))}
-        </div>
-      </Container>
-
-      {/* ───────────── PROCESS: numbered list ───────────── */}
-      <Container className="py-12">
-        <div className="grid gap-10 lg:grid-cols-[1fr_2fr]">
+        <div>
           <div>
-            <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">How Lisn goes live</h2>
-            <p className="mt-4 max-w-sm leading-relaxed text-[var(--color-muted)]">
-              Five steps from connecting your channels to an agent that keeps improving on its own.
-            </p>
+            <p className="mono-label">results</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">
+              What we found, and where to check it
+            </h2>
           </div>
-          <ol className="divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
-            {LISN_STEPS.map((p) => (
-              <li key={p.n} className="grid grid-cols-[3rem_1fr] gap-4 py-5 sm:grid-cols-[3rem_9rem_1fr]">
-                <span className="font-mono text-sm tabular-nums text-[var(--color-dim)]">{p.n}</span>
-                <span className="font-semibold text-[var(--color-fg)]">{p.t}</span>
-                <span className="col-start-2 text-sm leading-relaxed text-[var(--color-muted)] sm:col-start-3">{p.d}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </Container>
-
-      {/* ───────────── WORK: one case study + list ───────────── */}
-      <Container className="py-12">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What Lisn is built on</h2>
-          <Link href="/products/lisn" className="link-u text-sm">How Lisn works →</Link>
         </div>
 
-        {caseStudy && (
-          <div className="mt-10 grid gap-10 border-t border-[var(--color-border-bright)] pt-10 lg:grid-cols-[1.1fr_1fr]">
-            <div>
-              <div className="flex items-center gap-3">
-                <span className="tag">{caseStudy.tag}</span>
-                <span className="text-xs text-[var(--color-dim)]">{caseStudy.status}</span>
-              </div>
-              <h3 className="mt-5 text-2xl font-semibold text-[var(--color-fg)] sm:text-3xl">{caseStudy.title}</h3>
-              <p className="mt-4 text-lg leading-relaxed text-[var(--color-muted)]">{caseStudy.summary}</p>
-            </div>
-            <ul className="space-y-4 self-end">
-              {caseStudy.points.map((p) => (
-                <li key={p} className="border-l border-[var(--color-border-bright)] pl-4 leading-relaxed text-[var(--color-muted)]">
-                  {p}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <div className="mt-12 divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
-          {moreWork.map((w) => (
-            <div key={w.slug} className="grid gap-2 py-6 sm:grid-cols-[1fr_2fr_auto] sm:items-baseline sm:gap-8">
-              <h3 className="font-semibold text-[var(--color-fg)]">{w.title}</h3>
-              <p className="text-sm leading-relaxed text-[var(--color-muted)]">{w.summary}</p>
-              {w.link && !w.link.href.startsWith("http") ? (
-                <Link href={w.link.href} className="link-u whitespace-nowrap text-sm">{w.link.label}</Link>
-              ) : w.link ? (
-                <a href={w.link.href} target="_blank" rel="noopener noreferrer" className="link-u whitespace-nowrap text-sm">
-                  {w.link.label} ↗
-                </a>
-              ) : (
-                <span />
-              )}
-            </div>
-          ))}
-        </div>
-      </Container>
-
-      {/* ───────────── PRODUCTS ───────────── */}
-      <Container className="py-12">
-        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What we make</h2>
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {PRODUCTS.map((p) => (
-            <div key={p.slug} className="card flex flex-col p-8">
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-2xl font-semibold text-[var(--color-fg)]">{p.name}</h3>
-                <span className="tag">{p.status}</span>
-              </div>
-              <p className="mt-4 flex-1 leading-relaxed text-[var(--color-muted)]">{p.line}</p>
-              <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-                {p.page && <Link href={`/products/${p.slug}`} className="link-u">More about {p.name} →</Link>}
-                {p.repo && (
-                  <a href={p.repo} target="_blank" rel="noopener noreferrer" className="link-u">View on GitHub ↗</a>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </Container>
-
-      {/* ───────────── THE LAB BEHIND IT ───────────── */}
-      <Container className="py-12">
-        <div className="card p-8 sm:p-12">
+        <div className="card mt-10 p-8 sm:p-12">
           <div className="grid gap-10 lg:grid-cols-[1.25fr_1fr] lg:items-center">
             <div>
-              <p className="mono-label">the lab behind it</p>
-              <h2 className="mt-4 text-balance text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">
+              <p className="mono-label">evolutionary search · darweel</p>
+              <h3 className="mt-4 text-balance text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">
                 Our system rediscovered a classic 48-multiplication method on its own. Then it went lower.
-              </h2>
+              </h3>
               <p className="mt-4 leading-relaxed text-[var(--color-muted)]">
                 We pointed Darweel, our evolutionary framework, at 4x4 matrix multiplication and
                 counted the multiplications each candidate used. Programs competed, mutated, and
                 reproduced. Without being shown the answer, it arrived at Winograd&apos;s 48. A
                 descendant then learned to skip multiplications by zero, which brought the average
-                below 48 on the test set. The same lab builds the simulations Lisn practises
-                against before it talks to your customers.
+                below 48 on the test set.
               </p>
             </div>
             <MatmulChart />
@@ -237,38 +163,128 @@ export default function Home() {
             </a>
           </div>
         </div>
+
+        <div className="mt-5 grid gap-5 md:grid-cols-2">
+          {RESULTS.map((r) => (
+            <div key={r.label} className="card flex flex-col p-8">
+              <p className="mono-label">{r.label}</p>
+              <div className="mt-5 text-4xl font-semibold tabular-nums tracking-tight text-[var(--color-fg)]">{r.v}</div>
+              <p className="mt-2 text-sm text-[var(--color-muted)]">{r.unit}</p>
+              <p className="mt-5 flex-1 leading-relaxed text-[var(--color-muted)]">{r.body}</p>
+              <p className="mt-4 text-xs leading-relaxed text-[var(--color-dim)]">{r.note}</p>
+              <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                {r.links.map((l) =>
+                  l.href.startsWith("http") ? (
+                    <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer" className="link-u">
+                      {l.label} ↗
+                    </a>
+                  ) : (
+                    <Link key={l.href} href={l.href} className="link-u">{l.label} →</Link>
+                  ),
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       </Container>
 
-      {/* ───────────── RESEARCH: editorial list ───────────── */}
-      {SHOW_RESEARCH_LIST && research.length > 0 && (
-        <Container className="py-12">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">From the lab</h2>
-            <Link href="/research" className="link-u text-sm">All research →</Link>
-          </div>
-          <div className="mt-10 divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
-            {research.map((r) => (
-              <Link
-                key={r.slug}
-                href={`/research/${r.slug}`}
-                className="group grid gap-2 py-7 sm:grid-cols-[12rem_1fr] sm:gap-8"
-              >
-                <span className="text-xs text-[var(--color-dim)]">{categoryTitle(r.category)}</span>
-                <span>
-                  <span className="block text-xl font-semibold text-[var(--color-fg)] underline-offset-4 group-hover:underline">
-                    {r.title}
+      {/* ───────────── RESEARCH AREAS + LATEST ───────────── */}
+      <Container className="py-12">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What we study</h2>
+          <Link href="/research" className="link-u text-sm">All research →</Link>
+        </div>
+        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          {areas.map((a) => (
+            <Link
+              key={a.slug}
+              href={`/research#${a.slug}`}
+              className="card group flex flex-col p-7 transition-colors duration-300 hover:border-[var(--color-muted)]"
+            >
+              <h3 className="text-lg font-semibold text-[var(--color-fg)]">{a.t}</h3>
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--color-muted)]">{a.d}</p>
+              <p className="mt-5 text-xs text-[var(--color-dim)]">{a.cat?.title}</p>
+            </Link>
+          ))}
+        </div>
+
+        {research.length > 0 && (
+          <>
+            <p className="mono-label mt-14">latest from the lab</p>
+            <div className="mt-4 divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
+              {research.map((r) => (
+                <Link
+                  key={r.slug}
+                  href={`/research/${r.slug}`}
+                  className="group grid gap-2 py-7 sm:grid-cols-[12rem_1fr] sm:gap-8"
+                >
+                  <span className="text-xs text-[var(--color-dim)]">{categoryTitle(r.category)}</span>
+                  <span>
+                    <span className="block text-xl font-semibold text-[var(--color-fg)] underline-offset-4 group-hover:underline">
+                      {r.title}
+                    </span>
+                    <span className="mt-2 block max-w-2xl text-sm leading-relaxed text-[var(--color-muted)]">{r.excerpt}</span>
                   </span>
-                  <span className="mt-2 block max-w-2xl text-sm leading-relaxed text-[var(--color-muted)]">{r.excerpt}</span>
-                </span>
-              </Link>
-            ))}
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
+      </Container>
+
+      {/* ───────────── OPEN SOURCE ───────────── */}
+      <Container className="py-12">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Open source</h2>
+          <Link href="/products" className="link-u text-sm">Everything we&apos;ve shipped →</Link>
+        </div>
+        <div className="mt-10 grid gap-5 md:grid-cols-2">
+          {openSource.map((p) => (
+            <div key={p.slug} className="card flex flex-col p-8">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="text-2xl font-semibold text-[var(--color-fg)]">{p.name}</h3>
+                <span className="tag">{p.status}</span>
+              </div>
+              <p className="mt-4 flex-1 leading-relaxed text-[var(--color-muted)]">{p.line}</p>
+              <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                {p.page && <Link href={`/products/${p.slug}`} className="link-u">More about {p.name} →</Link>}
+                {p.repo && (
+                  <a href={p.repo} target="_blank" rel="noopener noreferrer" className="link-u">View on GitHub ↗</a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Container>
+
+      {/* ───────────── LISN: one band ───────────── */}
+      <Container className="py-12">
+        <div className="card flex flex-col items-start justify-between gap-8 p-8 sm:p-12 lg:flex-row lg:items-center">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3">
+              <p className="mono-label">product · lisn</p>
+              <span className="tag">Early access</span>
+            </div>
+            <h2 className="mt-4 text-balance text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">
+              Lisn, an AI that talks to your customers.
+            </h2>
+            <p className="mt-4 leading-relaxed text-[var(--color-muted)]">
+              Voice and chat on your website, in English and Arabic. It answers from your own business
+              knowledge, captures the lead, books the appointment, and hands over to a person when it
+              should. Phone lines are next. It practises against simulated customers before it talks
+              to real ones.
+            </p>
           </div>
-        </Container>
-      )}
+          <div className="flex shrink-0 flex-wrap gap-3">
+            <Link href="/products/lisn" className="btn btn-primary">See how Lisn works →</Link>
+            <Link href={PLAYGROUND} className="btn btn-ghost">Try it in the playground</Link>
+          </div>
+        </div>
+      </Container>
 
       {/* ───────────── FOUNDERS ───────────── */}
       <Container className="py-12">
-        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Who is building Lisn</h2>
+        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Who runs the lab</h2>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
           {FOUNDERS.map((f) => (
             <FounderCard key={f.name} {...f} />
@@ -280,18 +296,18 @@ export default function Home() {
       <Container className="py-12">
         <div className="card-neon p-10 text-center sm:p-16">
           <h2 className="text-balance text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">
-            Put Lisn where your customers already are.
+            Work with the lab, or put Lisn to work.
           </h2>
-          <p className="mx-auto mt-4 max-w-md text-[var(--color-muted)]">
-            We are onboarding a small group of early teams. Tell us where your customers reach you,
-            and we will set Lisn up there first.
+          <p className="mx-auto mt-4 max-w-lg text-[var(--color-muted)]">
+            Bring us a hard problem in voice, agents, simulation or search, or tell us where your
+            customers reach you and we will set Lisn up there first.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/contact" className="btn btn-primary">Request early access →</Link>
-            <a href={`mailto:${SITE.email}`} className="btn btn-ghost">{SITE.email}</a>
+            <Link href="/contact" className="btn btn-primary">Collaborate on research →</Link>
+            <Link href="/contact" className="btn btn-ghost">Try Lisn early</Link>
           </div>
           <p className="mt-8 text-xs text-[var(--color-dim)]">
-            Ground State Foundry · {SITE.address.zone}, Dubai
+            Or write to <a href={`mailto:${SITE.email}`} className="link-u">{SITE.email}</a>
           </p>
         </div>
       </Container>

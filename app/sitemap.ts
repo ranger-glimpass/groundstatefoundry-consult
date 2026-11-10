@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/products", priority: 0.9, changeFrequency: "monthly" as const },
     { path: "/products/lisn", priority: 0.9, changeFrequency: "monthly" as const },
     { path: "/products/bubbles", priority: 0.8, changeFrequency: "monthly" as const },
+    { path: "/products/nearfield", priority: 0.8, changeFrequency: "monthly" as const },
     { path: "/playground", priority: 0.8, changeFrequency: "monthly" as const },
     ...SCENARIOS.map((x) => ({ path: `/playground/${x.id}`, priority: 0.7, changeFrequency: "monthly" as const })),
     { path: "/research", priority: 0.9, changeFrequency: "weekly" as const },

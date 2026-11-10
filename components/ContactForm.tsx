@@ -4,11 +4,12 @@ import { useState } from "react";
 import { SITE } from "@/lib/site";
 
 const INTERESTS = [
+  "Research collaboration",
   "Lisn on my website",
   "Lisn on my phone lines (coming next)",
   "Both",
+  "Nearfield",
   "Bubbles",
-  "Research collaboration",
   "Accelerator, partnership or investment",
   "Something else",
 ];

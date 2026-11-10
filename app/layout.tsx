@@ -17,12 +17,12 @@ const mono = JetBrains_Mono({
 });
 
 const DESCRIPTION =
-  "Ground State Foundry is a research-led product company in Meydan Free Zone, Dubai. We build Lisn, an AI that talks to your customers wherever they are, and Bubbles, an open-source tool for running fleets of AI coding agents.";
+  "Ground State Foundry is an AI research lab. We study how AI listens, acts and improves, and ship what works: Nearfield and Bubbles as open source, and Lisn, an AI that talks to your customers.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: "Lisn · An AI that talks to your customers · Ground State Foundry",
+    default: "Ground State Foundry · AI research lab",
     template: "%s · Ground State Foundry",
   },
   description: DESCRIPTION,
@@ -37,9 +37,10 @@ export const metadata: Metadata = {
     "Bubbles",
     "open source agent IDE",
     "Claude Code agents",
-    "AI research Dubai",
-    "Meydan Free Zone",
-    "UAE AI company",
+    "AI research lab",
+    "Nearfield",
+    "voice isolation",
+    "evolutionary search",
     "Ground State Foundry",
   ],
   authors: [{ name: "Ground State Foundry", url: SITE.url }],
@@ -52,14 +53,13 @@ export const metadata: Metadata = {
     siteName: SITE.name,
     url: SITE.url,
     locale: "en_US",
-    title: "Lisn by Ground State Foundry",
-    description:
-      "Lisn, an AI that talks to your customers wherever they are: on your website today, by voice or chat, in English and Arabic.",
+    title: "Ground State Foundry · AI research lab",
+    description: DESCRIPTION,
     images: [{ url: "/groundstate-logo.png", width: 1254, height: 1254, alt: "Ground State Foundry" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Lisn by Ground State Foundry",
+    title: "Ground State Foundry · AI research lab",
     description: DESCRIPTION,
     images: ["/groundstate-logo.png"],
   },

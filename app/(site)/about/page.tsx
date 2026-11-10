@@ -8,13 +8,13 @@ export const metadata: Metadata = {
   title: "About",
   alternates: { canonical: "/about" },
   description:
-    "Ground State Foundry is a research-led product company in Meydan Free Zone, Dubai. We build Lisn, an AI that talks to your customers wherever they are, and Bubbles, an open-source tool for running fleets of AI coding agents.",
+    "Ground State Foundry is an AI research lab in Meydan Free Zone, Dubai. We study how AI listens, acts and improves, and ship what works: Nearfield and Bubbles as open source, and Lisn, an AI that talks to your customers.",
 };
 
 const VALUES = [
   { t: "Research is the edge", d: "We study hard problems on purpose: simulation, multi-agent systems, evolutionary search. What works goes straight into the products." },
   { t: "Ship it, then make it practise", d: "Nothing reaches a real customer before it has talked to simulated ones. Every failure in practice becomes a fix." },
-  { t: "Open where we can", d: "Bubbles is open source under MIT. We publish what we learn in our research, including what did not work." },
+  { t: "Open where we can", d: "Bubbles (MIT) and Nearfield (Apache-2.0) are open source. We publish what we learn in our research, including what did not work." },
   { t: "Honest about AI", d: "We say what our systems can do today and what they cannot yet. No invented numbers." },
 ];
 
@@ -41,15 +41,16 @@ export default function AboutPage() {
       <PageHeader
         eyebrow="about"
         title="Built from ground state up"
-        subtitle="A research-led product company. We build Lisn and Bubbles, and the research behind them."
+        subtitle="An AI research lab. We study how AI listens, acts and improves, and ship what works: Nearfield and Bubbles as open source, and Lisn."
       />
       <Container className="py-16">
         <div className="mx-auto max-w-2xl">
           <p className="leading-relaxed text-[var(--color-muted)]">
-            Ground State Foundry is a research-led product company based in{" "}
-            {SITE.address.zone}, Dubai. We are building Lisn, an AI that talks to your customers on
-            your website today and on the phone next, and gets their request done. Our research in
-            voice, agents, and evolutionary systems is what goes into it.
+            Ground State Foundry is an AI research lab based in {SITE.address.zone}, Dubai. We
+            study voice, agents, simulation, and evolutionary search, and we ship what works. Two of
+            those tools are open source: Nearfield, which keeps a caller&apos;s voice and removes
+            everything else, and Bubbles, which runs fleets of AI coding agents. The third is Lisn,
+            an AI that talks to your customers on your website today and on the phone next.
           </p>
           <p className="mt-4 leading-relaxed text-[var(--color-muted)]">
             The name comes from physics. A system&apos;s ground state is the lowest-energy, most stable
