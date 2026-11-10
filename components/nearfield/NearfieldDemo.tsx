@@ -12,6 +12,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+const MODEL_BYTES = 11_049_031; // nearfield-v1.onnx, uncompressed
 const ORT_SRC = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.3/dist/ort.wasm.min.js";
 const BASE = "/nearfield/";
 
@@ -203,16 +204,19 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
         if (!r.ok) throw new Error("The model files did not download.");
         const total = Number(r.headers.get("content-length")) || 0;
         if (!track || !total || !r.body) return new Uint8Array(await r.arrayBuffer());
-        const reader = r.body.getReader(), out = new Uint8Array(total);
+        // content-length is the compressed size when the host gzips, so it only drives the progress estimate
+        const reader = r.body.getReader(), chunks: Uint8Array[] = [];
         let got = 0;
         for (;;) {
           const { done, value } = await reader.read();
           if (done) break;
-          if (got + value.length > out.length) return new Uint8Array(await new Blob([out.subarray(0, got), value]).arrayBuffer());
-          out.set(value, got); got += value.length;
-          onProgress(Math.round((got / total) * 100));
+          chunks.push(value); got += value.length;
+          onProgress(Math.min(99, Math.round((got / Math.max(total, MODEL_BYTES)) * 100)));
         }
-        return out.subarray(0, got);
+        const out = new Uint8Array(got);
+        let at = 0;
+        for (const c of chunks) { out.set(c, at); at += c.length; }
+        return out;
       };
       const [m, s] = await Promise.all([fetchBin(BASE + "nearfield-v1.onnx", true), fetchBin(BASE + "init_state.bin", false)]);
       onProgress(null);
