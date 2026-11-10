@@ -67,13 +67,11 @@ Nearfield works in 10 ms frames and looks 20 ms ahead, for a total latency of 30
 
 ## Where it falls short
 
-Two limits, stated plainly.
+One limit, stated plainly.
 
 While the caller is talking, background voices are reduced, but a background voice that overlaps the caller in the same frequencies can stay faintly audible underneath. The head decides band by band, and when the caller and the TV share a band at the same instant, the band goes to the caller. That is the right call for the caller's voice, and it means some of the TV rides along.
 
 We tried a hand-programmed echo-tail remover aimed at exactly this case. It raised the caller over the background while talking from 4.3 to 6.1 dB, but intelligibility dropped from 0.892 to 0.874. It is part of the demo only, not the release, so you can hear the trade for yourself.
-
-Second, Nearfield ships with a filter for Pipecat, the open-source framework many voice agents are built on. That filter has been tested against stand-ins for Pipecat's classes, not yet inside a live Pipecat pipeline.
 
 ## Try it
 

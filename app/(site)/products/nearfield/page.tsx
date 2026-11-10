@@ -216,19 +216,12 @@ export default function NearfieldPage() {
 
       <Container className="py-12">
         <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Limits</h2>
-        <ul className="mt-8 grid gap-5 md:grid-cols-2">
+        <ul className="mt-8 grid gap-5">
           <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
             <span className="block font-semibold text-[var(--color-fg)]">Overlapping voices can stay faintly audible.</span>
             <span className="mt-2 block">
               While the caller is talking, a background voice that sits in the same frequencies as the
               caller can still be heard faintly. When the caller stops, it is cut hard.
-            </span>
-          </li>
-          <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
-            <span className="block font-semibold text-[var(--color-fg)]">The Pipecat filter is not yet proven in a live pipeline.</span>
-            <span className="mt-2 block">
-              It was tested against stand-ins for Pipecat&apos;s classes, not yet inside a running
-              Pipecat pipeline. If you try it there, we would like to hear how it goes.
             </span>
           </li>
         </ul>
