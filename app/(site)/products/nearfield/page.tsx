@@ -26,6 +26,15 @@ const STRENGTHS = [
   { s: "Full (default)", db: "−41 dB", stoi: "0.882" },
 ];
 
+// Share of the caller's words missing from the transcript (lower is better), nearfield 1.1.0 benchmark
+const WORDS_LOST = [
+  { s: "No filter", cols: ["2.3%", "3.1%", "17.9%", "41.4%", "38.4%"], ref: true },
+  { s: "Gentle", cols: ["2.6%", "3.3%", "8.8%", "30.9%", "40.3%"] },
+  { s: "Strong", cols: ["2.7%", "5.1%", "20.1%", "47.0%", "60.6%"] },
+  { s: "Balanced", cols: ["2.4%", "2.8%", "12.5%", "31.3%", "51.2%"], hi: true },
+];
+const WORDS_COLS = ["Clean", "Steady noise", "Quieter talker", "Equal talker", "Babble"];
+
 const STEPS = [
   {
     t: "Clean the noise",
@@ -170,7 +179,7 @@ export default function NearfieldPage() {
       <Container className="py-12">
         <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">How hard it cuts</h2>
         <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-          There are three strengths. The trade is simple: cut the background harder and the caller
+          There are four strengths. The trade is simple: cut the background harder and the caller
           loses a little clarity at the edges of words.
         </p>
         <div className="mt-8 overflow-x-auto">
@@ -215,8 +224,72 @@ export default function NearfieldPage() {
       </Container>
 
       <Container className="py-12">
+        <div className="flex flex-wrap items-center gap-3">
+          <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Balanced: fewer lost words</h2>
+          <span className="tag">new in 1.1.0</span>
+        </div>
+        <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
+          When a background voice is about as loud as the caller, Strong used to delete the
+          caller&apos;s words: its gate closed in the middle of a sentence. Balanced adds a stricter
+          check for &quot;the caller is definitely talking&quot;. Once it fires, for the next 1.5 seconds
+          the gate stays open and the background is turned down by 12 dB instead of removed. Outside
+          that window it behaves exactly like Strong. Same model, same 30 ms delay.
+        </p>
+        <p className="mono-label mt-8">Share of the caller&apos;s words missing from the transcript (lower is better)</p>
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full min-w-[620px] border-collapse text-left">
+            <thead>
+              <tr className="border-b border-[var(--color-border-bright)]">
+                <th className="mono-label py-3 pr-4 font-normal">Setting</th>
+                {WORDS_COLS.map((c) => (
+                  <th key={c} className="mono-label py-3 pr-4 text-right font-normal">{c}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--color-border)]">
+              {WORDS_LOST.map((r) => (
+                <tr key={r.s} className={r.ref ? "text-[var(--color-muted)]" : r.hi ? "font-semibold text-[var(--color-fg)]" : "text-[var(--color-fg)]"}>
+                  <td className="py-3.5 pr-4">{r.s}</td>
+                  {r.cols.map((v, i) => (
+                    <td key={i} className="py-3.5 pr-4 text-right font-mono tabular-nums">{v}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="mt-8 grid gap-5 md:grid-cols-2">
+          <div className="card p-7">
+            <p className="mono-label">How it was measured</p>
+            <p className="mt-3 leading-relaxed text-[var(--color-muted)]">
+              40 callers per condition reading English sentences, mixed with a background talker,
+              babble or steady noise, sent through an 8 kHz phone line and transcribed by Whisper
+              large-v3-turbo. Gaps under about 5 points are within noise.
+            </p>
+          </div>
+          <div className="card p-7">
+            <p className="mono-label">What it costs</p>
+            <p className="mt-3 leading-relaxed text-[var(--color-muted)]">
+              For up to 1.5 seconds after the caller stops, background speech is turned down rather
+              than removed, so a few more of its words get through (2.6% with Strong, 5.4% with
+              Balanced, against an equally loud talker). In babble it still loses about half the
+              caller&apos;s words, more than no filter at all.
+            </p>
+          </div>
+        </div>
+      </Container>
+
+      <Container className="py-12">
         <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Limits</h2>
-        <ul className="mt-8 grid gap-5">
+        <ul className="mt-8 grid gap-5 md:grid-cols-2">
+          <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
+            <span className="block font-semibold text-[var(--color-fg)]">Babble is still hard.</span>
+            <span className="mt-2 block">
+              When a whole room is talking behind the caller, Strong and Balanced lose more of the
+              caller&apos;s words than no filter does. Fixing that means retraining the small head that
+              decides who owns each band, not changing the rule.
+            </span>
+          </li>
           <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
             <span className="block font-semibold text-[var(--color-fg)]">Overlapping voices can stay faintly audible.</span>
             <span className="mt-2 block">
@@ -233,6 +306,7 @@ export default function NearfieldPage() {
           Nearfield is a Python package. The model is attached to the v1.0.0 release and downloads
           once on first use. In a Pipecat voice agent it drops in as the transport&apos;s input filter;
           the strength is <code className="font-mono text-sm text-[var(--color-fg)]">&quot;gentle&quot;</code>,{" "}
+          <code className="font-mono text-sm text-[var(--color-fg)]">&quot;balanced&quot;</code>,{" "}
           <code className="font-mono text-sm text-[var(--color-fg)]">&quot;strong&quot;</code> or{" "}
           <code className="font-mono text-sm text-[var(--color-fg)]">&quot;full&quot;</code>.
         </p>

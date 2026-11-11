@@ -103,10 +103,12 @@ const WID = [2,2,2,2,2,2,2,2,2,2,2,2,2,5,5,7,7,8,10,12,13,15,18,20,24,28,31,37,4
 const BAND = new Uint8Array(NB);
 { let b0 = 0; WID.forEach((w, j) => { for (let i = 0; i < w; i++) BAND[b0 + i] = j; b0 += w; }); }
 
-type PresetKey = "gentle" | "strong" | "full";
-type Preset = { k: number; far: number; gate: number | null };
+type PresetKey = "gentle" | "balanced" | "strong" | "full";
+// talk: the "caller is definitely talking" hold from nearfield 1.1.0 (threshold, frames averaged, frames held, far dB, floor dB)
+type Preset = { k: number; far: number; gate: number | null; talk?: { thr: number; avg: number; hold: number; far: number; floor: number } };
 const PRESETS: Record<PresetKey, Preset> = {
   gentle: { k: 1, far: -20, gate: null },
+  balanced: { k: 1, far: -60, gate: -45, talk: { thr: 0.6, avg: 10, hold: 150, far: -12, floor: -8 } },
   strong: { k: 1, far: -60, gate: -45 },
   full: { k: 2, far: -60, gate: -45 },
 };
@@ -115,26 +117,40 @@ type Rule = (xn: Float32Array, xd: Float32Array, own: Float32Array) => Float32Ar
 function makeRule(p: Preset, echo: boolean): Rule {
   const keep = 10 ** (-6 / 20), far = 10 ** (p.far / 20), fl = p.gate == null ? null : 10 ** (p.gate / 20);
   let prev = 0, hold = 0;
+  const T = p.talk, hist = new Float64Array(T ? Math.max(1, T.avg) : 1), tfloor = T ? 10 ** (T.floor / 20) : 0;
+  let talkV = 0, talkHold = 0;
   // echo-tail remover: predict each bin's room-echo energy from 50 ms ago and subtract it
   const EA = Math.exp((-13.8 * 5 * 0.01) / 0.5), EFL = 10 ** (-15 / 20), ring: Float64Array[] = [];
   let Ps: Float64Array | null = null;
   return (xn, xd, own) => {
     const o = p.k === 1 ? own : own.map((v) => v ** p.k / (v ** p.k + (1 - v) ** p.k));
-    let G = 1;
-    if (fl !== null) {
+    let G = 1, farNow = far, talk = 0, stat = 0;
+    if (fl !== null || T) {
       const w = new Float64Array(32);
       for (let b = 0; b < NB; b++) w[BAND[b]] += xd[2 * b] ** 2 + xd[2 * b + 1] ** 2;
       let num = 0, den = 0;
       for (let j = 0; j < 32; j++) { num += own[j] * (w[j] + 1e-12); den += w[j] + 1e-12; }
-      const g0 = Math.min(1, Math.max(0, (num / den - 0.25) / 0.35));
+      stat = num / den; // energy-weighted share of the frame owned by the near voice
+    }
+    if (T) {
+      hist.copyWithin(0, 1); hist[hist.length - 1] = stat;
+      let mean = 0; for (const v of hist) mean += v; mean /= hist.length;
+      const t0 = Math.min(1, Math.max(0, (mean - T.thr) / 0.3));
+      if (t0 >= talkV) { talkV = t0; talkHold = T.hold; } else if (talkHold > 0) talkHold--; else talkV = Math.max(t0, talkV * 0.9);
+      talk = talkV;
+      farNow = 10 ** ((p.far * (1 - talk) + T.far * talk) / 20);
+    }
+    if (fl !== null) {
+      const g0 = Math.min(1, Math.max(0, (stat - 0.25) / 0.35));
       if (g0 >= prev) { prev = g0; hold = 15; } else if (hold > 0) hold--; else prev = Math.max(g0, prev * 0.85);
-      G = fl + (1 - fl) * prev;
+      G = fl + (1 - fl) * Math.max(prev, talk);
     }
     const out = new Float32Array(NB * 2);
     for (let b = 0; b < NB; b++) {
       const nr = xn[2 * b], ni = xn[2 * b + 1], dr = xd[2 * b], di = xd[2 * b + 1];
       const dg = Math.min(1, Math.max(0, Math.hypot(dr, di) / (Math.hypot(nr, ni) + 1e-9))), ob = o[BAND[b]];
-      const g = (ob * Math.max(dg, keep) + (1 - ob) * Math.min(dg, far)) * G;
+      let g = (ob * Math.max(dg, keep) + (1 - ob) * Math.min(dg, farNow)) * G;
+      if (talk > 0) g = Math.max(g, tfloor * talk);
       if (g >= dg - 1e-6) { out[2 * b] = nr * g; out[2 * b + 1] = ni * g; }
       else { const q = g / (dg + 1e-9); out[2 * b] = dr * q; out[2 * b + 1] = di * q; }
     }
@@ -460,6 +476,7 @@ const NOTE_DEFAULT =
 
 const PRESET_BTNS: { k: PresetKey; label: string }[] = [
   { k: "gentle", label: "Gentle · −22 dB" },
+  { k: "balanced", label: "Balanced · keeps more words" },
   { k: "strong", label: "Strong · −37 dB" },
   { k: "full", label: "Full · −41 dB" },
 ];
