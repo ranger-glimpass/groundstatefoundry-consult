@@ -11,7 +11,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const MODEL_BYTES = 2_554_305; // nearfield-v2.onnx, uncompressed
+const MODEL_BYTES = 2_554_307; // nearfield-v2.1.onnx, uncompressed
 const ORT_SRC = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.3/dist/ort.wasm.min.js";
 const BASE = "/nearfield/";
 
@@ -49,8 +49,8 @@ function loadOrt(): Promise<Ort> {
 }
 
 /* ---------------- signal processing ---------------- */
-const N = 512, H = 128, NB = 257, SR = 16000, LOOK = 12, MAXT = 5;
-const DELAY = (LOOK + 3) * H; // the model commits to a frame 12 steps later; overlap-add needs 3 more
+const N = 512, H = 128, NB = 257, SR = 16000, LOOK = 2, MAXT = 5;
+const DELAY = (LOOK + 3) * H; // the model commits to a frame 2 steps later; overlap-add needs 3 more
 const STEP_MS = (H / SR) * 1000;
 
 const FC = new Float64Array(N / 2), FS = new Float64Array(N / 2), REV = new Uint32Array(N);
@@ -214,7 +214,7 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
         for (const c of chunks) { out.set(c, at); at += c.length; }
         return out;
       };
-      const m = await fetchBin(BASE + "nearfield-v2.onnx", true);
+      const m = await fetchBin(BASE + "nearfield-v2.1.onnx", true);
       onProgress(null);
       const created = await ort.InferenceSession.create(m, { executionProviders: ["wasm"] });
       if (disposed) { created.release?.(); return; }
@@ -238,7 +238,7 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
     for (let i = 0; i < T; i++) {
       r.win.copyWithin(0, H); r.win.set(frs[i], N - H);
       const sp = analysis(r.win); X.set(sp, i * W);
-      r.hist.push(sp); if (r.hist.length > LOOK) Xd.set(r.hist.shift()!, i * W); // the model finishes the frame from 12 steps back
+      r.hist.push(sp); if (r.hist.length > LOOK) Xd.set(r.hist.shift()!, i * W); // the model finishes the frame from LOOK steps back
     }
     const o = await sess!.run({
       x: new O.Tensor("float32", X, [T, NB, 2]),
@@ -468,7 +468,7 @@ type Engine = ReturnType<typeof createEngine>;
 
 /* ---------------- UI ---------------- */
 const NOTE_DEFAULT =
-  "Switching version while it plays keeps your place. Click the waveform to seek. Output lags the input by 128 ms, which is the delay a live call would have.";
+  "Switching version while it plays keeps your place. Click the waveform to seek. Output lags the input by 48 ms, which is the delay a live call would have.";
 
 const PRESET_BTNS: { k: PostKey; label: string }[] = [
   { k: "full", label: "Full v2" },
