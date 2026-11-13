@@ -100,8 +100,9 @@ export default function NearfieldPage() {
             <p className="mono-label">Nearfield v2.0.0 · runs in your browser</p>
           </div>
           <p className="mb-6 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-            Record from your mic with a TV or a podcast playing behind you, open a recording, or run
-            the example call. The original and cleaned waveforms build up together, 8 ms at a time,
+            Run the example call at one of five background levels, from quiet room noise up to a room
+            full of people talking. Or record from your mic with a TV or a podcast playing behind you,
+            or open a recording. The original and cleaned waveforms build up together, 8 ms at a time,
             the way a live call would be processed. Then play either one and compare.
           </p>
           <NearfieldDemo />

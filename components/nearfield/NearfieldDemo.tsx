@@ -435,10 +435,10 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
     get ready() { return !!sess; },
     get recording() { return !!mic; },
     draw,
-    async runExample() {
-      const r = await fetch(BASE + "example-call.wav");
+    async runExample(file: string, label: string) {
+      const r = await fetch(BASE + "examples/" + file);
       if (!r.ok) throw new Error("example");
-      runSamples("Example call (16 kHz, caller far from the mic)", await decodeTo48k(await r.arrayBuffer()));
+      runSamples(label, await decodeTo48k(await r.arrayBuffer()));
     },
     async runFile(f: File) { runSamples(f.name, await decodeTo48k(await f.arrayBuffer())); },
     startMic,
@@ -474,6 +474,14 @@ const PRESET_BTNS: { k: PostKey; label: string }[] = [
   { k: "full", label: "Full v2" },
   { k: "level", label: "Volume levelling only" },
   { k: "none", label: "Model output only" },
+];
+/** The same support call over five backgrounds, from easy to hard. */
+const EXAMPLES: { k: number; file: string; tab: string; d: string }[] = [
+  { k: 1, file: "level1.wav", tab: "1 · Quiet room noise", d: "Office noise, well below the caller. Nobody else is talking." },
+  { k: 2, file: "level2.wav", tab: "2 · Loud room noise", d: "The same office noise, close to the caller's level. Nobody else is talking." },
+  { k: 3, file: "level3.wav", tab: "3 · Someone talking, quieter", d: "One person talking in the room, quieter than the caller." },
+  { k: 4, file: "level4.wav", tab: "4 · Someone talking, as loud", d: "One person talking in the room, as loud as the caller." },
+  { k: 5, file: "level5.wav", tab: "5 · A room full of people", d: "Babble: several people talking at once, together as loud as the caller." },
 ];
 const WHICH_BTNS: { k: Which; label: string }[] = [
   { k: "orig", label: "Original" },
@@ -517,6 +525,7 @@ export default function NearfieldDemo() {
   const [busy, setBusy] = useState(false);
   const [which, setWhich] = useState<Which>("head");
   const [preset, setPreset] = useState<PostKey>("full");
+  const [ex, setEx] = useState<number | null>(null);
 
   // engine + canvas sizing
   useEffect(() => {
@@ -561,22 +570,25 @@ export default function NearfieldDemo() {
     }
   }, []);
 
-  const onExample = async () => {
+  const onExample = async (e: (typeof EXAMPLES)[number]) => {
     const eng = engRef.current; if (!eng || busy) return;
+    setEx(e.k);
     eng.ctx(); // create the audio context inside the click
     setNote({ t: NOTE_DEFAULT, err: false });
     if (eng.recording) { eng.stopMic(); setRecording(false); }
     setBusy(true);
     try {
       if (!(await ensureModel())) return;
-      await eng.runExample();
+      await eng.runExample(e.file, `Example call, level ${e.k}`);
     } catch {
+      setEx(null);
       setNote({ t: "The example call did not load. Check your connection and try again.", err: true });
     } finally { setBusy(false); }
   };
 
   const onFile = async (f: File | undefined) => {
     const eng = engRef.current; if (!eng || !f) return;
+    setEx(null);
     eng.ctx();
     setNote({ t: NOTE_DEFAULT, err: false });
     if (eng.recording) { eng.stopMic(); setRecording(false); }
@@ -595,6 +607,7 @@ export default function NearfieldDemo() {
   const onRecord = async () => {
     const eng = engRef.current; if (!eng) return;
     if (eng.recording) { eng.stopMic(); setRecording(false); return; }
+    setEx(null);
     eng.ctx();
     setNote({ t: NOTE_DEFAULT, err: false });
     setBusy(true);
@@ -645,14 +658,27 @@ export default function NearfieldDemo() {
   else statLine = <>Press a button to start. The model (about 13 MB) loads then, once, and runs entirely in this tab.</>;
 
   const placeholder =
-    phase === "loading" ? "Loading the model…" : phase === "error" ? "The model did not load." : "Record, open a file, or run the example call.";
+    phase === "loading" ? "Loading the model…" : phase === "error" ? "The model did not load." : "Pick an example level, record, or open a file.";
 
   return (
     <div ref={rootRef} className="card p-4 sm:p-7" data-phase={phase} data-done={status?.done ? "1" : "0"}>
-      <div className="flex flex-wrap items-center gap-3">
-        <button type="button" onClick={onExample} disabled={startDisabled || recording} className="btn btn-primary">
-          Run on the example call
-        </button>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+        <span className="mono-label">Example call · background level</span>
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Example call, by how hard the background is">
+          {EXAMPLES.map((e) => (
+            <Seg key={e.k} pressed={ex === e.k} disabled={startDisabled || recording} onClick={() => onExample(e)}>{e.tab}</Seg>
+          ))}
+        </div>
+      </div>
+      <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[var(--color-muted)]" data-testid="nf-example">
+        {ex ? EXAMPLES[ex - 1].d + " " : "Pick a level to run it. "}
+        It is the same support call each time: the caller reports a damaged order and gives an order number
+        (472916), an email address (maya.fernandes@example.com) and a phone number (555 0142). Listen for whether
+        they come through.
+      </p>
+
+      <div className="mt-5 flex flex-wrap items-center gap-3">
+        <span className="mono-label">Or your own audio</span>
         <button
           type="button"
           onClick={onRecord}
