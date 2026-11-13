@@ -9,44 +9,37 @@ export const metadata: Metadata = {
   title: "Nearfield",
   alternates: { canonical: "/products/nearfield" },
   description:
-    "Nearfield is an open-source (Apache-2.0) real-time filter for voice agents and calls. It keeps the voice closest to the microphone and removes noise and background speakers. Try it live in your browser.",
+    "Nearfield is an open-source (Apache-2.0) real-time filter for voice agents and calls. It keeps the voice closest to the microphone and removes noise and background speakers, on one CPU thread. Try it live in your browser.",
 };
 
 const FIGURES = [
-  { v: "−41 dB", l: "background while the caller is silent (DFN3 alone: −16 dB)" },
-  { v: "30 ms", l: "added delay: 10 ms frames, 20 ms lookahead" },
-  { v: "0.5 to 2 ms", l: "CPU per 10 ms frame, one thread" },
-  { v: "11 MB", l: "one ONNX model for 8, 16 and 48 kHz" },
+  { v: "13.9%", l: "of the caller's words lost with an equally loud person talking behind them (no filter: 41.4%)" },
+  { v: "128 ms", l: "added delay: the model looks 96 ms ahead" },
+  { v: "0.2 s", l: "of one CPU thread per second of audio" },
+  { v: "2.5 MB", l: "one ONNX model, about 628,000 weights, 16 kHz" },
 ];
 
-const STRENGTHS = [
-  { s: "DeepFilterNet3 alone, for reference", db: "−16 dB", stoi: "0.878", ref: true },
-  { s: "Gentle", db: "−22 dB", stoi: "0.902" },
-  { s: "Strong", db: "−37 dB", stoi: "0.893" },
-  { s: "Full (default)", db: "−41 dB", stoi: "0.882" },
-];
-
-// Share of the caller's words missing from the transcript (lower is better), nearfield 1.1.0 benchmark
+// Share of the caller's words missing from the transcript (lower is better)
 const WORDS_LOST = [
   { s: "No filter", cols: ["2.3%", "3.1%", "17.9%", "41.4%", "38.4%"], ref: true },
-  { s: "Gentle", cols: ["2.6%", "3.3%", "8.8%", "30.9%", "40.3%"] },
-  { s: "Strong", cols: ["2.7%", "5.1%", "20.1%", "47.0%", "60.6%"] },
-  { s: "Balanced", cols: ["2.4%", "2.8%", "12.5%", "31.3%", "51.2%"], hi: true },
+  { s: "Version 1, gentle", cols: ["2.6%", "3.3%", "8.8%", "30.9%", "40.3%"] },
+  { s: "Version 1, balanced", cols: ["2.4%", "2.8%", "12.5%", "31.3%", "51.2%"] },
+  { s: "Version 2", cols: ["2.3%", "4.4%", "5.4%", "13.9%", "32.2%"], hi: true },
 ];
 const WORDS_COLS = ["Clean", "Steady noise", "Quieter talker", "Equal talker", "Babble"];
 
 const STEPS = [
   {
-    t: "Clean the noise",
-    d: "DeepFilterNet3, an open noise-suppression model, removes hum, traffic, clatter and fans. On its own it keeps every voice, because to it every voice is speech worth keeping.",
+    t: "Turn the sound into frequencies",
+    d: "The call is cut into short overlapping slices, one every 8 ms, and each slice is turned into its spectrum. The spectrum is grouped into 64 bands, finer at the low frequencies where voices differ most.",
   },
   {
-    t: "Decide who owns each band",
-    d: "A small head (562k parameters) reads DeepFilterNet's own internal features, which already encode how far away and how echoey a voice sounds. Every 10 ms, for each of 32 frequency bands, it decides: near voice, or background.",
+    t: "Follow each voice",
+    d: "A small recurrent network reads the bands. In each of its four blocks it reads across the frequencies of one slice to see what belongs together, then along time, forwards only, to follow each voice from one slice to the next.",
   },
   {
-    t: "Keep the caller, cut the rest",
-    d: "A keep/cut rule turns those decisions into gains. Bands that belong to the caller pass through, the rest are pushed down hard, and short gaps between the caller's words are closed so the room does not leak in between them.",
+    t: "Keep the caller",
+    d: "For every slice it writes a mask: how much of each frequency to keep, and how to shift it. Applying the mask leaves the caller. A light clean-up then steadies the volume and quietens the pauses between words.",
   },
 ];
 
@@ -57,7 +50,7 @@ transport = DailyTransport(
     room_url, token, "bot",
     DailyParams(
         audio_in_enabled=True,
-        audio_in_filter=NearfieldFilter(strength="full"),
+        audio_in_filter=NearfieldFilter(),
     ),
 )`;
 
@@ -90,8 +83,8 @@ export default function NearfieldPage() {
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[var(--color-muted)]">
             A real-time filter for voice agents and phone calls. It keeps the voice closest to the
-            microphone and removes the noise and the other people talking in the room, in 10 ms
-            steps, on one CPU thread. Try it below on your own voice: it runs in this browser tab.
+            microphone and removes the noise and the other people talking in the room, as the call
+            happens, on one CPU thread. Try it below on your own voice: it runs in this browser tab.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a href="#demo" className="btn btn-primary">Try it below ↓</a>
@@ -104,11 +97,11 @@ export default function NearfieldPage() {
         <Container className="py-12">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
             <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">Hear it on your own audio</h2>
-            <p className="mono-label">Nearfield v1.0.0 · runs in your browser</p>
+            <p className="mono-label">Nearfield v2.0.0 · runs in your browser</p>
           </div>
           <p className="mb-6 max-w-2xl leading-relaxed text-[var(--color-muted)]">
             Record from your mic with a TV or a podcast playing behind you, open a recording, or run
-            the example call. The original and cleaned waveforms build up together, 10 ms at a time,
+            the example call. The original and cleaned waveforms build up together, 8 ms at a time,
             the way a live call would be processed. Then play either one and compare.
           </p>
           <NearfieldDemo />
@@ -156,8 +149,10 @@ export default function NearfieldPage() {
       <Container className="py-12">
         <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">How it works</h2>
         <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-          Think of the sound as 32 lanes, from low hum to high hiss. Every 10 ms Nearfield looks at
-          each lane and asks one question: is this the person holding the phone, or the room?
+          The first version asked, for each frequency band, whether it belonged to the caller or the
+          room, and turned bands up or down. That fails when another person is talking, because two
+          voices share the same bands. Version 2 is a new model, trained from scratch by us, that
+          separates the voices instead.
         </p>
         <ol className="mt-8 grid gap-5 md:grid-cols-3">
           {STEPS.map((s, i) => (
@@ -169,71 +164,19 @@ export default function NearfieldPage() {
           ))}
         </ol>
         <p className="mt-8 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-          The whole thing is one 11 MB ONNX model. It processes audio in 10 ms frames with 20 ms of
-          lookahead, so the cleaned audio arrives 30 ms after the original, and it takes 0.5 to 2 ms
-          of one CPU thread per frame. The same model handles 8 kHz phone lines, 16 kHz and 48 kHz
-          audio.
+          The whole thing is one 2.5 MB ONNX model with about 628,000 weights. It waits 96 ms before
+          it commits to a slice, so the cleaned audio arrives 128 ms after the original, and it takes
+          about 0.2 seconds of one CPU thread per second of audio. It works at 16 kHz; phone lines
+          and wideband calls are resampled in and out. The weights are open. The training code is not.
         </p>
       </Container>
 
       <Container className="py-12">
-        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">How hard it cuts</h2>
+        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What we measured</h2>
         <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-          There are four strengths. The trade is simple: cut the background harder and the caller
-          loses a little clarity at the edges of words.
-        </p>
-        <div className="mt-8 overflow-x-auto">
-          <table className="w-full min-w-[520px] border-collapse text-left">
-            <thead>
-              <tr className="border-b border-[var(--color-border-bright)]">
-                <th className="mono-label py-3 pr-4 font-normal">Setting</th>
-                <th className="mono-label py-3 pr-4 text-right font-normal">Background while the caller is silent</th>
-                <th className="mono-label py-3 text-right font-normal">Caller intelligibility (STOI)</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--color-border)]">
-              {STRENGTHS.map((r) => (
-                <tr key={r.s} className={r.ref ? "text-[var(--color-muted)]" : "text-[var(--color-fg)]"}>
-                  <td className="py-3.5 pr-4">{r.s}</td>
-                  <td className="py-3.5 pr-4 text-right font-mono tabular-nums">{r.db}</td>
-                  <td className="py-3.5 text-right font-mono tabular-nums">{r.stoi}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="mt-8 grid gap-5 md:grid-cols-2">
-          <div className="card p-7">
-            <p className="mono-label">How it was measured</p>
-            <p className="mt-3 leading-relaxed text-[var(--color-muted)]">
-              48 held-out simulated calls, with speakers and rooms the model never saw in training, at
-              8, 16 and 48 kHz. The background number is how much quieter the room gets while the
-              caller is silent; every 10 dB down is ten times less sound energy. STOI is a standard
-              score from 0 to 1 for how intelligible speech is; higher is clearer.
-            </p>
-          </div>
-          <div className="card p-7">
-            <p className="mono-label">Echo-tail remover (demo only)</p>
-            <p className="mt-3 leading-relaxed text-[var(--color-muted)]">
-              A hand-programmed extra in the demo above, with no training. It targets background voices
-              while the caller is talking: voice over background goes from 4.3 to 6.1 dB, and in
-              exchange the caller&apos;s word endings soften (STOI 0.892 to 0.874).
-            </p>
-          </div>
-        </div>
-      </Container>
-
-      <Container className="py-12">
-        <div className="flex flex-wrap items-center gap-3">
-          <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Balanced: fewer lost words</h2>
-          <span className="tag">new in 1.1.0</span>
-        </div>
-        <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-          When a background voice is about as loud as the caller, Strong used to delete the
-          caller&apos;s words: its gate closed in the middle of a sentence. Balanced adds a stricter
-          check for &quot;the caller is definitely talking&quot;. Once it fires, for the next 1.5 seconds
-          the gate stays open and the background is turned down by 12 dB instead of removed. Outside
-          that window it behaves exactly like Strong. Same model, same 30 ms delay.
+          The test that matters for a voice agent is whether the caller&apos;s words survive. We mixed
+          callers with a background talker, babble or steady noise, cleaned the result, and gave it
+          to a speech recogniser.
         </p>
         <p className="mono-label mt-8">Share of the caller&apos;s words missing from the transcript (lower is better)</p>
         <div className="mt-3 overflow-x-auto">
@@ -264,16 +207,18 @@ export default function NearfieldPage() {
             <p className="mt-3 leading-relaxed text-[var(--color-muted)]">
               40 callers per condition reading English sentences, mixed with a background talker,
               babble or steady noise, sent through an 8 kHz phone line and transcribed by Whisper
-              large-v3-turbo. Gaps under about 5 points are within noise.
+              large-v3-turbo. Gaps under about 5 points are within noise. The no-filter and
+              version 1 rows are the ones published with v1.1.0; the version 2 row was scored later
+              on the same clips with the same recogniser.
             </p>
           </div>
           <div className="card p-7">
-            <p className="mono-label">What it costs</p>
+            <p className="mono-label">What else we measured</p>
             <p className="mt-3 leading-relaxed text-[var(--color-muted)]">
-              For up to 1.5 seconds after the caller stops, background speech is turned down rather
-              than removed, so a few more of its words get through (2.6% with Strong, 5.4% with
-              Balanced, against an equally loud talker). In babble it still loses about half the
-              caller&apos;s words, more than no filter at all.
+              When only the background was talking, the output was 49 dB below the input and none of
+              those clips produced a transcript of four or more words. While the caller talks, an
+              equally loud background voice comes out about 16 dB quieter and the caller about 3 dB
+              quieter, measured on the model output before the clean-up stage.
             </p>
           </div>
         </div>
@@ -285,16 +230,30 @@ export default function NearfieldPage() {
           <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
             <span className="block font-semibold text-[var(--color-fg)]">Babble is still hard.</span>
             <span className="mt-2 block">
-              When a whole room is talking behind the caller, Strong and Balanced lose more of the
-              caller&apos;s words than no filter does. Fixing that means retraining the small head that
-              decides who owns each band, not changing the rule.
+              With a whole room talking at the caller&apos;s level, about 32 in 100 of the
+              caller&apos;s words are still lost. That is better than version 1 (40 to 51) and about
+              6 better than no filter.
             </span>
           </li>
           <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
-            <span className="block font-semibold text-[var(--color-fg)]">Overlapping voices can stay faintly audible.</span>
+            <span className="block font-semibold text-[var(--color-fg)]">The background is reduced under the caller, not removed.</span>
             <span className="mt-2 block">
-              While the caller is talking, a background voice that sits in the same frequencies as the
-              caller can still be heard faintly. When the caller stops, it is cut hard.
+              While the caller is talking, an equally loud background voice comes out about 16 dB
+              quieter. It can still be heard faintly. When the caller stops, it is cut hard.
+            </span>
+          </li>
+          <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
+            <span className="block font-semibold text-[var(--color-fg)]">More delay than version 1.</span>
+            <span className="mt-2 block">
+              128 ms against 30 ms. Telling two voices apart needs a longer look ahead. Version 1
+              is still available from the v1.1.0 tag for calls that cannot afford it.
+            </span>
+          </li>
+          <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
+            <span className="block font-semibold text-[var(--color-fg)]">Measured on simulated calls.</span>
+            <span className="mt-2 block">
+              The numbers above come from mixed recordings, not live phone lines. Real rooms and
+              real networks will differ, which is why the demo above runs on your own audio.
             </span>
           </li>
         </ul>
@@ -303,12 +262,8 @@ export default function NearfieldPage() {
       <Container className="py-12">
         <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Use it</h2>
         <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-          Nearfield is a Python package. The model is attached to the v1.0.0 release and downloads
-          once on first use. In a Pipecat voice agent it drops in as the transport&apos;s input filter;
-          the strength is <code className="font-mono text-sm text-[var(--color-fg)]">&quot;gentle&quot;</code>,{" "}
-          <code className="font-mono text-sm text-[var(--color-fg)]">&quot;balanced&quot;</code>,{" "}
-          <code className="font-mono text-sm text-[var(--color-fg)]">&quot;strong&quot;</code> or{" "}
-          <code className="font-mono text-sm text-[var(--color-fg)]">&quot;full&quot;</code>.
+          Nearfield is a Python package. The 2.5 MB model ships inside it, so nothing is downloaded
+          at run time. In a Pipecat voice agent it drops in as the transport&apos;s input filter.
         </p>
         <div className="mt-8 grid gap-6">
           <Code label="Install">{INSTALL}</Code>
@@ -316,13 +271,16 @@ export default function NearfieldPage() {
         </div>
         <div className="mt-8 flex flex-wrap gap-3">
           <a href={NEARFIELD_REPO} target="_blank" rel="noopener noreferrer" className="btn btn-primary">View on GitHub ↗</a>
-          <a href={`${NEARFIELD_REPO}/releases/tag/v1.0.0`} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Release v1.0.0 ↗</a>
+          <a href={`${NEARFIELD_REPO}/releases/tag/v2.0.0`} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Release v2.0.0 ↗</a>
         </div>
       </Container>
 
       {research.length > 0 && (
         <Container className="py-12">
-          <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">The research behind it</h2>
+          <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Where it started</h2>
+          <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
+            This piece covers the first version and the problem it set out to solve.
+          </p>
           <div className="mt-8">
             <ResearchLinks slugs={research} />
           </div>
@@ -333,10 +291,8 @@ export default function NearfieldPage() {
         <div className="card p-8 sm:p-10">
           <p className="mono-label">Credits and licence</p>
           <p className="mt-4 max-w-3xl leading-relaxed text-[var(--color-muted)]">
-            Nearfield is released by Ground State Foundry under the Apache-2.0 licence. It is built on{" "}
-            <a href="https://github.com/Rikorose/DeepFilterNet" target="_blank" rel="noopener noreferrer" className="link-u">DeepFilterNet3</a>{" "}
-            and includes its weights by Hendrik Schröter, used under the MIT licence. The browser demo
-            runs on{" "}
+            Nearfield is released by Ground State Foundry under the Apache-2.0 licence, code and
+            weights. Version 2 is our own model, trained from scratch. The browser demo runs on{" "}
             <a href="https://onnxruntime.ai" target="_blank" rel="noopener noreferrer" className="link-u">ONNX Runtime Web</a>.
           </p>
         </div>

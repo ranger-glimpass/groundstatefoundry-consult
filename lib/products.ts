@@ -61,8 +61,8 @@ export const PRODUCTS: Product[] = [
     summary:
       "Nearfield cleans the audio of a phone or voice-agent call as it happens. It keeps the voice closest to the microphone and removes background noise and other people talking nearby, so the agent hears only the caller.",
     bullets: [
-      "One 11 MB model, 30 ms of delay, light enough for one CPU thread",
-      "Works on 8, 16 and 48 kHz audio",
+      "One 2.5 MB model of our own, 128 ms of delay, light enough for one CPU thread",
+      "Separates the caller from other voices, not only from noise",
       "Drop-in filter for Pipecat voice agents",
       "Python package, released under Apache-2.0",
     ],

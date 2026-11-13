@@ -19,10 +19,10 @@ const MATMUL = [
 const RESULTS = [
   {
     label: "voice · nearfield",
-    v: "-41 dB",
-    unit: "background while the caller is silent, at STOI 0.882",
-    body: "Nearfield keeps the voice closest to the microphone and cuts everything else. On 48 held-out simulated calls, with speakers and rooms it never trained on, it brought background sound down by 41 dB in the gaps where the caller was silent.",
-    note: "STOI scores how intelligible the kept speech stays, from 0 to 1. DeepFilterNet3 alone: -16 dB at STOI 0.878. Background voices that overlap the caller in pitch can stay faintly audible while the caller talks.",
+    v: "13.9%",
+    unit: "of the caller's words lost with an equally loud person talking behind them",
+    body: "Nearfield keeps the voice closest to the microphone and cuts everything else. We mixed 40 callers with a background talker at the same loudness, sent the result through a phone line and gave it to a speech recogniser. With no filter it lost 41.4% of the caller's words. Through Nearfield v2 it lost 13.9%.",
+    note: "Version 2 is our own model, 2.5 MB, running on one CPU thread with 128 ms of delay. With a whole room talking it still loses about a third of the caller's words, and the background stays faintly audible under the caller.",
     links: [
       { href: "/products/nearfield", label: "Try the demo" },
       { href: NEARFIELD_REPO, label: "Code on GitHub" },

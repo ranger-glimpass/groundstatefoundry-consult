@@ -1,18 +1,17 @@
 "use client";
 
 /**
- * Nearfield, live in the browser. Ported from the Nearfield Recorder prototype.
- * DeepFilterNet3 + the caller-ownership head run as one ONNX model through onnxruntime-web,
- * one 10 ms frame at a time, the way it would on a live call. Nothing leaves the tab.
+ * Nearfield v2, live in the browser. One small recurrent model runs through onnxruntime-web on 8 ms steps of
+ * 16 kHz audio, the way it would on a live call. Nothing leaves the tab.
  *
  * Nothing heavy loads with the page: onnxruntime-web (JS) is fetched when the demo comes near
- * the viewport, and the model + wasm (about 22 MB, cached after) only when the person presses
+ * the viewport, and the model + wasm (about 13 MB, cached after) only when the person presses
  * one of the start buttons.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const MODEL_BYTES = 11_049_031; // nearfield-v1.onnx, uncompressed
+const MODEL_BYTES = 2_554_305; // nearfield-v2.onnx, uncompressed
 const ORT_SRC = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.3/dist/ort.wasm.min.js";
 const BASE = "/nearfield/";
 
@@ -49,135 +48,116 @@ function loadOrt(): Promise<Ort> {
   return ortPromise;
 }
 
-/* ---------------- signal processing (unchanged from the prototype) ---------------- */
-const N = 960, H = 480, NB = 481, SR = 48000, DELAY = 3 * H; // 2 lookahead frames + 1 window hop
+/* ---------------- signal processing ---------------- */
+const N = 512, H = 128, NB = 257, SR = 16000, LOOK = 12, MAXT = 5;
+const DELAY = (LOOK + 3) * H; // the model commits to a frame 12 steps later; overlap-add needs 3 more
+const STEP_MS = (H / SR) * 1000;
 
-const COS = new Float64Array(N), SIN = new Float64Array(N);
-for (let i = 0; i < N; i++) { COS[i] = Math.cos((2 * Math.PI * i) / N); SIN[i] = Math.sin((2 * Math.PI * i) / N); }
-const factor = (n: number) => (n % 2 === 0 ? 2 : n % 3 === 0 ? 3 : n % 5 === 0 ? 5 : n);
-/** Mixed-radix complex FFT for N = 960 = 2^6 * 3 * 5 (unnormalised). */
-function cfft(xr: Float64Array, xi: Float64Array, inv: boolean): [Float64Array, Float64Array] {
-  const n = xr.length;
-  if (n === 1) return [xr, xi];
-  const p = factor(n), m = n / p, sub: [Float64Array, Float64Array][] = [];
-  for (let r = 0; r < p; r++) {
-    const a = new Float64Array(m), b = new Float64Array(m);
-    for (let k = 0; k < m; k++) { a[k] = xr[p * k + r]; b[k] = xi[p * k + r]; }
-    sub.push(cfft(a, b, inv));
-  }
-  const or = new Float64Array(n), oi = new Float64Array(n), step = N / n, sg = inv ? 1 : -1;
-  for (let k = 0; k < n; k++) {
-    let ar = 0, ai = 0;
-    const kk = k % m;
-    for (let r = 0; r < p; r++) {
-      const t = (r * k * step) % N, c = COS[t], s = sg * SIN[t], [sr, si] = sub[r];
-      ar += sr[kk] * c - si[kk] * s;
-      ai += sr[kk] * s + si[kk] * c;
+const FC = new Float64Array(N / 2), FS = new Float64Array(N / 2), REV = new Uint32Array(N);
+for (let i = 0; i < N / 2; i++) { FC[i] = Math.cos((2 * Math.PI * i) / N); FS[i] = Math.sin((2 * Math.PI * i) / N); }
+for (let i = 0; i < N; i++) { let r = 0; for (let b = 0; b < 9; b++) r |= ((i >> b) & 1) << (8 - b); REV[i] = r; }
+/** In-place radix-2 complex FFT of size 512 (unnormalised). */
+function fft(re: Float64Array, im: Float64Array, inv: boolean) {
+  for (let i = 0; i < N; i++) { const j = REV[i]; if (j > i) { let t = re[i]; re[i] = re[j]; re[j] = t; t = im[i]; im[i] = im[j]; im[j] = t; } }
+  for (let len = 2; len <= N; len <<= 1) {
+    const half = len >> 1, step = N / len;
+    for (let i = 0; i < N; i += len) for (let k = 0; k < half; k++) {
+      const c = FC[k * step], sn = inv ? FS[k * step] : -FS[k * step], a = i + k, b = a + half;
+      const tr = re[b] * c - im[b] * sn, ti = re[b] * sn + im[b] * c;
+      re[b] = re[a] - tr; im[b] = im[a] - ti; re[a] += tr; im[a] += ti;
     }
-    or[k] = ar; oi[k] = ai;
   }
-  return [or, oi];
 }
-const WIN = new Float64Array(N).map((_, i) => Math.sin(0.5 * Math.PI * Math.sin((0.5 * Math.PI * (i + 0.5)) / H) ** 2));
-const WNORM = 1 / ((N * N) / (2 * H));
-/** One 10 ms frame -> Float32Array [481*2] interleaved re,im. */
-function analysis(mem: Float32Array, fr: Float32Array) {
-  const xr = new Float64Array(N), xi = new Float64Array(N);
-  for (let i = 0; i < H; i++) { xr[i] = mem[i] * WIN[i]; xr[H + i] = fr[i] * WIN[H + i]; }
-  const [r, im] = cfft(xr, xi, false), out = new Float32Array(NB * 2);
-  for (let k = 0; k < NB; k++) { out[2 * k] = r[k] * WNORM; out[2 * k + 1] = im[k] * WNORM; }
+const WIN = new Float64Array(N).map((_, i) => 0.5 - 0.5 * Math.cos((2 * Math.PI * i) / N));
+/** The last 512 samples -> Float32Array [257*2] interleaved re,im. */
+function analysis(buf: Float32Array) {
+  const re = new Float64Array(N), im = new Float64Array(N);
+  for (let i = 0; i < N; i++) re[i] = buf[i] * WIN[i];
+  fft(re, im, false);
+  const out = new Float32Array(NB * 2);
+  for (let k = 0; k < NB; k++) { out[2 * k] = re[k]; out[2 * k + 1] = im[k]; }
   return out;
 }
-/** Spectrum [481*2] -> 480 samples out; updates the overlap memory in place. */
-function synthesis(Y: Float32Array, mem: Float64Array) {
-  const xr = new Float64Array(N), xi = new Float64Array(N);
-  for (let k = 0; k < NB; k++) { xr[k] = Y[2 * k]; xi[k] = Y[2 * k + 1]; }
-  for (let k = NB; k < N; k++) { xr[k] = Y[2 * (N - k)]; xi[k] = -Y[2 * (N - k) + 1]; }
-  const [r] = cfft(xr, xi, true), out = new Float32Array(H);
-  for (let i = 0; i < H; i++) { out[i] = r[i] * WIN[i] + mem[i]; mem[i] = r[H + i] * WIN[H + i]; }
+/** Spectrum [257*2] -> 128 samples out; updates the overlap buffer in place. */
+function synthesis(Y: Float32Array, ola: Float64Array) {
+  const re = new Float64Array(N), im = new Float64Array(N);
+  for (let k = 0; k < NB; k++) { re[k] = Y[2 * k]; im[k] = Y[2 * k + 1]; }
+  for (let k = NB; k < N; k++) { re[k] = re[N - k]; im[k] = -im[N - k]; }
+  fft(re, im, true);
+  const out = new Float32Array(H);
+  for (let i = 0; i < N; i++) ola[i] += (re[i] / N) * WIN[i];
+  for (let i = 0; i < H; i++) out[i] = ola[i] / 1.5;
+  ola.copyWithin(0, H); ola.fill(0, N - H);
   return out;
 }
 
-/* keep/cut rule: runs here, not in the model, so the strength can be switched after recording */
-const WID = [2,2,2,2,2,2,2,2,2,2,2,2,2,5,5,7,7,8,10,12,13,15,18,20,24,28,31,37,42,50,56,67];
-const BAND = new Uint8Array(NB);
-{ let b0 = 0; WID.forEach((w, j) => { for (let i = 0; i < w; i++) BAND[b0 + i] = j; b0 += w; }); }
-
-type PresetKey = "gentle" | "balanced" | "strong" | "full";
-// talk: the "caller is definitely talking" hold from nearfield 1.1.0 (threshold, frames averaged, frames held, far dB, floor dB)
-type Preset = { k: number; far: number; gate: number | null; talk?: { thr: number; avg: number; hold: number; far: number; floor: number } };
-const PRESETS: Record<PresetKey, Preset> = {
-  gentle: { k: 1, far: -20, gate: null },
-  balanced: { k: 1, far: -60, gate: -45, talk: { thr: 0.6, avg: 10, hold: 150, far: -12, floor: -8 } },
-  strong: { k: 1, far: -60, gate: -45 },
-  full: { k: 2, far: -60, gate: -45 },
+/* clean-up after the model: runs here so it can be switched after recording. It only ever works on the
+   model's own output; nothing from the original is mixed back in. */
+type PostKey = "full" | "level" | "none";
+type PostCfg = { level: number | null; blips: boolean; pause: number | null; tilt: number };
+const POSTS: Record<PostKey, PostCfg | null> = {
+  full: { level: -18, blips: true, pause: 18, tilt: -5 },
+  level: { level: -18, blips: false, pause: null, tilt: 0 },
+  none: null,
 };
-type Rule = (xn: Float32Array, xd: Float32Array, own: Float32Array) => Float32Array;
+type Post = { spec: (Y: Float32Array, X: Float32Array) => void; time: (y: Float32Array) => void };
 
-function makeRule(p: Preset, echo: boolean): Rule {
-  const keep = 10 ** (-6 / 20), far = 10 ** (p.far / 20), fl = p.gate == null ? null : 10 ** (p.gate / 20);
-  let prev = 0, hold = 0;
-  const T = p.talk, hist = new Float64Array(T ? Math.max(1, T.avg) : 1), tfloor = T ? 10 ** (T.floor / 20) : 0;
-  let talkV = 0, talkHold = 0;
-  // echo-tail remover: predict each bin's room-echo energy from 50 ms ago and subtract it
-  const EA = Math.exp((-13.8 * 5 * 0.01) / 0.5), EFL = 10 ** (-15 / 20), ring: Float64Array[] = [];
-  let Ps: Float64Array | null = null;
-  return (xn, xd, own) => {
-    const o = p.k === 1 ? own : own.map((v) => v ** p.k / (v ** p.k + (1 - v) ** p.k));
-    let G = 1, farNow = far, talk = 0, stat = 0;
-    if (fl !== null || T) {
-      const w = new Float64Array(32);
-      for (let b = 0; b < NB; b++) w[BAND[b]] += xd[2 * b] ** 2 + xd[2 * b + 1] ** 2;
-      let num = 0, den = 0;
-      for (let j = 0; j < 32; j++) { num += own[j] * (w[j] + 1e-12); den += w[j] + 1e-12; }
-      stat = num / den; // energy-weighted share of the frame owned by the near voice
-    }
-    if (T) {
-      hist.copyWithin(0, 1); hist[hist.length - 1] = stat;
-      let mean = 0; for (const v of hist) mean += v; mean /= hist.length;
-      const t0 = Math.min(1, Math.max(0, (mean - T.thr) / 0.3));
-      if (t0 >= talkV) { talkV = t0; talkHold = T.hold; } else if (talkHold > 0) talkHold--; else talkV = Math.max(t0, talkV * 0.9);
-      talk = talkV;
-      farNow = 10 ** ((p.far * (1 - talk) + T.far * talk) / 20);
-    }
-    if (fl !== null) {
-      const g0 = Math.min(1, Math.max(0, (stat - 0.25) / 0.35));
-      if (g0 >= prev) { prev = g0; hold = 15; } else if (hold > 0) hold--; else prev = Math.max(g0, prev * 0.85);
-      G = fl + (1 - fl) * Math.max(prev, talk);
-    }
-    const out = new Float32Array(NB * 2);
-    for (let b = 0; b < NB; b++) {
-      const nr = xn[2 * b], ni = xn[2 * b + 1], dr = xd[2 * b], di = xd[2 * b + 1];
-      const dg = Math.min(1, Math.max(0, Math.hypot(dr, di) / (Math.hypot(nr, ni) + 1e-9))), ob = o[BAND[b]];
-      let g = (ob * Math.max(dg, keep) + (1 - ob) * Math.min(dg, farNow)) * G;
-      if (talk > 0) g = Math.max(g, tfloor * talk);
-      if (g >= dg - 1e-6) { out[2 * b] = nr * g; out[2 * b + 1] = ni * g; }
-      else { const q = g / (dg + 1e-9); out[2 * b] = dr * q; out[2 * b + 1] = di * q; }
-    }
-    if (echo) {
-      const P = new Float64Array(NB);
-      for (let b = 0; b < NB; b++) P[b] = xn[2 * b] ** 2 + xn[2 * b + 1] ** 2;
-      if (!Ps) Ps = Float64Array.from(P); else for (let b = 0; b < NB; b++) Ps[b] = 0.6 * Ps[b] + 0.4 * P[b];
-      ring.push(Float64Array.from(Ps));
-      if (ring.length > 5) {
-        const old = ring.shift()!;
-        for (let b = 0; b < NB; b++) {
-          const e = Math.min(1, Math.max(EFL, 1 - (EA * old[b]) / (P[b] + 1e-12)));
-          out[2 * b] *= e; out[2 * b + 1] *= e;
+function makePost(p: PostCfg | null): Post | null {
+  if (!p) return null;
+  const g = new Float64Array(NB), gp = new Float64Array(NB), tilt = new Float64Array(NB).fill(1);
+  if (p.tilt) for (let k = 0; k < NB; k++) tilt[k] = 10 ** ((p.tilt * Math.min(1, Math.max(0, (k * (SR / N) - 3000) / 2000))) / 20);
+  let lvl = -26, gain = 1, top = -60, gate = 1, hold = 0;
+  const UP = 1 - Math.exp(-8 / 150), DN = 1 - Math.exp(-8 / 3000), REL = Math.exp(-8 / 80);
+  return {
+    spec(Y, X) {
+      let e = 0;
+      for (let k = 0; k < NB; k++) g[k] = Math.min(2, Math.hypot(Y[2 * k], Y[2 * k + 1]) / (Math.hypot(X[2 * k], X[2 * k + 1]) + 1e-9));
+      for (let k = 0; k < NB; k++) {
+        let s = tilt[k];
+        if (p.blips) {
+          // a frequency that is loud while its neighbours and its own last step are quiet is a leftover: turn it down
+          const l = Math.max(0, k - 1), r = Math.min(NB - 1, k + 1), ref = Math.max(gp[l], gp[k], gp[r], g[l], g[r]) * 1.5 + 0.03;
+          if (g[k] > ref) s *= ref / g[k];
         }
+        Y[2 * k] *= s; Y[2 * k + 1] *= s;
+        e += Y[2 * k] ** 2 + Y[2 * k + 1] ** 2;
       }
-    }
-    return out;
+      gp.set(g);
+      if (p.pause) {
+        // between the caller's words, fade the output down further
+        const db = 10 * Math.log10((e / (N * N * 0.375)) * 2 + 1e-12);
+        if (db > top) top = db; else top -= 0.004;
+        const thr = Math.max(-70, top - 32);
+        let want = 1;
+        if (db >= thr) hold = 12; else if (hold > 0) hold--; else want = 10 ** (Math.max(-p.pause, db - thr) / 20);
+        gate = want >= gate ? want : gate * REL + want * (1 - REL);
+        if (gate < 1) for (let k = 0; k < NB * 2; k++) Y[k] *= gate;
+      }
+    },
+    time(y) {
+      if (p.level == null) return;
+      // volume levelling with a soft limiter
+      let e = 0; for (let i = 0; i < y.length; i++) e += y[i] * y[i];
+      const db = 10 * Math.log10(e / y.length + 1e-12);
+      if (db > Math.max(-55, lvl - 25)) lvl += (db > lvl ? UP : DN) * (db - lvl);
+      const want = 10 ** (Math.min(18, Math.max(-12, p.level - lvl)) / 20), g1 = gain + (want - gain) * 0.08;
+      for (let i = 0; i < y.length; i++) {
+        let v = y[i] * (gain + ((g1 - gain) * i) / y.length);
+        const a = Math.abs(v);
+        if (a > 0.5) v = Math.sign(v) * (0.5 + 0.45 * Math.tanh((a - 0.5) / 0.45));
+        y[i] = v;
+      }
+      gain = g1;
+    },
   };
 }
 
 /* ---------------- engine ---------------- */
-type Which = "orig" | "head" | "dfn";
+type Which = "orig" | "head";
 type Rec = {
-  label: string; state: Float32Array; amem: Float32Array; s1: Float64Array; s2: Float64Array;
-  inp: Float32Array[]; head: Float32Array[]; dfn: Float32Array[]; pk: [number, number][]; dpk: number[];
-  own: Uint8Array[]; n: number; hist: Float32Array[]; xn: Float32Array[]; xd: Float32Array[]; ownf: Float32Array[];
-  rule: Rule; pending: Float32Array[]; buf: Float32Array; busy: boolean; done: boolean; finishing: boolean;
+  label: string; state: Float32Array; win: Float32Array; hist: Float32Array[]; ola: Float64Array; post: Post | null;
+  inp: Float32Array[]; head: Float32Array[]; pk: [number, number][]; own: Uint8Array[]; n: number;
+  ys: Float32Array[]; xds: Float32Array[]; pending: Float32Array[]; buf: Float32Array; busy: boolean; done: boolean; finishing: boolean;
 };
 export type Status = { label: string; secs: number; ms: number; behind: number; done: boolean };
 type Callbacks = {
@@ -187,13 +167,13 @@ type Callbacks = {
 };
 type Mic = { stream: MediaStream; node: AudioWorkletNode; srcN: MediaStreamAudioSourceNode; mute: GainNode; r: Rec };
 
-const COL = { bg: "#070807", grid: "rgba(243,245,241,.08)", orig: "#6f746c", head: "#f3f5f1", dfn: "#8fb0c8", playhead: "#b9f23a" };
+const COL = { bg: "#070807", grid: "rgba(243,245,241,.08)", orig: "#6f746c", head: "#f3f5f1", playhead: "#b9f23a" };
 
 function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
-  let ort: Ort | null = null, sess: OrtSession | null = null, init: Float32Array | null = null;
+  let ort: Ort | null = null, sess: OrtSession | null = null;
   let modelPromise: Promise<void> | null = null;
   let R: Rec | null = null, frameMs: number[] = [];
-  let preset: PresetKey = "full", echoOn = false;
+  let preset: PostKey = "full";
   let actx: AudioContext | null = null, bufs: Record<Which, AudioBuffer> | null = null, which: Which = "head";
   let src: AudioBufferSourceNode | null = null, t0 = 0, off = 0, playing = false, raf = 0, timer = 0;
   let mic: Mic | null = null, workletReady = false, disposed = false;
@@ -234,9 +214,8 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
         for (const c of chunks) { out.set(c, at); at += c.length; }
         return out;
       };
-      const [m, s] = await Promise.all([fetchBin(BASE + "nearfield-v1.onnx", true), fetchBin(BASE + "init_state.bin", false)]);
+      const m = await fetchBin(BASE + "nearfield-v2.onnx", true);
       onProgress(null);
-      init = new Float32Array(s.buffer, s.byteOffset, s.byteLength / 4).slice();
       const created = await ort.InferenceSession.create(m, { executionProviders: ["wasm"] });
       if (disposed) { created.release?.(); return; }
       sess = created;
@@ -246,30 +225,44 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
 
   function fresh(label: string): Rec {
     return {
-      label, state: init!.slice(), amem: new Float32Array(H), s1: new Float64Array(H), s2: new Float64Array(H),
-      inp: [], head: [], dfn: [], pk: [], dpk: [], own: [], n: 0, hist: [new Float32Array(NB * 2), new Float32Array(NB * 2)],
-      xn: [], xd: [], ownf: [], rule: makeRule(PRESETS[preset], echoOn), pending: [], buf: new Float32Array(0),
+      label, state: new Float32Array(4 * 64 * 128), win: new Float32Array(N), hist: [], ola: new Float64Array(N), post: makePost(POSTS[preset]),
+      inp: [], head: [], pk: [], own: [], n: 0, ys: [], xds: [], pending: [], buf: new Float32Array(0),
       busy: false, done: false, finishing: false,
     };
   }
 
-  async function step(r: Rec, fr: Float32Array) {
-    const T = ort!, t = performance.now();
-    const spec = analysis(r.amem, fr); r.amem = fr;
+  /** Up to MAXT steps (8 ms each) in one model call. */
+  async function step(r: Rec, frs: Float32Array[]) {
+    const O = ort!, t = performance.now(), T = frs.length, W = NB * 2;
+    const X = new Float32Array(T * W), Xd = new Float32Array(T * W);
+    for (let i = 0; i < T; i++) {
+      r.win.copyWithin(0, H); r.win.set(frs[i], N - H);
+      const sp = analysis(r.win); X.set(sp, i * W);
+      r.hist.push(sp); if (r.hist.length > LOOK) Xd.set(r.hist.shift()!, i * W); // the model finishes the frame from 12 steps back
+    }
     const o = await sess!.run({
-      spec: new T.Tensor("float32", spec, [NB, 2]),
-      state: new T.Tensor("float32", r.state, [r.state.length]),
+      x: new O.Tensor("float32", X, [T, NB, 2]),
+      xd: new O.Tensor("float32", Xd, [T, NB, 2]),
+      state: new O.Tensor("float32", r.state, [4, 64, 128]),
     });
     r.state = o.new_state.data;
-    const xn = r.hist.shift()!; r.hist.push(spec); // the model's output is for the frame 2 steps back
-    const xd = Float32Array.from(o.y_dfn.data), own = Float32Array.from(o.own.data);
-    r.xn.push(xn); r.xd.push(xd); r.ownf.push(own);
-    const yh = synthesis(r.rule(xn, xd, own), r.s1), yd = synthesis(xd, r.s2);
-    r.inp.push(fr); r.head.push(yh); r.dfn.push(yd); r.own.push(Uint8Array.from(own, (v) => Math.round(v * 255)));
-    let a = 0, b = 0, d = 0;
-    for (let i = 0; i < H; i++) { a = Math.max(a, Math.abs(fr[i])); b = Math.max(b, Math.abs(yh[i])); d = Math.max(d, Math.abs(yd[i])); }
-    r.pk.push([a, b]); r.dpk.push(d); r.n++;
-    frameMs.push(performance.now() - t); if (frameMs.length > 200) frameMs.shift();
+    for (let i = 0; i < T; i++) {
+      const y = o.y.data.slice(i * W, (i + 1) * W), xd = Xd.slice(i * W, (i + 1) * W), fr = frs[i];
+      r.ys.push(y); r.xds.push(xd);
+      const kept = new Uint8Array(32); // share of each frequency band that was kept
+      for (let b = 0; b < 32; b++) {
+        let a = 0, c = 0;
+        for (let k = 8 * b; k < 8 * b + 8; k++) { a += y[2 * k] ** 2 + y[2 * k + 1] ** 2; c += xd[2 * k] ** 2 + xd[2 * k + 1] ** 2; }
+        kept[b] = Math.round(255 * Math.min(1, Math.sqrt(a / (c + 1e-9))));
+      }
+      const yy = Float32Array.from(y); r.post?.spec(yy, xd);
+      const yh = synthesis(yy, r.ola); r.post?.time(yh);
+      r.inp.push(fr); r.head.push(yh); r.own.push(kept);
+      let a = 0, b = 0;
+      for (let k = 0; k < H; k++) { a = Math.max(a, Math.abs(fr[k])); b = Math.max(b, Math.abs(yh[k])); }
+      r.pk.push([a, b]); r.n++;
+    }
+    frameMs.push((performance.now() - t) / T); if (frameMs.length > 200) frameMs.shift();
   }
   function push(r: Rec, samples: Float32Array) {
     const b = new Float32Array(r.buf.length + samples.length); b.set(r.buf); b.set(samples, r.buf.length);
@@ -279,16 +272,19 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
   async function pump(r: Rec) {
     if (r.busy) return; r.busy = true;
     try {
+      let calls = 0;
       while (r.pending.length && r === R && !disposed) {
-        await step(r, r.pending.shift()!);
-        if (r.n % 25 === 0) { status(); draw(); await new Promise((res) => setTimeout(res)); }
+        await step(r, r.pending.splice(0, MAXT));
+        if (++calls % 6 === 0) { status(); draw(); await new Promise((res) => setTimeout(res)); }
       }
     } finally { r.busy = false; }
     if (r !== R || disposed) return;
     status(); draw();
     if (r.finishing && !r.pending.length) finish(r);
   }
-  function end(r: Rec) { r.finishing = true; for (let k = 0; k < 4; k++) r.pending.push(new Float32Array(H)); pump(r); }
+  function end(r: Rec) { r.finishing = true; for (let k = 0; k < TAIL; k++) r.pending.push(new Float32Array(H)); pump(r); }
+
+  const TAIL = LOOK + 4; // silent steps pushed through at the end so the last real audio comes out
 
   /* playback */
   function cat(chunks: Float32Array[], skip: number, len: number) {
@@ -298,8 +294,8 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
   const mk = (x: Float32Array) => { const b = ctx().createBuffer(1, Math.max(1, x.length), SR); b.copyToChannel(Float32Array.from(x), 0); return b; };
   function finish(r: Rec) {
     if (r.done) return; r.done = true;
-    const len = Math.max(0, (r.n - 4) * H);
-    bufs = { orig: mk(cat(r.inp, 0, len)), head: mk(cat(r.head, DELAY, len)), dfn: mk(cat(r.dfn, DELAY, len)) };
+    const len = Math.max(0, (r.n - TAIL) * H);
+    bufs = { orig: mk(cat(r.inp, 0, len)), head: mk(cat(r.head, DELAY, len)) };
     off = 0; cb.onBuffers(true); status(); draw(); stamp();
   }
   /** Test hook: energy of the cleaned buffer, so a preset switch can be checked from outside. */
@@ -308,13 +304,15 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
     const d = bufs.head.getChannelData(0); let s = 0; for (let i = 0; i < d.length; i++) s += d[i] * d[i];
     cv.dataset.headRms = Math.sqrt(s / Math.max(1, d.length)).toExponential(4);
   }
-  /** Re-apply the cut rule to stored model outputs: no model rerun. */
+  /** Re-apply the clean-up to stored model outputs: no model rerun. */
   function rerender() {
-    if (!R) return; R.rule = makeRule(PRESETS[preset], echoOn);
+    if (!R) return; R.post = makePost(POSTS[preset]);
     if (!R.done || !bufs) return;
-    const mem = new Float64Array(H), rule = makeRule(PRESETS[preset], echoOn);
+    const ola = new Float64Array(N), post = makePost(POSTS[preset]);
     for (let f = 0; f < R.n; f++) {
-      const yh = synthesis(rule(R.xn[f], R.xd[f], R.ownf[f]), mem); R.head[f] = yh;
+      const yy = Float32Array.from(R.ys[f]); post?.spec(yy, R.xds[f]);
+      const yh = synthesis(yy, ola); post?.time(yh);
+      R.head[f] = yh;
       let b = 0; for (let i = 0; i < H; i++) b = Math.max(b, Math.abs(yh[i])); R.pk[f][1] = b;
     }
     const was = playing && which === "head", p = pos();
@@ -340,15 +338,14 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
     if (reduced) timer = window.setTimeout(loop, 250); else raf = requestAnimationFrame(loop);
   }
 
-  /* drawing: original on top, cleaned below, caller-owned bands as a strip */
+  /* drawing: original on top, cleaned below, what was kept in each frequency band as a strip */
   function draw() {
     const g = cv.getContext("2d"); if (!g) return;
     const W = cv.width, Hh = cv.height, h1 = Hh * 0.42, h3 = Hh * 0.16;
     g.fillStyle = COL.bg; g.fillRect(0, 0, W, Hh);
     g.fillStyle = COL.grid; g.fillRect(0, Math.round(h1), W, 1); g.fillRect(0, Math.round(2 * h1), W, 1);
     if (!R || !R.n) return;
-    const r = R, live = !r.done, total = r.n, span = live ? Math.max(total, 1000) : total, start = live ? Math.max(0, total - span) : 0;
-    const showDfn = which === "dfn";
+    const r = R, live = !r.done, total = r.n, span = live ? Math.max(total, 1250) : total, start = live ? Math.max(0, total - span) : 0;
     let mx = 1e-4; for (let f = start; f < total; f++) mx = Math.max(mx, r.pk[f][0]);
     const lane = (y0: number, hh: number, getPk: (f: number) => number, col: string) => {
       g.fillStyle = col;
@@ -361,10 +358,10 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
       }
     };
     lane(0, h1, (f) => r.pk[f][0], COL.orig);
-    lane(h1, h1, (f) => { const g2 = f + 3; return g2 < total ? (showDfn ? r.dpk[g2] : r.pk[g2][1]) : 0; }, showDfn ? COL.dfn : COL.head);
+    lane(h1, h1, (f) => { const g2 = f + LOOK + 3; return g2 < total ? r.pk[g2][1] : 0; }, COL.head);
     const rows = Math.max(1, Math.round(h3)), img = g.createImageData(W, rows);
     for (let px = 0; px < W; px++) {
-      const f = Math.floor(start + (px / W) * span) + 2; if (f >= total) continue; const o = r.own[f];
+      const f = Math.floor(start + (px / W) * span) + LOOK; if (f >= total) continue; const o = r.own[f];
       for (let yy = 0; yy < rows; yy++) {
         const band = 31 - Math.floor((yy / rows) * 32), v = o[band] / 255, idx = (yy * W + px) * 4;
         img.data[idx] = 7 + v * 236; img.data[idx + 1] = 8 + v * 237; img.data[idx + 2] = 7 + v * 234; img.data[idx + 3] = 255;
@@ -376,7 +373,7 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
   function status() {
     if (!R) { cb.onStatus(null); return; }
     const ms = frameMs.length ? frameMs.reduce((a, b) => a + b) / frameMs.length : 0;
-    cb.onStatus({ label: R.label, secs: (R.n * H) / SR, ms, behind: R.pending.length * 10, done: R.done });
+    cb.onStatus({ label: R.label, secs: (R.n * H) / SR, ms, behind: R.pending.length * STEP_MS, done: R.done });
   }
   function begin(label: string) {
     halt(); bufs = null; off = 0; cb.onBuffers(false); R = fresh(label); frameMs = []; status(); draw(); stamp(); return R;
@@ -392,7 +389,7 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
   }
   function runSamples(label: string, x: Float32Array) {
     const r = begin(label);
-    for (let i = 0; i < x.length; i += 48000) push(r, x.subarray(i, i + 48000));
+    for (let i = 0; i < x.length; i += SR) push(r, x.subarray(i, i + SR));
     end(r);
   }
 
@@ -452,8 +449,7 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
       if (playing) halt(); else startAt(off);
     },
     setWhich(w: Which) { const was = playing, p = pos(); which = w; if (was) startAt(p); draw(); },
-    setPreset(p: PresetKey) { preset = p; rerender(); },
-    setEcho(v: boolean) { echoOn = v; rerender(); },
+    setPreset(p: PostKey) { preset = p; rerender(); },
     seek(frac: number) {
       if (!bufs) return; const t = frac * bufs.orig.duration;
       if (playing) startAt(t); else { off = t; draw(); }
@@ -472,18 +468,16 @@ type Engine = ReturnType<typeof createEngine>;
 
 /* ---------------- UI ---------------- */
 const NOTE_DEFAULT =
-  "Switching version while it plays keeps your place. Click the waveform to seek. Output lags the input by 30 ms (DFN's 20 ms lookahead plus one 10 ms step), which is the latency a live call would have.";
+  "Switching version while it plays keeps your place. Click the waveform to seek. Output lags the input by 128 ms, which is the delay a live call would have.";
 
-const PRESET_BTNS: { k: PresetKey; label: string }[] = [
-  { k: "gentle", label: "Gentle · −22 dB" },
-  { k: "balanced", label: "Balanced · keeps more words" },
-  { k: "strong", label: "Strong · −37 dB" },
-  { k: "full", label: "Full · −41 dB" },
+const PRESET_BTNS: { k: PostKey; label: string }[] = [
+  { k: "full", label: "Full v2" },
+  { k: "level", label: "Volume levelling only" },
+  { k: "none", label: "Model output only" },
 ];
 const WHICH_BTNS: { k: Which; label: string }[] = [
   { k: "orig", label: "Original" },
   { k: "head", label: "Nearfield" },
-  { k: "dfn", label: "DFN3 stock" },
 ];
 
 function Seg({ pressed, onClick, children, disabled }: { pressed: boolean; onClick: () => void; children: React.ReactNode; disabled?: boolean }) {
@@ -522,8 +516,7 @@ export default function NearfieldDemo() {
   const [recording, setRecording] = useState(false);
   const [busy, setBusy] = useState(false);
   const [which, setWhich] = useState<Which>("head");
-  const [preset, setPreset] = useState<PresetKey>("full");
-  const [echo, setEcho] = useState(false);
+  const [preset, setPreset] = useState<PostKey>("full");
 
   // engine + canvas sizing
   useEffect(() => {
@@ -631,7 +624,7 @@ export default function NearfieldDemo() {
   const startDisabled = busy || phase === "loading";
 
   let statLine: React.ReactNode;
-  if (phase === "loading") statLine = <>Loading the model{progress != null ? ` · ${progress}%` : ""} (about 22 MB, once; your browser caches it)…</>;
+  if (phase === "loading") statLine = <>Loading the model{progress != null ? ` · ${progress}%` : ""} (about 13 MB, once; your browser caches it)…</>;
   else if (phase === "error") statLine = <span className="text-[var(--color-magenta)]">The model could not start in this browser: {modelErr}</span>;
   else if (status) {
     statLine = (
@@ -640,8 +633,8 @@ export default function NearfieldDemo() {
         {status.ms > 0 && (
           <>
             {" · "}
-            <b className="font-medium text-[var(--color-fg)]" data-testid="frame-ms">{status.ms.toFixed(1)} ms</b> per 10 ms frame (
-            {status.ms < 10 ? "real time" : <span className="text-[var(--color-magenta)]">slower than real time on this device</span>})
+            <b className="font-medium text-[var(--color-fg)]" data-testid="frame-ms">{status.ms.toFixed(1)} ms</b> per 8 ms step (
+            {status.ms < 8 ? "real time" : <span className="text-[var(--color-magenta)]">slower than real time on this device</span>})
           </>
         )}
         {status.behind > 200 && !status.done && <span className="text-[var(--color-magenta)]"> · {(status.behind / 1000).toFixed(1)} s behind</span>}
@@ -649,7 +642,7 @@ export default function NearfieldDemo() {
       </>
     );
   } else if (phase === "ready") statLine = <>Model ready. It runs in this tab, nothing is uploaded.</>;
-  else statLine = <>Press a button to start. The model (about 22 MB) loads then, once, and runs entirely in this tab.</>;
+  else statLine = <>Press a button to start. The model (about 13 MB) loads then, once, and runs entirely in this tab.</>;
 
   const placeholder =
     phase === "loading" ? "Loading the model…" : phase === "error" ? "The model did not load." : "Record, open a file, or run the example call.";
@@ -692,13 +685,13 @@ export default function NearfieldDemo() {
           ref={cvRef}
           onClick={onSeek}
           className={`block h-[220px] w-full sm:h-[300px] ${canPlay ? "cursor-pointer" : ""}`}
-          aria-label="Original and cleaned waveforms, with which frequency bands belong to the caller"
+          aria-label="Original and cleaned waveforms, with how much of each frequency band was kept"
           data-testid="nf-wave"
         />
         <div className="pointer-events-none absolute inset-0 grid grid-rows-[42%_42%_16%] font-mono text-[10px] uppercase tracking-wider text-[var(--color-muted)] sm:text-[11px]">
           <span className="self-start justify-self-start m-1.5 rounded bg-[#070807]/85 px-1.5 py-0.5">Original</span>
-          <span className="self-start justify-self-start m-1.5 rounded bg-[#070807]/85 px-1.5 py-0.5">{which === "dfn" ? "Cleaned · DFN3 stock" : "Cleaned · Nearfield"}</span>
-          <span className="self-start justify-self-start m-1.5 rounded bg-[#070807]/85 px-1.5 py-0.5 text-[var(--color-fg)]">Caller-owned bands</span>
+          <span className="self-start justify-self-start m-1.5 rounded bg-[#070807]/85 px-1.5 py-0.5">Cleaned · Nearfield</span>
+          <span className="self-start justify-self-start m-1.5 rounded bg-[#070807]/85 px-1.5 py-0.5 text-[var(--color-fg)]">Kept, by frequency</span>
         </div>
         {!status && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-[var(--color-muted)]">
@@ -727,13 +720,12 @@ export default function NearfieldDemo() {
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-3">
-        <span className="mono-label">Background cut</span>
-        <div className="flex flex-wrap gap-2" role="group" aria-label="How hard to cut the background">
+        <span className="mono-label">Clean-up after the model</span>
+        <div className="flex flex-wrap gap-2" role="group" aria-label="What is done to the model output">
           {PRESET_BTNS.map((b) => (
             <Seg key={b.k} pressed={preset === b.k} onClick={() => { setPreset(b.k); engRef.current?.setPreset(b.k); }}>{b.label}</Seg>
           ))}
         </div>
-        <Seg pressed={echo} onClick={() => { const v = !echo; setEcho(v); engRef.current?.setEcho(v); }}>Echo-tail remover</Seg>
       </div>
 
       <p className={`mt-5 text-sm leading-relaxed ${note.err ? "text-[var(--color-magenta)]" : "text-[var(--color-muted)]"}`} role={note.err ? "alert" : undefined}>
