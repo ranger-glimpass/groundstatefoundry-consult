@@ -592,7 +592,7 @@ export default function NearfieldDemo() {
     }
   }, []);
 
-  const onExample = async (e: (typeof EXAMPLES)[number]) => {
+  const onExample = async (e: (typeof EXAMPLES)[number], auto = false) => {
     const eng = engRef.current; if (!eng || busy) return;
     setEx(e.k);
     eng.ctx(); // create the audio context inside the click
@@ -604,9 +604,21 @@ export default function NearfieldDemo() {
       await eng.runExample(e.file, `Example call, level ${e.k}`);
     } catch {
       setEx(null);
-      setNote({ t: "The example call did not load. Check your connection and try again.", err: true });
+      if (!auto) setNote({ t: "The example call did not load. Check your connection and try again.", err: true });
     } finally { setBusy(false); }
   };
+
+  // on page load, get example 3 cleaned and ready, so the first click is Play
+  const preloaded = useRef(false);
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      if (preloaded.current || !engRef.current) return;
+      preloaded.current = true;
+      onExample(EXAMPLES[2], true);
+    }, 400);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onModel = async (q: Quality) => {
     const eng = engRef.current; if (!eng || busy || q === qRef.current) return;
