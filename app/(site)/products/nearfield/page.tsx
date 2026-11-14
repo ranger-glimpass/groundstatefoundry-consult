@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 const FIGURES = [
   { v: "15.9%", l: "of the caller's words lost with an equally loud person talking behind them (no filter: 41.4%)" },
-  { v: "48 ms", l: "added delay: a 32 ms window plus 16 ms of look-ahead" },
+  { v: "48 ms", l: "added delay with the fast model, the default. The best model takes 80 ms and loses 13.6%" },
   { v: "0.2 s", l: "of one CPU thread per second of audio" },
   { v: "2.5 MB", l: "one ONNX model, about 628,000 weights, 16 kHz" },
 ];
@@ -25,7 +25,8 @@ const WORDS_LOST = [
   { s: "Version 1, gentle", cols: ["2.6%", "3.3%", "8.8%", "30.9%", "40.3%"] },
   { s: "Version 1, balanced", cols: ["2.4%", "2.8%", "12.5%", "31.3%", "51.2%"] },
   { s: "Version 2.0, 128 ms delay", cols: ["2.3%", "4.4%", "5.4%", "13.9%", "32.2%"] },
-  { s: "Version 2.1, 48 ms delay", cols: ["2.0%", "3.3%", "6.1%", "15.9%", "37.0%"], hi: true },
+  { s: "Version 2 fast, 48 ms delay", cols: ["2.0%", "3.3%", "6.1%", "15.9%", "37.0%"], hi: true },
+  { s: "Version 2 best, 80 ms delay", cols: ["1.8%", "3.5%", "5.4%", "13.6%", "30.9%"], hi: true },
 ];
 const WORDS_COLS = ["Clean", "Steady noise", "Quieter talker", "Equal talker", "Babble"];
 
@@ -51,7 +52,7 @@ transport = DailyTransport(
     room_url, token, "bot",
     DailyParams(
         audio_in_enabled=True,
-        audio_in_filter=NearfieldFilter(),
+        audio_in_filter=NearfieldFilter(),  # model="best" for the 80 ms model
     ),
 )`;
 
@@ -98,7 +99,7 @@ export default function NearfieldPage() {
         <Container className="py-12">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
             <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">Hear it on your own audio</h2>
-            <p className="mono-label">Nearfield v2.1.0 · runs in your browser</p>
+            <p className="mono-label">Nearfield v2.2.0 · runs in your browser</p>
           </div>
           <p className="mb-6 max-w-2xl leading-relaxed text-[var(--color-muted)]">
             Run the example call at one of five background levels, from quiet room noise up to a room
@@ -166,9 +167,11 @@ export default function NearfieldPage() {
           ))}
         </ol>
         <p className="mt-8 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-          The whole thing is one 2.5 MB ONNX model with about 628,000 weights. It waits 16 ms before
-          it commits to a slice, so the cleaned audio arrives 48 ms after the original, and it takes
-          about 0.2 seconds of one CPU thread per second of audio. It works at 16 kHz; phone lines
+          The whole thing is one 2.5 MB ONNX model with about 628,000 weights, and it comes with two
+          sets of weights. The fast one waits 16 ms before it commits to a slice, so the cleaned audio
+          arrives 48 ms after the original. The best one waits 48 ms, arrives 80 ms after, and keeps
+          more of the caller when other people are talking. Fast is the default and one setting
+          switches to best. Either takes about 0.2 seconds of one CPU thread per second of audio. It works at 16 kHz; phone lines
           and wideband calls are resampled in and out. The weights are open. The training code is not.
         </p>
       </Container>
@@ -217,7 +220,7 @@ export default function NearfieldPage() {
           <div className="card p-7">
             <p className="mono-label">What else we measured</p>
             <p className="mt-3 leading-relaxed text-[var(--color-muted)]">
-              When only the background was talking, the output was 35 to 45 dB below the input and none of
+              When only the background was talking, the output was 35 to 49 dB below the input and none of
               those clips produced a transcript of four or more words. While the caller talks, an
               equally loud background voice comes out about 16 dB quieter and the caller about 4 dB
               quieter, measured on the model output before the clean-up stage.
@@ -232,10 +235,11 @@ export default function NearfieldPage() {
           <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
             <span className="block font-semibold text-[var(--color-fg)]">Babble is still hard.</span>
             <span className="mt-2 block">
-              With a whole room talking at the caller&apos;s level, about 37 in 100 of the
-              caller&apos;s words are still lost. That is better than version 1 (40 to 51) and about
-              the same as no filter. What it does in babble is silence the room when the caller is
-              not talking.
+              With a whole room talking at the caller&apos;s level, the fast model still loses
+              about 37 in 100 of the caller&apos;s words, about the same as no filter, and the best
+              model about 31. Version 1 lost 40 to 51. In babble the fast model silences the room
+              when the caller is not talking; only the best one rescues some of the caller&apos;s
+              words.
             </span>
           </li>
           <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
@@ -248,8 +252,9 @@ export default function NearfieldPage() {
           <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
             <span className="block font-semibold text-[var(--color-fg)]">A little more delay than version 1.</span>
             <span className="mt-2 block">
-              48 ms against 30 ms. Cutting the delay from 128 ms in version 2.0 cost a few points
-              of words, shown in the table. Both older versions are still available from their tags.
+              48 ms or 80 ms against 30 ms. The shorter delay costs a few points of words, which is
+              the difference between the fast and the best model in the table. The older versions
+              are still available from their tags.
             </span>
           </li>
           <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
@@ -274,7 +279,7 @@ export default function NearfieldPage() {
         </div>
         <div className="mt-8 flex flex-wrap gap-3">
           <a href={NEARFIELD_REPO} target="_blank" rel="noopener noreferrer" className="btn btn-primary">View on GitHub ↗</a>
-          <a href={`${NEARFIELD_REPO}/releases/tag/v2.1.0`} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Release v2.1.0 ↗</a>
+          <a href={`${NEARFIELD_REPO}/releases/tag/v2.2.0`} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Release v2.2.0 ↗</a>
         </div>
       </Container>
 

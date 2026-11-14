@@ -21,8 +21,8 @@ const RESULTS = [
     label: "voice · nearfield",
     v: "15.9%",
     unit: "of the caller's words lost with an equally loud person talking behind them",
-    body: "Nearfield keeps the voice closest to the microphone and cuts everything else. We mixed 40 callers with a background talker at the same loudness, sent the result through a phone line and gave it to a speech recogniser. With no filter it lost 41.4% of the caller's words. Through Nearfield v2.1 it lost 15.9%.",
-    note: "Version 2 is our own model, 2.5 MB, running on one CPU thread with 48 ms of delay. With a whole room talking it still loses more than a third of the caller's words, about the same as no filter, and the background stays faintly audible under the caller.",
+    body: "Nearfield keeps the voice closest to the microphone and cuts everything else. We mixed 40 callers with a background talker at the same loudness, sent the result through a phone line and gave it to a speech recogniser. With no filter it lost 41.4% of the caller's words. Through Nearfield v2 it lost 15.9%.",
+    note: "Version 2 is our own model, 2.5 MB, running on one CPU thread with 48 ms of delay. A second set of weights takes 80 ms and loses 13.6%. With a whole room talking the 48 ms model still loses more than a third of the caller's words, about the same as no filter, and the background stays faintly audible under the caller.",
     links: [
       { href: "/products/nearfield", label: "Try the demo" },
       { href: NEARFIELD_REPO, label: "Code on GitHub" },

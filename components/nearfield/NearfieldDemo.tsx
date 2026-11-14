@@ -11,7 +11,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const MODEL_BYTES = 2_554_307; // nearfield-v2.1.onnx, uncompressed
+const MODEL_BYTES = 2_554_307; // each model file, uncompressed
 const ORT_SRC = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.3/dist/ort.wasm.min.js";
 const BASE = "/nearfield/";
 
@@ -49,8 +49,13 @@ function loadOrt(): Promise<Ort> {
 }
 
 /* ---------------- signal processing ---------------- */
-const N = 512, H = 128, NB = 257, SR = 16000, LOOK = 2, MAXT = 5;
-const DELAY = (LOOK + 3) * H; // the model commits to a frame 2 steps later; overlap-add needs 3 more
+const N = 512, H = 128, NB = 257, SR = 16000, MAXT = 5;
+/** Two sets of weights, same size and speed. They differ in how many 8 ms steps the model waits before it commits to a frame. */
+export type Quality = "fast" | "best";
+const MODELS: Record<Quality, { file: string; look: number; ms: number }> = {
+  fast: { file: "nearfield-v2.1.onnx", look: 2, ms: 48 },
+  best: { file: "nearfield-v2.2-best.onnx", look: 6, ms: 80 },
+};
 const STEP_MS = (H / SR) * 1000;
 
 const FC = new Float64Array(N / 2), FS = new Float64Array(N / 2), REV = new Uint32Array(N);
@@ -155,6 +160,7 @@ function makePost(p: PostCfg | null): Post | null {
 /* ---------------- engine ---------------- */
 type Which = "orig" | "head";
 type Rec = {
+  q: Quality; look: number;
   label: string; state: Float32Array; win: Float32Array; hist: Float32Array[]; ola: Float64Array; post: Post | null;
   inp: Float32Array[]; head: Float32Array[]; pk: [number, number][]; own: Uint8Array[]; n: number;
   ys: Float32Array[]; xds: Float32Array[]; pending: Float32Array[]; buf: Float32Array; busy: boolean; done: boolean; finishing: boolean;
@@ -170,8 +176,8 @@ type Mic = { stream: MediaStream; node: AudioWorkletNode; srcN: MediaStreamAudio
 const COL = { bg: "#070807", grid: "rgba(243,245,241,.08)", orig: "#6f746c", head: "#f3f5f1", playhead: "#b9f23a" };
 
 function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
-  let ort: Ort | null = null, sess: OrtSession | null = null;
-  let modelPromise: Promise<void> | null = null;
+  let ort: Ort | null = null, quality: Quality = "fast";
+  const sessions: Partial<Record<Quality, OrtSession>> = {}, loading: Partial<Record<Quality, Promise<void>>> = {};
   let R: Rec | null = null, frameMs: number[] = [];
   let preset: PostKey = "full";
   let actx: AudioContext | null = null, bufs: Record<Which, AudioBuffer> | null = null, which: Which = "head";
@@ -187,10 +193,10 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
     return actx;
   };
 
-  async function loadModel(onProgress: (pct: number | null) => void) {
-    if (sess) return;
-    if (modelPromise) return modelPromise;
-    modelPromise = (async () => {
+  async function loadModel(q: Quality, onProgress: (pct: number | null) => void) {
+    if (sessions[q]) return;
+    if (loading[q]) return loading[q];
+    loading[q] = (async () => {
       ort = await loadOrt();
       ort.env.wasm.numThreads = 1;
       ort.env.wasm.simd = true;
@@ -214,17 +220,18 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
         for (const c of chunks) { out.set(c, at); at += c.length; }
         return out;
       };
-      const m = await fetchBin(BASE + "nearfield-v2.1.onnx", true);
+      const m = await fetchBin(BASE + MODELS[q].file, true);
       onProgress(null);
       const created = await ort.InferenceSession.create(m, { executionProviders: ["wasm"] });
       if (disposed) { created.release?.(); return; }
-      sess = created;
+      sessions[q] = created;
     })();
-    try { await modelPromise; } catch (e) { modelPromise = null; throw e; }
+    try { await loading[q]; } catch (e) { delete loading[q]; throw e; }
   }
 
   function fresh(label: string): Rec {
     return {
+      q: quality, look: MODELS[quality].look,
       label, state: new Float32Array(4 * 64 * 128), win: new Float32Array(N), hist: [], ola: new Float64Array(N), post: makePost(POSTS[preset]),
       inp: [], head: [], pk: [], own: [], n: 0, ys: [], xds: [], pending: [], buf: new Float32Array(0),
       busy: false, done: false, finishing: false,
@@ -238,9 +245,9 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
     for (let i = 0; i < T; i++) {
       r.win.copyWithin(0, H); r.win.set(frs[i], N - H);
       const sp = analysis(r.win); X.set(sp, i * W);
-      r.hist.push(sp); if (r.hist.length > LOOK) Xd.set(r.hist.shift()!, i * W); // the model finishes the frame from LOOK steps back
+      r.hist.push(sp); if (r.hist.length > r.look) Xd.set(r.hist.shift()!, i * W); // the model finishes the frame from `look` steps back
     }
-    const o = await sess!.run({
+    const o = await sessions[r.q]!.run({
       x: new O.Tensor("float32", X, [T, NB, 2]),
       xd: new O.Tensor("float32", Xd, [T, NB, 2]),
       state: new O.Tensor("float32", r.state, [4, 64, 128]),
@@ -282,9 +289,11 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
     status(); draw();
     if (r.finishing && !r.pending.length) finish(r);
   }
-  function end(r: Rec) { r.finishing = true; for (let k = 0; k < TAIL; k++) r.pending.push(new Float32Array(H)); pump(r); }
+  function end(r: Rec) { r.finishing = true; for (let k = 0; k < r.look + 4; k++) r.pending.push(new Float32Array(H)); pump(r); }
 
-  const TAIL = LOOK + 4; // silent steps pushed through at the end so the last real audio comes out
+  // r.look + 4 silent steps are pushed through at the end so the last real audio comes out;
+  // the cleaned audio sits r.look + 3 steps behind the input (look-ahead, then 3 steps of overlap-add)
+  const delay = (r: Rec) => (r.look + 3) * H;
 
   /* playback */
   function cat(chunks: Float32Array[], skip: number, len: number) {
@@ -294,8 +303,8 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
   const mk = (x: Float32Array) => { const b = ctx().createBuffer(1, Math.max(1, x.length), SR); b.copyToChannel(Float32Array.from(x), 0); return b; };
   function finish(r: Rec) {
     if (r.done) return; r.done = true;
-    const len = Math.max(0, (r.n - TAIL) * H);
-    bufs = { orig: mk(cat(r.inp, 0, len)), head: mk(cat(r.head, DELAY, len)) };
+    const len = Math.max(0, (r.n - r.look - 4) * H);
+    bufs = { orig: mk(cat(r.inp, 0, len)), head: mk(cat(r.head, delay(r), len)) };
     off = 0; cb.onBuffers(true); status(); draw(); stamp();
   }
   /** Test hook: energy of the cleaned buffer, so a preset switch can be checked from outside. */
@@ -316,7 +325,7 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
       let b = 0; for (let i = 0; i < H; i++) b = Math.max(b, Math.abs(yh[i])); R.pk[f][1] = b;
     }
     const was = playing && which === "head", p = pos();
-    bufs.head = mk(cat(R.head, DELAY, bufs.orig.length));
+    bufs.head = mk(cat(R.head, delay(R), bufs.orig.length));
     if (was) startAt(p);
     draw(); stamp();
   }
@@ -358,10 +367,10 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
       }
     };
     lane(0, h1, (f) => r.pk[f][0], COL.orig);
-    lane(h1, h1, (f) => { const g2 = f + LOOK + 3; return g2 < total ? r.pk[g2][1] : 0; }, COL.head);
+    lane(h1, h1, (f) => { const g2 = f + r.look + 3; return g2 < total ? r.pk[g2][1] : 0; }, COL.head);
     const rows = Math.max(1, Math.round(h3)), img = g.createImageData(W, rows);
     for (let px = 0; px < W; px++) {
-      const f = Math.floor(start + (px / W) * span) + LOOK; if (f >= total) continue; const o = r.own[f];
+      const f = Math.floor(start + (px / W) * span) + r.look; if (f >= total) continue; const o = r.own[f];
       for (let yy = 0; yy < rows; yy++) {
         const band = 31 - Math.floor((yy / rows) * 32), v = o[band] / 255, idx = (yy * W + px) * 4;
         img.data[idx] = 7 + v * 236; img.data[idx + 1] = 8 + v * 237; img.data[idx + 2] = 7 + v * 234; img.data[idx + 3] = 255;
@@ -432,7 +441,12 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
   return {
     ctx,
     loadModel,
-    get ready() { return !!sess; },
+    isReady(q: Quality) { return !!sessions[q]; },
+    /** Switch model. A finished recording is run again through the new one; its weights must be loaded first. */
+    setModel(q: Quality) {
+      if (q === quality) return; quality = q;
+      if (R && R.done && bufs) runSamples(R.label, Float32Array.from(bufs.orig.getChannelData(0)));
+    },
     get recording() { return !!mic; },
     draw,
     async runExample(file: string, label: string) {
@@ -460,7 +474,7 @@ function createEngine(cv: HTMLCanvasElement, cb: Callbacks) {
       stopSrc(); cancelAnimationFrame(raf); clearTimeout(timer);
       R = null; bufs = null;
       if (actx) { actx.close().catch(() => {}); actx = null; }
-      if (sess) { sess.release?.().catch(() => {}); sess = null; }
+      for (const q of Object.keys(sessions) as Quality[]) { sessions[q]!.release?.().catch(() => {}); delete sessions[q]; }
     },
   };
 }
@@ -468,7 +482,12 @@ type Engine = ReturnType<typeof createEngine>;
 
 /* ---------------- UI ---------------- */
 const NOTE_DEFAULT =
-  "Switching version while it plays keeps your place. Click the waveform to seek. Output lags the input by 48 ms, which is the delay a live call would have.";
+  "Switching between original and cleaned while it plays keeps your place. Click the waveform to seek. The delay a live call would have is 48 ms with the fast model and 80 ms with the best one.";
+
+const MODEL_BTNS: { k: Quality; label: string }[] = [
+  { k: "fast", label: "Fast · 48 ms delay" },
+  { k: "best", label: "Best · 80 ms delay" },
+];
 
 const PRESET_BTNS: { k: PostKey; label: string }[] = [
   { k: "full", label: "Full v2" },
@@ -526,6 +545,8 @@ export default function NearfieldDemo() {
   const [which, setWhich] = useState<Which>("head");
   const [preset, setPreset] = useState<PostKey>("full");
   const [ex, setEx] = useState<number | null>(null);
+  const [quality, setQuality] = useState<Quality>("fast");
+  const qRef = useRef<Quality>("fast");
 
   // engine + canvas sizing
   useEffect(() => {
@@ -555,10 +576,11 @@ export default function NearfieldDemo() {
 
   const ensureModel = useCallback(async () => {
     const eng = engRef.current; if (!eng) return false;
-    if (eng.ready) return true;
+    const q = qRef.current;
+    if (eng.isReady(q)) return true;
     setPhase("loading"); setModelErr("");
     try {
-      await eng.loadModel(setProgress);
+      await eng.loadModel(q, setProgress);
       if (engRef.current !== eng) return false;
       setPhase("ready");
       return true;
@@ -583,6 +605,18 @@ export default function NearfieldDemo() {
     } catch {
       setEx(null);
       setNote({ t: "The example call did not load. Check your connection and try again.", err: true });
+    } finally { setBusy(false); }
+  };
+
+  const onModel = async (q: Quality) => {
+    const eng = engRef.current; if (!eng || busy || q === qRef.current) return;
+    const prev = qRef.current;
+    qRef.current = q; setQuality(q);
+    if (!status) { return; } // nothing processed yet: the weights load with the first audio
+    setBusy(true);
+    try {
+      if (await ensureModel()) eng.setModel(q);
+      else { qRef.current = prev; setQuality(prev); }
     } finally { setBusy(false); }
   };
 
@@ -744,6 +778,19 @@ export default function NearfieldDemo() {
           ))}
         </div>
       </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-3">
+        <span className="mono-label">Model</span>
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Which model: the fast one or the best one">
+          {MODEL_BTNS.map((b) => (
+            <Seg key={b.k} pressed={quality === b.k} disabled={startDisabled || recording || (!!status && !status.done)} onClick={() => onModel(b.k)}>{b.label}</Seg>
+          ))}
+        </div>
+      </div>
+      <p className="mt-2 max-w-3xl text-xs leading-relaxed text-[var(--color-dim)]">
+        Same size, same speed. The best model waits 32 ms longer before it commits to each moment, and keeps more of
+        the caller when other people are talking. Switching runs the same audio again.
+      </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-3">
         <span className="mono-label">Clean-up after the model</span>
