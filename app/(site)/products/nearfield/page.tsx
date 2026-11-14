@@ -91,6 +91,7 @@ export default function NearfieldPage() {
           <div className="mt-8 flex flex-wrap gap-3">
             <a href="#demo" className="btn btn-primary">Try it below ↓</a>
             <a href={NEARFIELD_REPO} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">View on GitHub ↗</a>
+            <a href="https://discord.gg/3qNEk2cF9g" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Join the Discord ↗</a>
           </div>
         </Container>
       </header>
