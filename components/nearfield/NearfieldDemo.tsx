@@ -612,7 +612,7 @@ export default function NearfieldDemo() {
     const eng = engRef.current; if (!eng || busy || q === qRef.current) return;
     const prev = qRef.current;
     qRef.current = q; setQuality(q);
-    if (!status) { return; } // nothing processed yet: the weights load with the first audio
+    if (!status) { eng.setModel(q); return; } // nothing processed yet: the weights load with the first audio
     setBusy(true);
     try {
       if (await ensureModel()) eng.setModel(q);
