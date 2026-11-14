@@ -243,21 +243,6 @@ export default function NearfieldPage() {
             </span>
           </li>
           <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
-            <span className="block font-semibold text-[var(--color-fg)]">The background is reduced under the caller, not removed.</span>
-            <span className="mt-2 block">
-              While the caller is talking, an equally loud background voice comes out about 16 dB
-              quieter. It can still be heard faintly. When the caller stops, it is cut hard.
-            </span>
-          </li>
-          <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
-            <span className="block font-semibold text-[var(--color-fg)]">A little more delay than version 1.</span>
-            <span className="mt-2 block">
-              48 ms or 80 ms against 30 ms. The shorter delay costs a few points of words, which is
-              the difference between the fast and the best model in the table. The older versions
-              are still available from their tags.
-            </span>
-          </li>
-          <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
             <span className="block font-semibold text-[var(--color-fg)]">Measured on simulated calls.</span>
             <span className="mt-2 block">
               The numbers above come from mixed recordings, not live phone lines. Real rooms and
