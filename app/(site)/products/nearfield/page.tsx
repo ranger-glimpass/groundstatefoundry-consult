@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui";
 import ResearchLinks from "@/components/ResearchLinks";
 import NearfieldDemo from "@/components/nearfield/NearfieldDemo";
+import KrispRanking from "@/components/nearfield/KrispRanking";
 import { getAllResearch } from "@/lib/research";
 import { NEARFIELD_REPO, NEARFIELD_RESEARCH, getProduct } from "@/lib/products";
 
@@ -9,24 +10,24 @@ export const metadata: Metadata = {
   title: "Nearfield",
   alternates: { canonical: "/products/nearfield" },
   description:
-    "Nearfield is an open-source (Apache-2.0) real-time filter for voice agents and calls. It keeps the voice closest to the microphone and removes noise and background speakers, on one CPU thread. Try it live in your browser.",
+    "Nearfield is an open-source (Apache-2.0) real-time filter for voice agents and calls. It keeps the voice closest to the microphone and removes noise and background speakers, on one CPU thread. It scores ahead of Krisp and Sanas on Krisp's public benchmark of real calls. Try it live in your browser.",
 };
 
 const FIGURES = [
-  { v: "15.9%", l: "of the caller's words lost with an equally loud person talking behind them (no filter: 41.4%)" },
-  { v: "48 ms", l: "added delay with the fast model, the default. The best model takes 80 ms and loses 13.6%" },
+  { v: "4.99%", l: "word error rate on 265 real recordings with the best model. Krisp VI 2.5 scores 5.30%, no filter 23.21%" },
+  { v: "48 ms", l: "added delay with the fast model, the default, which scores 5.01%. The best model takes 80 ms" },
   { v: "0.2 s", l: "of one CPU thread per second of audio" },
   { v: "2.5 MB", l: "one ONNX model, about 628,000 weights, 16 kHz" },
 ];
 
 // Share of the caller's words missing from the transcript (lower is better)
-const WORDS_LOST = [
+const WORDS_LOST: { s: string; cols: string[]; ref?: boolean; hi?: boolean }[] = [
   { s: "No filter", cols: ["2.3%", "3.1%", "17.9%", "41.4%", "38.4%"], ref: true },
   { s: "Version 1, gentle", cols: ["2.6%", "3.3%", "8.8%", "30.9%", "40.3%"] },
   { s: "Version 1, balanced", cols: ["2.4%", "2.8%", "12.5%", "31.3%", "51.2%"] },
   { s: "Version 2.0, 128 ms delay", cols: ["2.3%", "4.4%", "5.4%", "13.9%", "32.2%"] },
-  { s: "Version 2 fast, 48 ms delay", cols: ["2.0%", "3.3%", "6.1%", "15.9%", "37.0%"], hi: true },
-  { s: "Version 2 best, 80 ms delay", cols: ["1.8%", "3.5%", "5.4%", "13.6%", "30.9%"], hi: true },
+  { s: "Version 2.2 fast, 48 ms delay", cols: ["2.0%", "3.3%", "6.1%", "15.9%", "37.0%"] },
+  { s: "Version 2.2 best, 80 ms delay", cols: ["1.8%", "3.5%", "5.4%", "13.6%", "30.9%"] },
 ];
 const WORDS_COLS = ["Clean", "Steady noise", "Quieter talker", "Equal talker", "Babble"];
 
@@ -96,11 +97,30 @@ export default function NearfieldPage() {
         </Container>
       </header>
 
+      <section id="benchmark" className="scroll-mt-20 border-b border-[var(--color-border)]">
+        <Container className="py-12">
+          <p className="mono-label">benchmark · real recordings</p>
+          <h2 className="mt-3 max-w-3xl text-balance text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">
+            Nearfield beats Krisp and Sanas on Krisp&apos;s own benchmark.
+          </h2>
+          <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
+            Krisp published 265 real recordings of people on headsets, call-centre floors and phones,
+            with someone else talking in the room. Each filter cleans them, a speech recogniser
+            transcribes the result, and the transcript is checked against what the caller said. Both
+            Nearfield models make fewer word errors than Krisp and Sanas, and let fewer of the
+            background voice&apos;s words through. Nearfield is 2.5 MB and its weights are open.
+          </p>
+          <div className="mt-8">
+            <KrispRanking />
+          </div>
+        </Container>
+      </section>
+
       <section id="demo" className="scroll-mt-20">
         <Container className="py-12">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
             <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">Hear it on your own audio</h2>
-            <p className="mono-label">Nearfield v2.2.0 · runs in your browser</p>
+            <p className="mono-label">Nearfield v2.3.0 · runs in your browser</p>
           </div>
           <p className="mb-6 max-w-2xl leading-relaxed text-[var(--color-muted)]">
             Run the example call at one of five background levels, from quiet room noise up to a room
@@ -170,19 +190,35 @@ export default function NearfieldPage() {
         <p className="mt-8 max-w-2xl leading-relaxed text-[var(--color-muted)]">
           The whole thing is one 2.5 MB ONNX model with about 628,000 weights, and it comes with two
           sets of weights. The fast one waits 16 ms before it commits to a slice, so the cleaned audio
-          arrives 48 ms after the original. The best one waits 48 ms, arrives 80 ms after, and keeps
-          more of the caller when other people are talking. Fast is the default and one setting
+          arrives 48 ms after the original. The best one waits 48 ms, arrives 80 ms after, and lets
+          about half as many background words through. Fast is the default and one setting
           switches to best. Either takes about 0.2 seconds of one CPU thread per second of audio. It works at 16 kHz; phone lines
           and wideband calls are resampled in and out. The weights are open. The training code is not.
         </p>
       </Container>
 
       <Container className="py-12">
-        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What we measured</h2>
+        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">What changed in version 2.3</h2>
         <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-          The test that matters for a voice agent is whether the caller&apos;s words survive. We mixed
-          callers with a background talker, babble or steady noise, cleaned the result, and gave it
-          to a speech recogniser.
+          Earlier versions decided who the caller was by how close they sounded. That was a hidden
+          cutoff. A caller on a car&apos;s hands-free or a speakerphone sounded far away, and the model
+          muted them. On the benchmark above, version 2.2 scored 7.83%, almost all of it from a few
+          callers who were silenced entirely.
+        </p>
+        <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
+          Version 2.3 is the same network retrained with a different rule: the caller is the nearest
+          voice heard so far in the call, however far away that is. It was also trained on
+          minute-long calls with long pauses, on quiet callers, and on audio that a phone or headset
+          has already processed.
+        </p>
+        <h2 className="mt-14 text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Simulated calls</h2>
+        <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
+          Before the real recordings, we measured on calls we built ourselves. We mixed callers with a
+          background talker, babble or steady noise, cleaned the result, and gave it to a speech
+          recogniser. This table stops at version 2.2. In these clips the background voice is already
+          talking when the caller starts, and version 2.3 keeps that voice until the caller&apos;s
+          first word, so expect it to lose more opening words here. The real recordings are the
+          better guide.
         </p>
         <p className="mono-label mt-8">Share of the caller&apos;s words missing from the transcript (lower is better)</p>
         <div className="mt-3 overflow-x-auto">
@@ -221,8 +257,9 @@ export default function NearfieldPage() {
           <div className="card p-7">
             <p className="mono-label">What else we measured</p>
             <p className="mt-3 leading-relaxed text-[var(--color-muted)]">
-              When only the background was talking, the output was 35 to 49 dB below the input and none of
-              those clips produced a transcript of four or more words. While the caller talks, an
+              When only one background voice is talking and no caller has spoken yet, version 2.3 keeps
+              it: it is the nearest voice so far. Babble is still turned down. Version 2.2 silenced
+              both. On version 2.2, while the caller talks, an
               equally loud background voice comes out about 16 dB quieter and the caller about 4 dB
               quieter, measured on the model output before the clean-up stage.
             </p>
@@ -236,18 +273,24 @@ export default function NearfieldPage() {
           <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
             <span className="block font-semibold text-[var(--color-fg)]">Babble is still hard.</span>
             <span className="mt-2 block">
-              With a whole room talking at the caller&apos;s level, the fast model still loses
-              about 37 in 100 of the caller&apos;s words, about the same as no filter, and the best
-              model about 31. Version 1 lost 40 to 51. In babble the fast model silences the room
-              when the caller is not talking; only the best one rescues some of the caller&apos;s
-              words.
+              With a whole room talking at the caller&apos;s level, about a third of the
+              caller&apos;s words are still lost. No filter loses 38 in 100.
             </span>
           </li>
           <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
-            <span className="block font-semibold text-[var(--color-fg)]">Measured on simulated calls.</span>
+            <span className="block font-semibold text-[var(--color-fg)]">A voice before the caller gets through.</span>
             <span className="mt-2 block">
-              The numbers above come from mixed recordings, not live phone lines. Real rooms and
-              real networks will differ, which is why the demo above runs on your own audio.
+              If a TV or a colleague is audible before the caller&apos;s first word, you will hear
+              them until the caller starts. The model cannot know a closer voice is coming. Version
+              2.2 silenced them, and silenced some real callers too.
+            </span>
+          </li>
+          <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
+            <span className="block font-semibold text-[var(--color-fg)]">One real benchmark.</span>
+            <span className="mt-2 block">
+              The real-recording figures come from a single public set, and this version was tuned
+              against it. Other rooms and lines will differ, which is why the demo above runs on
+              your own audio.
             </span>
           </li>
         </ul>
@@ -265,7 +308,7 @@ export default function NearfieldPage() {
         </div>
         <div className="mt-8 flex flex-wrap gap-3">
           <a href={NEARFIELD_REPO} target="_blank" rel="noopener noreferrer" className="btn btn-primary">View on GitHub ↗</a>
-          <a href={`${NEARFIELD_REPO}/releases/tag/v2.2.0`} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Release v2.2.0 ↗</a>
+          <a href={`${NEARFIELD_REPO}/releases/tag/v2.3.0`} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Release v2.3.0 ↗</a>
         </div>
       </Container>
 

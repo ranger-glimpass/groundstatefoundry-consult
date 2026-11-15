@@ -63,6 +63,7 @@ export const PRODUCTS: Product[] = [
     bullets: [
       "One 2.5 MB model of our own, 48 ms of delay (or 80 ms for the best quality), light enough for one CPU thread",
       "Separates the caller from other voices, not only from noise",
+      "Ahead of Krisp and Sanas on Krisp's public benchmark of real calls",
       "Drop-in filter for Pipecat voice agents",
       "Python package, released under Apache-2.0",
     ],

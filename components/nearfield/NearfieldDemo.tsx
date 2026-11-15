@@ -53,8 +53,8 @@ const N = 512, H = 128, NB = 257, SR = 16000, MAXT = 5;
 /** Two sets of weights, same size and speed. They differ in how many 8 ms steps the model waits before it commits to a frame. */
 export type Quality = "fast" | "best";
 const MODELS: Record<Quality, { file: string; look: number; ms: number }> = {
-  fast: { file: "nearfield-v2.1.onnx", look: 2, ms: 48 },
-  best: { file: "nearfield-v2.2-best.onnx", look: 6, ms: 80 },
+  fast: { file: "nearfield-v2.3.onnx", look: 2, ms: 48 },
+  best: { file: "nearfield-v2.3-best.onnx", look: 6, ms: 80 },
 };
 const STEP_MS = (H / SR) * 1000;
 
@@ -800,8 +800,8 @@ export default function NearfieldDemo() {
         </div>
       </div>
       <p className="mt-2 max-w-3xl text-xs leading-relaxed text-[var(--color-dim)]">
-        Same size, same speed. The best model waits 32 ms longer before it commits to each moment, and keeps more of
-        the caller when other people are talking. Switching runs the same audio again.
+        Same size, same speed. The best model waits 32 ms longer before it commits to each moment, and lets fewer
+        background words through. Switching runs the same audio again.
       </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-3">

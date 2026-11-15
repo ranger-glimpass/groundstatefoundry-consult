@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Container } from "@/components/ui";
 import GroundStateMark from "@/components/GroundStateMark";
 import MatmulChart from "@/components/MatmulChart";
+import KrispRanking from "@/components/nearfield/KrispRanking";
 import { SITE } from "@/lib/site";
 import { PRODUCTS, PLAYGROUND, NEARFIELD_REPO } from "@/lib/products";
 import { getAllResearch, categoryTitle, RESEARCH_CATEGORIES } from "@/lib/research";
@@ -17,17 +18,6 @@ const MATMUL = [
 ];
 
 const RESULTS = [
-  {
-    label: "voice · nearfield",
-    v: "13.6%",
-    unit: "of the caller's words lost with an equally loud person talking behind them",
-    body: "Open noise filters remove the fan and the traffic, but not the person talking behind the caller. Nearfield is our own model, trained from scratch to keep the voice closest to the microphone and cut everything else, other voices included. We mixed 40 callers with a background talker at the same loudness, sent the result through a phone line and gave it to a speech recogniser. With no filter it lost 41.4% of the caller's words. Through Nearfield it lost 13.6%.",
-    note: "The weights are open. The model is 2.5 MB and runs on one CPU thread. This figure is from the best-quality setting, which adds 80 ms of delay.",
-    links: [
-      { href: "/products/nearfield", label: "Try the demo" },
-      { href: NEARFIELD_REPO, label: "Code on GitHub" },
-    ],
-  },
   {
     label: "simulation · agents that call agents",
     v: "20",
@@ -121,6 +111,30 @@ export default function Home() {
         </div>
 
         <div className="card mt-10 p-8 sm:p-12">
+          <p className="mono-label">voice · nearfield</p>
+          <h3 className="mt-4 max-w-3xl text-balance text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">
+            Our 2.5 MB voice filter beats Krisp and Sanas on Krisp&apos;s own benchmark.
+          </h3>
+          <p className="mt-4 max-w-3xl leading-relaxed text-[var(--color-muted)]">
+            Nearfield keeps the voice closest to the microphone and removes everyone else in the
+            room. Krisp published 265 real recordings to test exactly that: people on headsets,
+            call-centre floors and phones, with someone talking behind them. Both Nearfield models
+            make fewer word errors on them than Krisp and Sanas, and let fewer of the background
+            voice&apos;s words through. It is our own model, trained from scratch, and the weights
+            are open.
+          </p>
+          <div className="mt-8">
+            <KrispRanking compact />
+          </div>
+          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+            <Link href="/products/nearfield" className="link-u">Try the demo →</Link>
+            <a href={NEARFIELD_REPO} target="_blank" rel="noopener noreferrer" className="link-u">
+              Code on GitHub ↗
+            </a>
+          </div>
+        </div>
+
+        <div className="card mt-5 p-8 sm:p-12">
           <div className="grid gap-10 lg:grid-cols-[1.25fr_1fr] lg:items-center">
             <div>
               <p className="mono-label">evolutionary search · darweel</p>
@@ -164,7 +178,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-5 grid gap-5 md:grid-cols-2">
+        <div className="mt-5 grid gap-5">
           {RESULTS.map((r) => (
             <div key={r.label} className="card flex flex-col p-8">
               <p className="mono-label">{r.label}</p>
