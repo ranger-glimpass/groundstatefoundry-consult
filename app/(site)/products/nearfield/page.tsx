@@ -28,6 +28,8 @@ const WORDS_LOST: { s: string; cols: string[]; ref?: boolean; hi?: boolean }[] =
   { s: "Version 2.0, 128 ms delay", cols: ["2.3%", "4.4%", "5.4%", "13.9%", "32.2%"] },
   { s: "Version 2.2 fast, 48 ms delay", cols: ["2.0%", "3.3%", "6.1%", "15.9%", "37.0%"] },
   { s: "Version 2.2 best, 80 ms delay", cols: ["1.8%", "3.5%", "5.4%", "13.6%", "30.9%"] },
+  { s: "Version 2.3 fast, 48 ms delay", cols: ["2.0%", "3.3%", "6.8%", "19.7%", "35.9%"], hi: true },
+  { s: "Version 2.3 best, 80 ms delay", cols: ["2.4%", "4.3%", "7.2%", "17.3%", "34.6%"], hi: true },
 ];
 const WORDS_COLS = ["Clean", "Steady noise", "Quieter talker", "Equal talker", "Babble"];
 
@@ -215,10 +217,10 @@ export default function NearfieldPage() {
         <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
           Before the real recordings, we measured on calls we built ourselves. We mixed callers with a
           background talker, babble or steady noise, cleaned the result, and gave it to a speech
-          recogniser. This table stops at version 2.2. In these clips the background voice is already
-          talking when the caller starts, and version 2.3 keeps that voice until the caller&apos;s
-          first word, so expect it to lose more opening words here. The real recordings are the
-          better guide.
+          recogniser. Version 2.3 scores worse than 2.2 on this test. In these clips the background
+          voice is already talking when the caller starts, and version 2.3 keeps that voice until the
+          caller&apos;s first word, so it loses more opening words. The real recordings, where it is
+          well ahead, are the better guide to a live call.
         </p>
         <p className="mono-label mt-8">Share of the caller&apos;s words missing from the transcript (lower is better)</p>
         <div className="mt-3 overflow-x-auto">
@@ -258,7 +260,8 @@ export default function NearfieldPage() {
             <p className="mono-label">What else we measured</p>
             <p className="mt-3 leading-relaxed text-[var(--color-muted)]">
               When only one background voice is talking and no caller has spoken yet, version 2.3 keeps
-              it: it is the nearest voice so far. Babble is still turned down. Version 2.2 silenced
+              it: it is the nearest voice so far. Babble with no caller is turned down only a little, and
+              a third to a half of those clips still produce a transcript. Version 2.2 silenced
               both. On version 2.2, while the caller talks, an
               equally loud background voice comes out about 16 dB quieter and the caller about 4 dB
               quieter, measured on the model output before the clean-up stage.
@@ -273,8 +276,9 @@ export default function NearfieldPage() {
           <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
             <span className="block font-semibold text-[var(--color-fg)]">Babble is still hard.</span>
             <span className="mt-2 block">
-              With a whole room talking at the caller&apos;s level, about a third of the
-              caller&apos;s words are still lost. No filter loses 38 in 100.
+              With a whole room talking at the caller&apos;s level, about 35 in 100 of the
+              caller&apos;s words are still lost. No filter loses 38. A room of babble with no caller
+              yet is no longer silenced.
             </span>
           </li>
           <li className="card p-7 leading-relaxed text-[var(--color-muted)]">
