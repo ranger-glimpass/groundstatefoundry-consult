@@ -6,7 +6,7 @@ export const SITE = {
   licence: "2653600.01",
   formation: "2653600",
   url: "https://groundstatefoundry.com",
-  tagline: "Ground state: what an idea settles into once the hype wears off.",
+  tagline: "Ground state: what an experiment settles into once it is perfected.",
   positioning:
     "An AI research lab. We study how AI listens, acts and improves, and ship what works: Nearfield and Bubbles as open source, and Lisn, an AI that talks to your customers.",
   email: "hello@groundstatefoundry.com",
