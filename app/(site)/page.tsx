@@ -73,16 +73,15 @@ export default function Home() {
             className="reveal mt-6 max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-[var(--color-fg)] sm:text-6xl"
             style={{ animationDelay: "90ms" }}
           >
-            We study how AI listens, acts and improves. Then we ship what works.
+            The age of AI is full of hot ideas. We find the ones that are actually cool.
           </h1>
 
           <p
             className="reveal mt-6 max-w-2xl text-pretty text-base leading-relaxed text-[var(--color-muted)]"
             style={{ animationDelay: "200ms" }}
           >
-            Our research covers voice, agents, simulation and evolutionary search. We publish what
-            we find, release the tools as open source, and put the rest into Lisn, an AI that talks
-            to your customers.
+            Every week brings a new claim about what AI can do. We test them on real recordings, real
+            phone lines and rival benchmarks, and turn what holds up into open tools.
           </p>
 
           <div className="reveal mt-9 flex flex-wrap items-center gap-3" style={{ animationDelay: "320ms" }}>
