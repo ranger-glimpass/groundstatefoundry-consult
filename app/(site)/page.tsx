@@ -5,7 +5,7 @@ import GroundStateMark from "@/components/GroundStateMark";
 import MatmulChart from "@/components/MatmulChart";
 import KrispRanking from "@/components/nearfield/KrispRanking";
 import { SITE } from "@/lib/site";
-import { PRODUCTS, PLAYGROUND, NEARFIELD_REPO } from "@/lib/products";
+import { PRODUCTS, PLAYGROUND, NEARFIELD_REPO, itemHref } from "@/lib/products";
 import { getAllResearch, categoryTitle, RESEARCH_CATEGORIES } from "@/lib/research";
 
 const DARWEEL_REPORT_URL = "https://www.onevoid.org/post/conditional-winograd-by-edbbc5b2";
@@ -126,7 +126,7 @@ export default function Home() {
             <KrispRanking compact />
           </div>
           <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-            <Link href="/products/nearfield" className="link-u">Try the demo →</Link>
+            <Link href="/models/nearfield" className="link-u">Try the demo →</Link>
             <a href={NEARFIELD_REPO} target="_blank" rel="noopener noreferrer" className="link-u">
               Code on GitHub ↗
             </a>
@@ -260,7 +260,7 @@ export default function Home() {
               </div>
               <p className="mt-4 flex-1 leading-relaxed text-[var(--color-muted)]">{p.line}</p>
               <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-                {p.page && <Link href={`/products/${p.slug}`} className="link-u">More about {p.name} →</Link>}
+                {p.page && <Link href={itemHref(p)} className="link-u">More about {p.name} →</Link>}
                 {p.repo && (
                   <a href={p.repo} target="_blank" rel="noopener noreferrer" className="link-u">View on GitHub ↗</a>
                 )}

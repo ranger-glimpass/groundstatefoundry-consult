@@ -77,6 +77,6 @@ We tried a hand-programmed echo-tail remover aimed at exactly this case. It rais
 
 Nearfield is open source under Apache-2.0, at [github.com/Ground-State-Foundry/nearfield](https://github.com/Ground-State-Foundry/nearfield). The v1.0.0 release has the model attached. It includes the DeepFilterNet3 weights by Hendrik Schröter, used under the MIT license, and none of this would exist without that work.
 
-You can hear it before installing anything. The [live demo](/products/nearfield) runs the same model in your browser on an example call, or on your own voice from the microphone with the TV on behind you.
+You can hear it before installing anything. The [live demo](/models/nearfield) runs the same model in your browser on an example call, or on your own voice from the microphone with the TV on behind you.
 
 What stays with me is how little we had to add. The hard part, learning what a near voice sounds like, was already sitting inside a noise suppressor, unused. A small head and a simple rule were enough to put it to work. A voice agent's first job is not to be clever. It is to know who it is talking to.

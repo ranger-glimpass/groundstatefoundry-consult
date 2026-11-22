@@ -1,24 +1,24 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Container, PageHeader } from "@/components/ui";
-import { PRODUCTS } from "@/lib/products";
+import { PRODUCTS, itemHref } from "@/lib/products";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "What we've shipped",
+  title: "Products",
   alternates: { canonical: "/products" },
-  description: "What Ground State Foundry has shipped: Nearfield, which isolates a caller's voice in real time, and Bubbles, for running fleets of AI coding agents, both open source; and Lisn, an AI that talks to your customers.",
+  description: "Ground State Foundry's products: Lisn, an AI that talks and chats with your visitors, and Bubbles, an open-source tool for running fleets of AI coding agents. Our models are under /models.",
 };
 
-const ORDER = ["nearfield", "bubbles", "lisn"];
-const SHIPPED = [...PRODUCTS].sort((a, b) => ORDER.indexOf(a.slug) - ORDER.indexOf(b.slug));
+const ORDER = ["lisn", "bubbles"];
+const SHIPPED = PRODUCTS.filter((p) => p.kind === "product").sort((a, b) => ORDER.indexOf(a.slug) - ORDER.indexOf(b.slug));
 
 export default function ProductsPage() {
   return (
     <>
-      <PageHeader eyebrow="products" title="What we've shipped" subtitle="Two open-source projects and one product, all out of the same research lab." />
+      <PageHeader eyebrow="products" title="Products" subtitle="What we build on top of our research. Our models are on their own page." />
       <Container className="py-16">
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2">
           {SHIPPED.map((p) => (
             <div key={p.slug} className="card flex flex-col p-8">
               <div className="flex items-center justify-between gap-3">
@@ -36,7 +36,7 @@ export default function ProductsPage() {
                 ))}
               </ul>
               <div className="mt-8 flex flex-wrap gap-3">
-                {p.page && <Link href={`/products/${p.slug}`} className="btn btn-ghost">More about {p.name} →</Link>}
+                {p.page && <Link href={itemHref(p)} className="btn btn-ghost">More about {p.name} →</Link>}
                 {p.repo ? (
                   <a href={p.repo} target="_blank" rel="noopener noreferrer" className="btn btn-primary">View on GitHub ↗</a>
                 ) : (
@@ -51,9 +51,9 @@ export default function ProductsPage() {
           <div className="max-w-xl">
             <p className="mono-label">the lab behind them</p>
             <p className="mt-3 leading-relaxed text-[var(--color-muted)]">
-              Nearfield comes out of our voice research, Bubbles out of our work on multi-agent
-              systems, and Lisn out of both, plus the simulations it practises against before it
-              talks to customers. The same lab runs evolutionary search: our framework rediscovered
+              Lisn comes out of our voice research and the simulations it practises against before
+              it talks to customers, and Bubbles out of our work on multi-agent systems. Our models,
+              Nearfield among them, are on the <Link href="/models" className="link-u">models page</Link>. The same lab runs evolutionary search: our framework rediscovered
               Winograd&apos;s 48-multiplication method on its own, then averaged 47.94 on a 500-case
               test set.
             </p>

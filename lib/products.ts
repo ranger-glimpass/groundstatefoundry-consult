@@ -1,4 +1,4 @@
-/** What Ground State Foundry makes. Drives /products, the product pages, the nav, and the homepage. */
+/** What Ground State Foundry makes. Models live under /models (grouped, e.g. audio essentials); products under /products. */
 
 export const GITHUB_ORG = "https://github.com/Ground-State-Foundry";
 export const BUBBLES_REPO = `${GITHUB_ORG}/bubbles`;
@@ -9,8 +9,10 @@ export const LISN_AGENT_ID = "6ad3df8f20ae684a1d8fa881";
 export const LISN_WIDGET_SRC = "https://my.groundstatefoundry.com/widget-v2.js";
 
 export type Product = {
-  slug: "lisn" | "bubbles" | "nearfield";
-  repo?: string; // open-source products link here
+  slug: "lisn" | "bubbles" | "nearfield" | "audio-upscaler" | "ant-flash";
+  kind: "model" | "product";
+  group?: "audio-essentials"; // models only
+  repo?: string; // public repos only; private ones offer access on request
   page?: boolean; // has its own /products/<slug> page
   name: string;
   status: string;
@@ -22,6 +24,7 @@ export type Product = {
 export const PRODUCTS: Product[] = [
   {
     slug: "lisn",
+    kind: "product",
     name: "Lisn",
     status: "Early access",
     page: true,
@@ -37,6 +40,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: "bubbles",
+    kind: "product",
     name: "Bubbles",
     status: "Open source · MIT",
     repo: BUBBLES_REPO,
@@ -53,6 +57,8 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: "nearfield",
+    kind: "model",
+    group: "audio-essentials",
     name: "Nearfield",
     status: "Open source · Apache-2.0",
     repo: NEARFIELD_REPO,
@@ -68,7 +74,54 @@ export const PRODUCTS: Product[] = [
       "Python package, released under Apache-2.0",
     ],
   },
+  {
+    slug: "audio-upscaler",
+    kind: "model",
+    group: "audio-essentials",
+    name: "Audio Upscaler",
+    status: "v3 · access on request",
+    page: true,
+    line: "Turns phone-quality speech into full-band 48 kHz audio while you talk.",
+    summary:
+      "Audio Upscaler rebuilds the high frequencies a phone line or a 16 kHz pipeline throws away. It keeps the original band exactly and generates only what is missing, so the voice, the words and their timing never change.",
+    bullets: [
+      "8 kHz or 16 kHz in, 48 kHz out, with 21 to 43 ms of delay",
+      "A trained listener tells it apart from the real recording 55% of the time, where 50% is chance",
+      "Runs live on a CPU, in 10 ms blocks, with no look-ahead",
+      "Never adds hiss in the pauses",
+    ],
+  },
+  {
+    slug: "ant-flash",
+    kind: "model",
+    group: "audio-essentials",
+    name: "Ant Flash",
+    status: "3.2 · access on request",
+    page: true,
+    line: "Changes an Indian English accent to American English, live, in the talker's own voice.",
+    summary:
+      "Ant Flash converts accent as the person speaks. It keeps their own voice, timing and pitch, and changes how the words sound. It runs on a CPU and cleans its input with Nearfield first.",
+    bullets: [
+      "Indian English to American English, about 0.6 s behind the talker",
+      "The talker's own voice, from a voice print, with no stock voice",
+      "Runs on a CPU, about 94 ms of compute per 200 ms of speech",
+      "One model per accent pair, more pairs to come",
+    ],
+  },
 ];
+
+export const MODEL_GROUPS = [
+  {
+    id: "audio-essentials" as const,
+    name: "Audio essentials",
+    line: "Small models for live calls: hear only the caller, restore the sound a phone line throws away, change an accent while someone talks. All run in real time on a CPU.",
+  },
+];
+
+/** Where an item's own page lives. */
+export function itemHref(p: Product) {
+  return p.kind === "model" ? `/models/${p.slug}` : `/products/${p.slug}`;
+}
 
 export function getProduct(slug: string) {
   return PRODUCTS.find((p) => p.slug === slug);
@@ -138,7 +191,7 @@ export const BUBBLES_RESEARCH = [
 
 /** Old consultancy URLs and where they now point. Rendered as static redirect pages. */
 export const LEGACY_REDIRECTS: Record<string, string> = {
-  "voice-ai": "/products/lisn/",
+  "voice-ai": "/models/nearfield/",
   "ai-agents-automation": "/products/lisn/",
   simulation: "/products/lisn/#practice",
   "enterprise-ai": "/products/",
