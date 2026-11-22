@@ -18,16 +18,18 @@ const STEPS = [
   { key: "up", label: "Upscale", choices: [{ v: "1", label: "On, 48 kHz", tag: ", upscaled to 48 kHz" }, { v: "0", label: "Off, 8 kHz phone line" }] },
 ];
 
-const MODES = [
-  { m: "8 → 48 kHz", u: "Phone calls and 8 kHz SIP", d: "43 ms", c: "~100 ms", f: "53%" },
-  { m: "16 → 48 kHz", u: "VoIP, ASR-rate audio, after Nearfield", d: "21 ms", c: "~50 ms", f: "55%" },
-  { m: "8 → 16 kHz", u: "Systems that need 16 kHz out", d: "22 ms", c: "~48 ms", f: "89%" },
+const SPECS = [
+  { v: "8 → 48 kHz", l: "phone-line audio in, full-band studio rate out. 16 kHz input works too" },
+  { v: "21–43 ms", l: "added delay, streaming in 10 ms blocks with no look-ahead" },
+  { v: "CPU", l: "real time on a standard CPU, many streams per machine" },
+  { v: "Near chance", l: "a trained detector picks out its 48 kHz output only 53–55% of the time, where 50% is a coin flip" },
 ];
 
-const LIMITS = [
-  "It is trained on clean speech. Music and heavy noise are out of scope, so clean noisy audio first, with Nearfield for example.",
-  "The 8 → 16 kHz mode is easier to tell from a real recording (89%) than the 48 kHz modes.",
-  "Audio that is already full-band gains nothing. Feed it audio that really is narrowband.",
+const FITS = [
+  { t: "Contact centres and telephony", d: "Callers on 8 kHz phone lines sound like they are in the room, for agents, supervisors and recordings." },
+  { t: "Voice agents", d: "Fuller, clearer audio for anything you record, replay or pass on, from a single filter in the pipeline." },
+  { t: "Call recordings and archives", d: "Bring years of narrowband recordings up to modern playback quality." },
+  { t: "Conferencing and VoIP", d: "Lift low-bandwidth participants to the same quality as everyone else on the call." },
 ];
 
 export default function AudioUpscalerPage() {
@@ -46,7 +48,7 @@ export default function AudioUpscalerPage() {
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[var(--color-muted)]">{p.summary}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a href="#demo" className="btn btn-primary">Listen below ↓</a>
-            <Link href="/contact" className="btn btn-ghost">Request access →</Link>
+            <Link href="/contact" className="btn btn-ghost">Talk to us →</Link>
           </div>
         </Container>
       </header>
@@ -75,63 +77,43 @@ export default function AudioUpscalerPage() {
       </section>
 
       <Container className="py-12">
-        <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">Measured</h2>
-        <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-          To test realism we trained a separate network to tell generated audio from real recordings,
-          then asked it to spot the upscaler&apos;s output on recordings neither model had heard. At
-          50% it is guessing. On the same test it catches FlashSR 83% of the time and AudioSR, a
-          1.3-billion-parameter model that needs a GPU, 54 to 68%.
-        </p>
-        <div className="mt-8 overflow-x-auto">
-          <table className="w-full min-w-[620px] border-collapse text-left">
-            <thead>
-              <tr className="border-b border-[var(--color-border-bright)]">
-                {["Mode", "For", "Delay", "CPU per 200 ms, 4 threads", "Spotted as generated"].map((h) => (
-                  <th key={h} className="mono-label py-3 pr-4 font-normal">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--color-border)]">
-              {MODES.map((r) => (
-                <tr key={r.m} className="text-[var(--color-fg)]">
-                  <td className="py-3 pr-4 font-semibold">{r.m}</td>
-                  <td className="py-3 pr-4 text-[var(--color-muted)]">{r.u}</td>
-                  <td className="py-3 pr-4 font-mono tabular-nums">{r.d}</td>
-                  <td className="py-3 pr-4 font-mono tabular-nums">{r.c}</td>
-                  <td className="py-3 pr-4 font-mono tabular-nums">{r.f}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-4 text-sm text-[var(--color-dim)]">
-          6 to 7 million weights per stage, 55 MB in all. It streams in 10 ms blocks with no look-ahead,
-          and the streamed output matches the offline output. The original band passes through
-          untouched, and the pauses are never noisier than the input.
+        <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">At a glance</h2>
+        <dl className="mt-8 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+          {SPECS.map((x) => (
+            <div key={x.l} className="border-t border-[var(--color-border-bright)] pt-4">
+              <dt className="text-2xl font-semibold tracking-tight text-[var(--color-fg)]">{x.v}</dt>
+              <dd className="mt-2 text-sm leading-relaxed text-[var(--color-muted)]">{x.l}</dd>
+            </div>
+          ))}
+        </dl>
+        <p className="mt-8 max-w-2xl leading-relaxed text-[var(--color-muted)]">
+          The original band passes through untouched, so the voice, the words and their timing never
+          change, and the pauses stay as quiet as the input. On the same realism test, FlashSR is
+          caught 83% of the time.
         </p>
       </Container>
 
       <Container className="py-12">
-        <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">Limits</h2>
-        <ul className="mt-6 max-w-2xl space-y-3">
-          {LIMITS.map((l) => (
-            <li key={l} className="flex items-start gap-2.5 leading-relaxed text-[var(--color-muted)]">
-              <span className="mt-[10px] h-[6px] w-[6px] shrink-0 rounded-full bg-[var(--color-muted)]" />
-              {l}
-            </li>
+        <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">Where it fits</h2>
+        <div className="mt-8 grid gap-5 md:grid-cols-2">
+          {FITS.map((c) => (
+            <div key={c.t} className="card p-7">
+              <h3 className="text-lg font-semibold text-[var(--color-fg)]">{c.t}</h3>
+              <p className="mt-2 leading-relaxed text-[var(--color-muted)]">{c.d}</p>
+            </div>
           ))}
-        </ul>
+        </div>
       </Container>
 
       <Container className="py-12">
         <div className="card p-10 text-center sm:p-14">
-          <h2 className="text-balance text-3xl font-semibold tracking-tight text-[var(--color-fg)]">Want to run it?</h2>
+          <h2 className="text-balance text-3xl font-semibold tracking-tight text-[var(--color-fg)]">Put it in your pipeline</h2>
           <p className="mx-auto mt-4 max-w-md text-[var(--color-muted)]">
-            Audio Upscaler is a Python package for live pipelines: any chunk size, any sample rate,
-            many streams on one machine. It is not public yet. Tell us what you would use it for.
+            Audio Upscaler is available to license as a Python package for live pipelines: any chunk
+            size, any sample rate, many streams on one machine. Tell us what you would use it for.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link href="/contact" className="btn btn-primary">Request access →</Link>
+            <Link href="/contact" className="btn btn-primary">Talk to us →</Link>
             <Link href="/models" className="btn btn-ghost">Other models</Link>
           </div>
         </div>

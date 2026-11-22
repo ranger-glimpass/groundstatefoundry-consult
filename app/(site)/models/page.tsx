@@ -51,7 +51,7 @@ export default function ModelsPage() {
           );
         })}
         <p className="mt-12 text-sm text-[var(--color-dim)]">
-          Want to use a model that is not public yet? <Link href="/contact" className="link-u">Ask us</Link> or write to{" "}
+          Want to license a model or run it on your own servers? <Link href="/contact" className="link-u">Talk to us</Link> or write to{" "}
           <a href={`mailto:${SITE.email}`} className="link-u">{SITE.email}</a>.
         </p>
       </Container>

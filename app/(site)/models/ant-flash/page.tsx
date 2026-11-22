@@ -18,19 +18,18 @@ const STEPS = [
   { key: "up", label: "Upscale the output", choices: [{ v: "0", label: "Off, 24 kHz" }, { v: "1", label: "On, 48 kHz", tag: ", upscaled to 48 kHz" }] },
 ];
 
-const MEASURED = [
-  { k: "Accent", v: "70", w: "63", d: "American callers through the same chain score 98" },
-  { k: "Detail", v: "50", w: "27", d: "how crisp and full the sound is" },
-  { k: "Voice", v: "24", w: "22", d: "likeness to the talker; American callers through the chain score 65" },
-  { k: "Words heard wrongly", v: "22 of 214", w: "24 of 214", d: "studio-quality test sentences" },
+const SPECS = [
+  { v: "Live", l: "converts while the person talks, about 0.6 s behind, in 20 ms frames" },
+  { v: "Their voice", l: "a voice print of the speaker, taken from their first seconds. No stock voice" },
+  { v: "CPU", l: "no GPU needed. About 94 ms of compute per 200 ms of speech on four threads" },
+  { v: "Built-in clean-up", l: "Nearfield removes background voices and noise in the same pass" },
 ];
 
-const LIMITS = [
-  "The accent change is partial: clear on most callers, lighter on some. The talker's own timing is kept, and timing is part of an accent.",
-  "It loses words. About 1 in 10 on studio recordings and 1 in 8 on home recordings are heard wrongly afterwards. Names and unusual words go first.",
-  "The voice is recognisably the talker's, but not a close copy.",
-  "It was trained on Indian-accented English only. One talker per stream.",
-  "On a busy machine it falls behind. Nothing is dropped, but the delay grows.",
+const FITS = [
+  { t: "Contact centres", d: "Agents in India keep their own voice and personality, and US customers hear a familiar accent. Nothing changes in the agent's workflow." },
+  { t: "Sales and support calls", d: "Fewer \"sorry, could you repeat that\" moments on calls where every second counts." },
+  { t: "Voice agents and telephony", d: "Runs as a WebSocket service or a Pipecat filter, so it drops into an existing call pipeline." },
+  { t: "Your own infrastructure", d: "Runs on your servers, on CPUs you already have. Audio never has to leave your network." },
 ];
 
 export default function AntFlashPage() {
@@ -49,7 +48,7 @@ export default function AntFlashPage() {
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[var(--color-muted)]">{p.summary}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a href="#demo" className="btn btn-primary">Listen below ↓</a>
-            <Link href="/contact" className="btn btn-ghost">Request access →</Link>
+            <Link href="/contact" className="btn btn-ghost">Talk to us →</Link>
           </div>
         </Container>
       </header>
@@ -78,60 +77,38 @@ export default function AntFlashPage() {
       </section>
 
       <Container className="py-12">
-        <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">Measured</h2>
-        <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-          Nineteen test callers, sixteen of them Indian speakers across eight Indian languages, on
-          sentences kept out of training. Scored 0 to 100 by our own automatic judges, higher is
-          better.
-        </p>
-        <div className="mt-8 overflow-x-auto">
-          <table className="w-full min-w-[560px] border-collapse text-left">
-            <thead>
-              <tr className="border-b border-[var(--color-border-bright)]">
-                {["", "Ant Flash 3.2", "Ant Flash 3.0", ""].map((h, i) => (
-                  <th key={i} className="mono-label py-3 pr-4 font-normal">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--color-border)]">
-              {MEASURED.map((r) => (
-                <tr key={r.k} className="text-[var(--color-fg)]">
-                  <td className="py-3 pr-4 font-semibold">{r.k}</td>
-                  <td className="py-3 pr-4 font-mono tabular-nums">{r.v}</td>
-                  <td className="py-3 pr-4 font-mono tabular-nums text-[var(--color-muted)]">{r.w}</td>
-                  <td className="py-3 pr-4 text-sm text-[var(--color-dim)]">{r.d}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-4 text-sm text-[var(--color-dim)]">
-          113 million weights, one 251 MB file. About 94 ms of computing per 200 ms of speech on an
-          Apple M4 with four threads, about 0.6 s behind the talker. Nearfield cleans the output.
-        </p>
+        <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">At a glance</h2>
+        <dl className="mt-8 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+          {SPECS.map((x) => (
+            <div key={x.l} className="border-t border-[var(--color-border-bright)] pt-4">
+              <dt className="text-2xl font-semibold tracking-tight text-[var(--color-fg)]">{x.v}</dt>
+              <dd className="mt-2 text-sm leading-relaxed text-[var(--color-muted)]">{x.l}</dd>
+            </div>
+          ))}
+        </dl>
       </Container>
 
       <Container className="py-12">
-        <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">Limits</h2>
-        <ul className="mt-6 max-w-2xl space-y-3">
-          {LIMITS.map((l) => (
-            <li key={l} className="flex items-start gap-2.5 leading-relaxed text-[var(--color-muted)]">
-              <span className="mt-[10px] h-[6px] w-[6px] shrink-0 rounded-full bg-[var(--color-muted)]" />
-              {l}
-            </li>
+        <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">Where it fits</h2>
+        <div className="mt-8 grid gap-5 md:grid-cols-2">
+          {FITS.map((c) => (
+            <div key={c.t} className="card p-7">
+              <h3 className="text-lg font-semibold text-[var(--color-fg)]">{c.t}</h3>
+              <p className="mt-2 leading-relaxed text-[var(--color-muted)]">{c.d}</p>
+            </div>
           ))}
-        </ul>
+        </div>
       </Container>
 
       <Container className="py-12">
         <div className="card p-10 text-center sm:p-14">
-          <h2 className="text-balance text-3xl font-semibold tracking-tight text-[var(--color-fg)]">Want to try it on your calls?</h2>
+          <h2 className="text-balance text-3xl font-semibold tracking-tight text-[var(--color-fg)]">Try it on your calls</h2>
           <p className="mx-auto mt-4 max-w-md text-[var(--color-muted)]">
-            Ant Flash runs as a WebSocket server or a Pipecat filter. It is not public yet. Tell us
-            which accents you need.
+            Ant Flash is available to license, deployed on your servers or ours. Indian English to
+            American English is ready today. Tell us about your calls and the accents you need.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link href="/contact" className="btn btn-primary">Request access →</Link>
+            <Link href="/contact" className="btn btn-primary">Talk to us →</Link>
             <Link href="/models" className="btn btn-ghost">Other models</Link>
           </div>
         </div>

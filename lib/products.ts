@@ -79,7 +79,7 @@ export const PRODUCTS: Product[] = [
     kind: "model",
     group: "audio-essentials",
     name: "Audio Upscaler",
-    status: "v3 · access on request",
+    status: "v3 · available to license",
     page: true,
     line: "Turns phone-quality speech into full-band 48 kHz audio while you talk.",
     summary:
@@ -96,11 +96,11 @@ export const PRODUCTS: Product[] = [
     kind: "model",
     group: "audio-essentials",
     name: "Ant Flash",
-    status: "3.2 · access on request",
+    status: "3.2 · available to license",
     page: true,
     line: "Changes an Indian English accent to American English, live, in the talker's own voice.",
     summary:
-      "Ant Flash converts accent as the person speaks. It keeps their own voice, timing and pitch, and changes how the words sound. It runs on a CPU and cleans its input with Nearfield first.",
+      "Ant Flash converts accent as the person speaks. It keeps their own voice, timing and pitch, and changes how the words sound. It runs on a CPU, with Nearfield clean-up built in.",
     bullets: [
       "Indian English to American English, about 0.6 s behind the talker",
       "The talker's own voice, from a voice print, with no stock voice",
