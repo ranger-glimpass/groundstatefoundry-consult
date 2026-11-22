@@ -198,3 +198,6 @@ export const LEGACY_REDIRECTS: Record<string, string> = {
   "strategy-advisory": "/products/",
   "data-ml-infrastructure": "/products/",
 };
+
+/** Live record-your-voice demo (AWS Lambda, scales to zero). Only answers groundstatefoundry.com. */
+export const VOICE_DEMO_API = "https://24uprg46f5llvpkoaysztc2asu0wofey.lambda-url.us-east-1.on.aws/";

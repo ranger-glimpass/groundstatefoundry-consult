@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Container } from "@/components/ui";
 import ChainDemo from "@/components/models/ChainDemo";
+import LiveDemo from "@/components/models/LiveDemo";
 import { getProduct } from "@/lib/products";
 
 export const metadata: Metadata = {
@@ -71,6 +72,19 @@ export default function AntFlashPage() {
               options={STEPS}
               inputLabel="Original"
               resultLabel="Ant Flash 3.2"
+            />
+          </div>
+        </Container>
+      
+        <Container className="pb-12">
+          <h3 className="text-xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-2xl">Try your own voice</h3>
+          <div className="mt-6">
+            <LiveDemo
+              model="antflash"
+              options={STEPS}
+              prompt="Speak in Indian English for a few seconds, then hear it back in an American accent. Read something out, or talk about your day. Ant Flash converts Indian English to American English."
+              inputLabel="Your recording"
+              resultLabel="Ant Flash 3.2, American English"
             />
           </div>
         </Container>

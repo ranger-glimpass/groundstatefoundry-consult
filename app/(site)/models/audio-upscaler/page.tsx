@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Container } from "@/components/ui";
 import ChainDemo from "@/components/models/ChainDemo";
+import LiveDemo from "@/components/models/LiveDemo";
 import { getProduct } from "@/lib/products";
 
 export const metadata: Metadata = {
@@ -70,6 +71,19 @@ export default function AudioUpscalerPage() {
               room={ROOM}
               options={STEPS}
               inputLabel="Phone line, 8 kHz"
+              resultLabel="Phone line"
+            />
+          </div>
+        </Container>
+      
+        <Container className="pb-12">
+          <h3 className="text-xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-2xl">Try your own voice</h3>
+          <div className="mt-6">
+            <LiveDemo
+              model="upscaler"
+              options={STEPS}
+              prompt="Say a few sentences. We send your voice down an 8 kHz phone line, then the upscaler rebuilds it at 48 kHz. Headphones make the difference easiest to hear."
+              inputLabel="Your voice on a phone line, 8 kHz"
               resultLabel="Phone line"
             />
           </div>
