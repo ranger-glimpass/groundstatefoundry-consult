@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Container } from "@/components/ui";
-import SampleSet from "@/components/models/SampleSet";
+import ChainDemo from "@/components/models/ChainDemo";
 import { getProduct } from "@/lib/products";
 
 export const metadata: Metadata = {
@@ -12,14 +12,11 @@ export const metadata: Metadata = {
 };
 
 const B = "/models/audio-upscaler";
-const SAMPLES = ["003", "017"].map((id, i) => ({
-  title: `sample ${i + 1} · 8 kHz phone line → 48 kHz`,
-  clips: [
-    { label: "Phone line, 8 kHz (input)", src: `${B}/${id}_input_8k.wav`, img: `${B}/${id}_input_8k.webp`, note: "everything above 4 kHz is gone" },
-    { label: "Audio Upscaler v3, 48 kHz", src: `${B}/${id}_v3_48k.wav`, img: `${B}/${id}_v3_48k.webp`, note: "the top band is generated", hi: true },
-    { label: "Original studio recording, 48 kHz", src: `${B}/${id}_original_48k.wav`, img: `${B}/${id}_original_48k.webp`, note: "for comparison, never seen by the model" },
-  ],
-}));
+const ROOM = { key: "room", label: "Background", choices: [{ v: "q", label: "Quiet room", tag: ", quiet room" }, { v: "n", label: "Someone talking behind", tag: ", someone talking behind" }] };
+const STEPS = [
+  { key: "nf", label: "Clean with Nearfield first", choices: [{ v: "0", label: "Off" }, { v: "1", label: "On", tag: ", cleaned by Nearfield" }] },
+  { key: "up", label: "Upscale", choices: [{ v: "1", label: "On, 48 kHz", tag: ", upscaled to 48 kHz" }, { v: "0", label: "Off, 8 kHz phone line" }] },
+];
 
 const MODES = [
   { m: "8 → 48 kHz", u: "Phone calls and 8 kHz SIP", d: "43 ms", c: "~100 ms", f: "53%" },
@@ -58,15 +55,22 @@ export default function AudioUpscalerPage() {
         <Container className="py-12">
           <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">Hear it</h2>
           <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-            Each sample starts as a studio recording cut down to a phone line&apos;s 8 kHz. The
-            upscaler rebuilds the rest, live, and the original is there to compare. The pictures show
-            each clip&apos;s frequencies, low at the bottom and 24 kHz at the top. Headphones make the
-            difference easiest to hear.
+            Each sample starts as a studio recording sent down an 8 kHz phone line, which cuts
+            everything above 4 kHz. The upscaler rebuilds the rest, live. Add someone talking in the
+            background and let Nearfield clean the call before it goes down the line. The pictures
+            show each clip&apos;s frequencies, low at the bottom and 24 kHz at the top. Headphones make
+            the difference easiest to hear.
           </p>
-          <div className="mt-8 grid gap-5 lg:grid-cols-2">
-            {SAMPLES.map((s) => (
-              <SampleSet key={s.title} title={s.title} clips={s.clips} />
-            ))}
+          <div className="mt-8">
+            <ChainDemo
+              base={B}
+              samples={[{ id: "s1", label: "Speaker 1" }, { id: "s2", label: "Speaker 2" }]}
+              room={ROOM}
+              options={STEPS}
+              inputLabel="Phone line, 8 kHz"
+              resultLabel="Phone line"
+              refLabel="Original studio recording, 48 kHz, for comparison"
+            />
           </div>
         </Container>
       </section>

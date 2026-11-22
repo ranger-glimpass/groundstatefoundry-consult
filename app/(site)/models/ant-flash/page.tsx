@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Container } from "@/components/ui";
-import SampleSet from "@/components/models/SampleSet";
+import ChainDemo from "@/components/models/ChainDemo";
 import { getProduct } from "@/lib/products";
 
 export const metadata: Metadata = {
@@ -12,13 +12,11 @@ export const metadata: Metadata = {
 };
 
 const B = "/models/ant-flash";
-const SAMPLES = [1, 2].map((n) => ({
-  title: `speaker ${n} · Indian English → American English`,
-  clips: [
-    { label: "Original", src: `${B}/speaker${n}_original.wav` },
-    { label: "Ant Flash 3.2", src: `${B}/speaker${n}_antflash.wav`, note: "starts about 0.6 s later, as it would live", hi: true },
-  ],
-}));
+const ROOM = { key: "room", label: "Background", choices: [{ v: "q", label: "Quiet room", tag: ", quiet room" }, { v: "n", label: "Someone talking behind", tag: ", someone talking behind" }] };
+const STEPS = [
+  { key: "nf", label: "Clean with Nearfield first", choices: [{ v: "0", label: "Off" }, { v: "1", label: "On", tag: ", after Nearfield" }] },
+  { key: "up", label: "Upscale the output", choices: [{ v: "0", label: "Off, 24 kHz" }, { v: "1", label: "On, 48 kHz", tag: ", upscaled to 48 kHz" }] },
+];
 
 const MEASURED = [
   { k: "Accent", v: "70", w: "63", d: "American callers through the same chain score 98" },
@@ -62,12 +60,19 @@ export default function AntFlashPage() {
           <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
             Two Indian English speakers from public speech corpora (CMU ARCTIC and L2-ARCTIC), run
             through Ant Flash 3.2 the way a live call would be: fed 20 ms at a time, on a CPU. Same
-            words, same voice, a different accent.
+            words, same voice, a different accent. Add someone talking in the background, clean it
+            with Nearfield before the accent change, and upscale the result to 48 kHz. The converted
+            clip starts about 0.6 s late, as it would live.
           </p>
-          <div className="mt-8 grid gap-5 lg:grid-cols-2">
-            {SAMPLES.map((s) => (
-              <SampleSet key={s.title} title={s.title} clips={s.clips} />
-            ))}
+          <div className="mt-8">
+            <ChainDemo
+              base={B}
+              samples={[{ id: "s1", label: "Speaker 1" }, { id: "s2", label: "Speaker 2" }]}
+              room={ROOM}
+              options={STEPS}
+              inputLabel="Original"
+              resultLabel="Ant Flash 3.2"
+            />
           </div>
         </Container>
       </section>

@@ -3,6 +3,8 @@ import { Container } from "@/components/ui";
 import ResearchLinks from "@/components/ResearchLinks";
 import NearfieldDemo from "@/components/nearfield/NearfieldDemo";
 import KrispRanking from "@/components/nearfield/KrispRanking";
+import ChainDemo from "@/components/models/ChainDemo";
+import Link from "next/link";
 import { getAllResearch } from "@/lib/research";
 import { NEARFIELD_REPO, NEARFIELD_RESEARCH, getProduct } from "@/lib/products";
 
@@ -131,6 +133,29 @@ export default function NearfieldPage() {
             the way a live call would be processed. Then play either one and compare.
           </p>
           <NearfieldDemo />
+        </Container>
+      </section>
+
+      <section id="with-upscaler" className="scroll-mt-20 border-t border-[var(--color-border)]">
+        <Container className="py-12">
+          <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">Add the upscaler</h2>
+          <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
+            Nearfield works at 16 kHz, so everything above 8 kHz is gone. Our{" "}
+            <Link href="/models/audio-upscaler" className="link-u">Audio Upscaler</Link> can rebuild it
+            after cleaning, for 48 kHz output. Two stretches of the example call, rendered both ways.
+          </p>
+          <div className="mt-8">
+            <ChainDemo
+              base="/models/nearfield"
+              samples={[{ id: "s1", label: "Loud room noise" }, { id: "s2", label: "Someone talking, as loud" }]}
+              options={[
+                { key: "nf", label: "Nearfield", choices: [{ v: "1", label: "On", tag: ", cleaned by Nearfield" }, { v: "0", label: "Off" }] },
+                { key: "up", label: "Upscale", choices: [{ v: "1", label: "On, 48 kHz", tag: ", upscaled to 48 kHz" }, { v: "0", label: "Off, 16 kHz" }] },
+              ]}
+              inputLabel="Example call, as recorded"
+              resultLabel="Example call"
+            />
+          </div>
         </Container>
       </section>
 
