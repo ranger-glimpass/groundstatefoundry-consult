@@ -69,7 +69,6 @@ export default function AudioUpscalerPage() {
               options={STEPS}
               inputLabel="Phone line, 8 kHz"
               resultLabel="Phone line"
-              refLabel="Original studio recording, 48 kHz, for comparison"
             />
           </div>
         </Container>

@@ -608,17 +608,24 @@ export default function NearfieldDemo() {
     } finally { setBusy(false); }
   };
 
-  // on page load, get example 3 cleaned and ready, so the first click is Play
-  const preloaded = useRef(false);
+  // in the background, once the demo is near the screen and the browser is idle: download the runtime, the model and
+  // example 3 (download only; nothing is processed until a click, so the page never stalls)
   useEffect(() => {
-    const t = window.setTimeout(() => {
-      if (preloaded.current || !engRef.current) return;
-      preloaded.current = true;
-      onExample(EXAMPLES[2], true);
-    }, 400);
-    return () => window.clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const el = rootRef.current; if (!el) return;
+    let idle = 0;
+    const io = new IntersectionObserver((es) => {
+      if (!es.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      const go = () => {
+        loadOrt().then(() => ensureModel()).catch(() => {});
+        fetch(BASE + "examples/" + EXAMPLES[2].file).catch(() => {});
+      };
+      const ric = (window as unknown as { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
+      idle = ric ? ric(go, { timeout: 3000 }) : window.setTimeout(go, 1500);
+    }, { rootMargin: "200px" });
+    io.observe(el);
+    return () => { io.disconnect(); window.clearTimeout(idle); };
+  }, [ensureModel]);
 
   const onModel = async (q: Quality) => {
     const eng = engRef.current; if (!eng || busy || q === qRef.current) return;
