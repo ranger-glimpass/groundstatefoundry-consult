@@ -201,3 +201,6 @@ export const LEGACY_REDIRECTS: Record<string, string> = {
 
 /** Live record-your-voice demo (AWS Lambda, scales to zero). Only answers groundstatefoundry.com. */
 export const VOICE_DEMO_API = "https://24uprg46f5llvpkoaysztc2asu0wofey.lambda-url.us-east-1.on.aws/";
+/** Off for now. To turn back on: set true here, and restore the Lambda's concurrency
+ *  (aws lambda put-function-concurrency --function-name gsf-voice-demo --reserved-concurrent-executions 2). */
+export const LIVE_DEMO_ON = false;

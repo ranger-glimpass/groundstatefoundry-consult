@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui";
 import ChainDemo from "@/components/models/ChainDemo";
 import LiveDemo from "@/components/models/LiveDemo";
-import { getProduct } from "@/lib/products";
+import { getProduct, LIVE_DEMO_ON } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Ant Flash",
@@ -76,6 +76,7 @@ export default function AntFlashPage() {
           </div>
         </Container>
       
+        {LIVE_DEMO_ON && (
         <Container className="pb-12">
           <h3 className="text-xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-2xl">Try your own voice</h3>
           <div className="mt-6">
@@ -88,6 +89,7 @@ export default function AntFlashPage() {
             />
           </div>
         </Container>
+        )}
       </section>
 
       <Container className="py-12">
