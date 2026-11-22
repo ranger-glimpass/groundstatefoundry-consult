@@ -118,6 +118,11 @@ export default function LiveDemo({ model, options, prompt, inputLabel, resultLab
   return (
     <div className="card p-6 sm:p-8">
       <p className="max-w-2xl leading-relaxed text-[var(--color-muted)]">{prompt}</p>
+      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--color-dim)]">
+        The model runs in real time on a live call. To keep this demo light, we start it on demand, so
+        the first try can take up to half a minute while the model loads. After that it answers in a
+        few seconds.
+      </p>
       <div className="mt-6 grid gap-5 sm:grid-cols-2">
         {options.map((o) => <Radio key={o.key} o={o} value={sel[o.key]} onChange={(v) => setSel((s) => ({ ...s, [o.key]: v }))} />)}
       </div>
