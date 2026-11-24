@@ -17,12 +17,12 @@ const mono = JetBrains_Mono({
 });
 
 const DESCRIPTION =
-  "Ground State Foundry is a voice AI research lab. We build models that hear and speak on real calls: Nearfield isolates the caller's voice, Audio Upscaler restores phone-line audio, and Ant Flash changes an accent live. All run in real time on a CPU.";
+  "Ground State Foundry is a research lab for voice AI, simulation and AI agents. Our models hear and speak on real calls: Nearfield isolates the caller's voice, Audio Upscaler restores phone-line audio, and Ant Flash changes an accent live, all in real time on a CPU.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: "Ground State Foundry · Voice AI research lab",
+    default: "Ground State Foundry · AI research lab",
     template: "%s · Ground State Foundry",
   },
   description: DESCRIPTION,
@@ -53,13 +53,13 @@ export const metadata: Metadata = {
     siteName: SITE.name,
     url: SITE.url,
     locale: "en_US",
-    title: "Ground State Foundry · Voice AI research lab",
+    title: "Ground State Foundry · AI research lab",
     description: DESCRIPTION,
     images: [{ url: "/groundstate-logo.png", width: 1254, height: 1254, alt: "Ground State Foundry" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ground State Foundry · Voice AI research lab",
+    title: "Ground State Foundry · AI research lab",
     description: DESCRIPTION,
     images: ["/groundstate-logo.png"],
   },

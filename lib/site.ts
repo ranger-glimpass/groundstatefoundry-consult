@@ -8,7 +8,7 @@ export const SITE = {
   url: "https://groundstatefoundry.com",
   tagline: "Ground state: what an experiment settles into once it is perfected.",
   positioning:
-    "A voice AI research lab. We build models that hear and speak on real calls: Nearfield, Audio Upscaler and Ant Flash, all real time on a CPU. We also make Lisn, an AI that talks to your customers, and Bubbles, open source.",
+    "A research lab for voice AI, simulation and AI agents. Our models hear and speak on real calls: Nearfield, Audio Upscaler and Ant Flash, all real time on a CPU. We also make Lisn, an AI that talks to your customers, and Bubbles, an open-source tool for running fleets of AI agents.",
   email: "hello@groundstatefoundry.com",
   linkedin: "https://www.linkedin.com/company/ground-state-foundry",
   founders: [

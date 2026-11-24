@@ -67,23 +67,23 @@ export default function Home() {
         <Container className="grid min-h-[72vh] items-center gap-12 py-16 lg:grid-cols-[1.35fr_1fr]">
           <div>
           <p className="reveal mono-label" style={{ animationDelay: "0ms" }}>
-            Ground State Foundry · Voice AI research lab
+            Ground State Foundry · AI research lab
           </p>
 
           <h1
             className="reveal mt-6 max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-[var(--color-fg)] sm:text-6xl"
             style={{ animationDelay: "90ms" }}
           >
-            A research lab for voice AI.
+            A research lab for voice AI, simulation and AI agents.
           </h1>
 
           <p
             className="reveal mt-6 max-w-2xl text-pretty text-base leading-relaxed text-[var(--color-muted)]"
             style={{ animationDelay: "200ms" }}
           >
-            We build the models that let machines hear and speak on real calls: through noisy rooms,
-            over narrow phone lines and across accents, in real time on an ordinary CPU. Every model is
-            measured on real recordings and on the benchmarks our competitors publish.
+            We build models that hear and speak on real calls, simulated callers that test them before
+            customers do, and agents that work together on long tasks. Every result is measured on real
+            recordings, real phone lines and the benchmarks our competitors publish.
           </p>
 
           <div className="reveal mt-9 flex flex-wrap items-center gap-3" style={{ animationDelay: "320ms" }}>
@@ -232,7 +232,7 @@ export default function Home() {
 
       {/* ───────────── BEYOND VOICE ───────────── */}
       <Container className="py-12">
-        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Beyond voice</h2>
+        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Also from the lab</h2>
         <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
           We also study automated search: code that changes itself and finds answers it was not
           given.
@@ -347,11 +347,11 @@ export default function Home() {
       <Container className="py-12">
         <div className="card-neon p-10 text-center sm:p-16">
           <h2 className="text-balance text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">
-            Bring us a hard problem in voice.
+            Bring us a hard problem.
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-[var(--color-muted)]">
-            Noisy calls, narrow phone lines, accents, latency. License one of our models, run it on
-            your own servers, or build a new one with us.
+            In voice, simulation or AI agents. License one of our models, run it on your own servers,
+            or build something new with us.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link href="/contact" className="btn btn-primary">Talk to the lab →</Link>
