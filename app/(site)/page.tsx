@@ -29,9 +29,9 @@ const RESULTS = [
 ];
 
 const AREAS = [
-  { slug: "voice-ai", t: "Voice", d: "Latency, turn-taking, and hearing only the person you are talking to." },
-  { slug: "multi-agent-systems", t: "Agents", d: "Many agents working, messaging, and handing off work to each other." },
-  { slug: "agent-simulation", t: "Simulation", d: "Simulated people and traffic that test a system before real users reach it." },
+  { slug: "voice-ai", t: "Voice", d: "Hearing one speaker in a noisy room, restoring phone-line audio, changing an accent live, and keeping latency low." },
+  { slug: "agent-simulation", t: "Simulation", d: "Simulated callers that test a voice agent over real phone lines before customers reach it." },
+  { slug: "multi-agent-systems", t: "Agents", d: "Voice agents that hold a conversation, use tools, and hand off to each other or to a person." },
   { slug: "evolutionary-systems", t: "Evolutionary search", d: "Code that changes itself and finds answers we did not hand it." },
 ];
 
@@ -58,6 +58,7 @@ export default function Home() {
     (a) => a.cat,
   );
   const openSource = PRODUCTS.filter((p) => p.repo);
+  const models = PRODUCTS.filter((p) => p.kind === "model");
 
   return (
     <>
@@ -66,27 +67,28 @@ export default function Home() {
         <Container className="grid min-h-[72vh] items-center gap-12 py-16 lg:grid-cols-[1.35fr_1fr]">
           <div>
           <p className="reveal mono-label" style={{ animationDelay: "0ms" }}>
-            Ground State Foundry · AI research lab
+            Ground State Foundry · Voice AI research lab
           </p>
 
           <h1
             className="reveal mt-6 max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-[var(--color-fg)] sm:text-6xl"
             style={{ animationDelay: "90ms" }}
           >
-            The age of AI is full of hot ideas. We find the ones that are actually cool.
+            A research lab for voice AI.
           </h1>
 
           <p
             className="reveal mt-6 max-w-2xl text-pretty text-base leading-relaxed text-[var(--color-muted)]"
             style={{ animationDelay: "200ms" }}
           >
-            Every week brings a new claim about what AI can do. We test them on real recordings, real
-            phone lines and rival benchmarks, and turn what holds up into open tools.
+            We build the models that let machines hear and speak on real calls: through noisy rooms,
+            over narrow phone lines and across accents, in real time on an ordinary CPU. Every model is
+            measured on real recordings and on the benchmarks our competitors publish.
           </p>
 
           <div className="reveal mt-9 flex flex-wrap items-center gap-3" style={{ animationDelay: "320ms" }}>
-            <Link href="/research" className="btn btn-primary">Read research →</Link>
-            <Link href="/products" className="btn btn-ghost">What we&apos;ve shipped</Link>
+            <Link href="/models" className="btn btn-primary">Our models →</Link>
+            <Link href="/research" className="btn btn-ghost">Read the research</Link>
           </div>
 
           </div>
@@ -98,13 +100,40 @@ export default function Home() {
         </Container>
       </section>
 
+      {/* ───────────── MODELS ───────────── */}
+      <Container className="py-12">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="mono-label">models · audio essentials</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">
+              Models for live calls
+            </h2>
+          </div>
+          <Link href="/models" className="link-u text-sm">All models →</Link>
+        </div>
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
+          {models.map((p) => (
+            <Link
+              key={p.slug}
+              href={itemHref(p)}
+              className="card group flex flex-col p-7 transition-colors duration-300 hover:border-[var(--color-muted)]"
+            >
+              <h3 className="text-xl font-semibold text-[var(--color-fg)]">{p.name}</h3>
+              <p className="mt-2 text-xs text-[var(--color-dim)]">{p.status}</p>
+              <p className="mt-4 flex-1 text-sm leading-relaxed text-[var(--color-muted)]">{p.line}</p>
+              <p className="mt-6 text-sm text-[var(--color-fg)] underline-offset-4 group-hover:underline">Listen to the demo →</p>
+            </Link>
+          ))}
+        </div>
+      </Container>
+
       {/* ───────────── RESULTS ───────────── */}
       <Container className="py-12">
         <div>
           <div>
             <p className="mono-label">results</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">
-              What we found, and where to check it
+              Results, and where to check them
             </h2>
           </div>
         </div>
@@ -129,50 +158,6 @@ export default function Home() {
             <Link href="/models/nearfield" className="link-u">Try the demo →</Link>
             <a href={NEARFIELD_REPO} target="_blank" rel="noopener noreferrer" className="link-u">
               Code on GitHub ↗
-            </a>
-          </div>
-        </div>
-
-        <div className="card mt-5 p-8 sm:p-12">
-          <div className="grid gap-10 lg:grid-cols-[1.25fr_1fr] lg:items-center">
-            <div>
-              <p className="mono-label">evolutionary search · darweel</p>
-              <h3 className="mt-4 text-balance text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">
-                Our system rediscovered a classic 48-multiplication method on its own. Then it went lower.
-              </h3>
-              <p className="mt-4 leading-relaxed text-[var(--color-muted)]">
-                We pointed Darweel, our evolutionary framework, at 4x4 matrix multiplication and
-                counted the multiplications each candidate used. Programs competed, mutated, and
-                reproduced. Without being shown the answer, it arrived at Winograd&apos;s 48. A
-                descendant then learned to skip multiplications by zero, which brought the average
-                below 48 on the test set.
-              </p>
-            </div>
-            <MatmulChart />
-          </div>
-
-          <div className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-border)] sm:grid-cols-4">
-            {MATMUL.map((m, i) => (
-              <div key={m.v} className="bg-[var(--color-panel)] p-5">
-                <div
-                  className={`text-3xl font-semibold tabular-nums ${
-                    i === MATMUL.length - 1 ? "text-[var(--color-fg)]" : "text-[var(--color-muted)]"
-                  }`}
-                >
-                  {m.v}
-                </div>
-                <div className="mt-2 text-xs leading-snug text-[var(--color-dim)]">{m.l}</div>
-              </div>
-            ))}
-          </div>
-          <p className="mt-3 text-xs text-[var(--color-dim)]">
-            Scalar multiplications per 4x4 product. 47.94 is a measured average over 500 test cases; the worst case is still 48. Winograd&apos;s 48 relies on the numbers commuting, so it applies to ordinary numbers, not to every kind of matrix algebra.
-          </p>
-
-          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-            <Link href="/research/code-that-beats-me" className="link-u">How it happened →</Link>
-            <a href={DARWEEL_REPORT_URL} target="_blank" rel="noopener noreferrer" className="link-u">
-              The original report ↗
             </a>
           </div>
         </div>
@@ -245,6 +230,59 @@ export default function Home() {
         )}
       </Container>
 
+      {/* ───────────── BEYOND VOICE ───────────── */}
+      <Container className="py-12">
+        <h2 className="text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">Beyond voice</h2>
+        <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
+          We also study automated search: code that changes itself and finds answers it was not
+          given.
+        </p>
+        <div className="card mt-10 p-8 sm:p-12">
+          <div className="grid gap-10 lg:grid-cols-[1.25fr_1fr] lg:items-center">
+            <div>
+              <p className="mono-label">evolutionary search · darweel</p>
+              <h3 className="mt-4 text-balance text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">
+                Our system rediscovered a classic 48-multiplication method on its own. Then it went lower.
+              </h3>
+              <p className="mt-4 leading-relaxed text-[var(--color-muted)]">
+                We pointed Darweel, our evolutionary framework, at 4x4 matrix multiplication and
+                counted the multiplications each candidate used. Programs competed, mutated, and
+                reproduced. Without being shown the answer, it arrived at Winograd&apos;s 48. A
+                descendant then learned to skip multiplications by zero, which brought the average
+                below 48 on the test set.
+              </p>
+            </div>
+            <MatmulChart />
+          </div>
+
+          <div className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-border)] sm:grid-cols-4">
+            {MATMUL.map((m, i) => (
+              <div key={m.v} className="bg-[var(--color-panel)] p-5">
+                <div
+                  className={`text-3xl font-semibold tabular-nums ${
+                    i === MATMUL.length - 1 ? "text-[var(--color-fg)]" : "text-[var(--color-muted)]"
+                  }`}
+                >
+                  {m.v}
+                </div>
+                <div className="mt-2 text-xs leading-snug text-[var(--color-dim)]">{m.l}</div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-3 text-xs text-[var(--color-dim)]">
+            Scalar multiplications per 4x4 product. 47.94 is a measured average over 500 test cases; the worst case is still 48. Winograd&apos;s 48 relies on the numbers commuting, so it applies to ordinary numbers, not to every kind of matrix algebra.
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+            <Link href="/research/code-that-beats-me" className="link-u">How it happened →</Link>
+            <a href={DARWEEL_REPORT_URL} target="_blank" rel="noopener noreferrer" className="link-u">
+              The original report ↗
+            </a>
+          </div>
+        </div>
+
+      </Container>
+
       {/* ───────────── OPEN SOURCE ───────────── */}
       <Container className="py-12">
         <div className="flex flex-wrap items-end justify-between gap-4">
@@ -309,15 +347,15 @@ export default function Home() {
       <Container className="py-12">
         <div className="card-neon p-10 text-center sm:p-16">
           <h2 className="text-balance text-3xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-4xl">
-            Work with the lab, or put Lisn to work.
+            Bring us a hard problem in voice.
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-[var(--color-muted)]">
-            Bring us a hard problem in voice, agents, simulation or search, or tell us where your
-            customers reach you and we will set Lisn up there first.
+            Noisy calls, narrow phone lines, accents, latency. License one of our models, run it on
+            your own servers, or build a new one with us.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/contact" className="btn btn-primary">Collaborate on research →</Link>
-            <Link href="/contact" className="btn btn-ghost">Try Lisn early</Link>
+            <Link href="/contact" className="btn btn-primary">Talk to the lab →</Link>
+            <Link href="/models" className="btn btn-ghost">See the models</Link>
           </div>
           <p className="mt-8 text-xs text-[var(--color-dim)]">
             Or write to <a href={`mailto:${SITE.email}`} className="link-u">{SITE.email}</a>
