@@ -96,13 +96,13 @@ export const PRODUCTS: Product[] = [
     kind: "model",
     group: "audio-essentials",
     name: "Ant Flash",
-    status: "3.2 · available to license",
+    status: "3.2 · Arabic 1.0 · available to license",
     page: true,
-    line: "Changes an Indian English accent to American English, live, in the talker's own voice.",
+    line: "Changes an Indian English accent to American or Arabic-accented English, live, in the talker's own voice.",
     summary:
       "Ant Flash converts accent as the person speaks. It keeps their own voice, timing and pitch, and changes how the words sound. It runs on a CPU, with Nearfield clean-up built in.",
     bullets: [
-      "Indian English to American English, about 0.6 s behind the talker",
+      "Indian English to American English or Arabic-accented English, about 0.6 s behind the talker",
       "The talker's own voice, from a voice print, with no stock voice",
       "Runs on a CPU, about 94 ms of compute per 200 ms of speech",
       "One model per accent pair, more pairs to come",

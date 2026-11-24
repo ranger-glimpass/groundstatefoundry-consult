@@ -9,10 +9,11 @@ export const metadata: Metadata = {
   title: "Ant Flash",
   alternates: { canonical: "/models/ant-flash" },
   description:
-    "Ant Flash changes an Indian English accent to American English while the person talks, in their own voice, on a CPU. Listen to before and after samples.",
+    "Ant Flash changes an Indian English accent to American or Arabic-accented English while the person talks, in their own voice, on a CPU. Listen to before and after samples.",
 };
 
 const B = "/models/ant-flash";
+const ACCENT = { key: "acc", label: "Change the accent to", choices: [{ v: "a", label: "American English", tag: " 3.2, American English" }, { v: "r", label: "Arabic-accented English", tag: " Arabic 1.0, Arabic-accented English" }] };
 const STEPS = [
   { key: "up", label: "Upscale the output", choices: [{ v: "0", label: "Off, 24 kHz" }, { v: "1", label: "On, 48 kHz", tag: ", upscaled to 48 kHz" }] },
 ];
@@ -25,7 +26,7 @@ const SPECS = [
 ];
 
 const FITS = [
-  { t: "Contact centres", d: "Agents in India keep their own voice and personality, and US customers hear a familiar accent. Nothing changes in the agent's workflow." },
+  { t: "Contact centres", d: "Agents in India keep their own voice and personality, and customers in the US or the Gulf hear a familiar accent. Nothing changes in the agent's workflow." },
   { t: "Sales and support calls", d: "Fewer \"sorry, could you repeat that\" moments on calls where every second counts." },
   { t: "Voice agents and telephony", d: "Runs as a WebSocket service or a Pipecat filter, so it drops into an existing call pipeline." },
   { t: "Your own infrastructure", d: "Runs on your servers, on CPUs you already have. Audio never has to leave your network." },
@@ -57,17 +58,18 @@ export default function AntFlashPage() {
           <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-3xl">Hear it</h2>
           <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
             Two Indian English speakers from public speech corpora (CMU ARCTIC and L2-ARCTIC), run
-            through Ant Flash 3.2 the way a live call would be: fed 20 ms at a time, on a CPU. Same
-            words, same voice, a different accent. Upscale the result to 48 kHz to hear it in full
+            through Ant Flash the way a live call would be: fed 20 ms at a time, on a CPU. Same
+            words, same voice, a different accent. Pick the accent to hear: American English, or
+            Arabic-accented English for callers in the Gulf. Upscale the result to 48 kHz to hear it in full
             quality. The converted clip starts about 0.6 s late, as it would live.
           </p>
           <div className="mt-8">
             <ChainDemo
               base={B}
               samples={[{ id: "s1", label: "Speaker 1" }, { id: "s2", label: "Speaker 2" }]}
-              options={STEPS}
+              options={[ACCENT, ...STEPS]}
               inputLabel="Original"
-              resultLabel="Ant Flash 3.2"
+              resultLabel="Ant Flash"
             />
           </div>
         </Container>
@@ -117,7 +119,8 @@ export default function AntFlashPage() {
           <h2 className="text-balance text-3xl font-semibold tracking-tight text-[var(--color-fg)]">Try it on your calls</h2>
           <p className="mx-auto mt-4 max-w-md text-[var(--color-muted)]">
             Ant Flash is available to license, deployed on your servers or ours. Indian English to
-            American English is ready today. Tell us about your calls and the accents you need.
+            American English and to Arabic-accented English are ready today, with more accent pairs
+            on the way. Tell us about your calls and the accents you need.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link href="/contact" className="btn btn-primary">Talk to us →</Link>
